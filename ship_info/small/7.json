@@ -1,0 +1,24 @@
+{
+  "d": "aquillon",
+  "id": "7",
+  "tl": [],
+  "firing_frames": [],
+  "alpha_and_bright": [],
+  "move_vector": [],
+  "move": {"d": "ld: left down, scale_start: relative to orig pic, scale_end: ",
+    "ld_start": [0, 300], "ld_end": [50, 300],
+    "scale_start": 1.0, "scale_end": 1.0,
+    "frame_start": 5, "frame_end": 50},
+  "splash_zones": [],
+  "explosion_offset": [],
+  "smoka_id": "",
+  "smoka_offset": [],
+  "smoka_init_frames": [],
+  "brightness_frame_value": [],
+  "xtra_init_frames": [],
+  "zorder": 5,
+  "xtras": {
+    "sail_0_0": {"offset": [16, 81]},
+    "ws_0": {"offset": [65, 149]}
+  }
+}
