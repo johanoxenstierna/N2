@@ -8,7 +8,7 @@ def load_pics():
     pics['waves'] = {}
     pics['spls'] = {}
     pics['ships'] = {}
-    pics['xtra'] = {}
+    # pics['xtra'] = {}
     pics['smokas'] = {}
     pics['smokrs'] = {}
     pics['expls'] = {}
@@ -53,9 +53,22 @@ def load_pics():
     #     pics['specials'][file_name[:-4]] = imread(PATH + file_name)  # without .png
 
     PATH = './images/processed/ships/'
-    _, _, file_names = os.walk(PATH).__next__()
-    for file_name in file_names:
-        pics['ships'][file_name[:-4]] = imread(PATH + file_name)  # without .png
+    _, folder_names, _ = os.walk(PATH).__next__()
+    for folder_name in folder_names:
+        pics['ships'][folder_name] = {}
+        pics['ships'][folder_name]['sails'] = {}
+        _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
+        for file_name in file_names:
+            name_split = file_name.split('_')
+            if len(name_split) < 2:
+                pics['ships'][folder_name]['ship'] = imread(PATH + '/' + folder_name + '/' + file_name)  # without .png
+            elif len(name_split) > 1 and name_split[1] == 's':
+                # aa = imread(PATH + '/' + folder_name + '/' + file_name)
+                pics['ships'][folder_name]['sails'][file_name[:-4]] = imread(PATH + '/' + folder_name + '/' + file_name)
+
+
+    aa = 5
+
     # pics['ships']['ship_3'] = imread('./images_mut/ships/ship_3.png')  # 105, 145
     # pics['ships']['ship_1'] = imread('./images_mut/ships/ship_1.png')  # 105, 145
     # pics['explosions']['explosion_0'] = imread('./images_mut/expls/explosion_0.png')
@@ -65,7 +78,7 @@ def load_pics():
     # for file_name in file_names:
     #     pics['expls'][file_name[:-4]] = imread(PATH + file_name)  # without .png
     #
-    # PATH = './images_mut/xtra/'
+    # PATH = './images/processed/xtra/'
     # _, _, file_names = os.walk(PATH).__next__()
     # for file_name in file_names:
     #     pics['xtra'][file_name[:-4]] = imread(PATH + file_name)  # without .png

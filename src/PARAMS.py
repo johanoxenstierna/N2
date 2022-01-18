@@ -7,7 +7,9 @@ if MAP_SIZE == 'small':
     FRAMES_STOP = 100
 FRAMES_TOT = FRAMES_STOP - FRAMES_START
 
-AFFINE_TRANSFORM = 1
+# A (what to animate) ========
+A_AFFINE_TRANSFORM = 1
+A_SAILS = 1
 
 WAVES_STEPS_P_CYCLE = 90  #
 SAIL_STEPS_P_CYCLE = 360  # 120 # (6 sec)

@@ -1,14 +1,22 @@
+import os
 import random
 import json
 import numpy as np
 from src.load_pics import load_pics
 from src import PARAMS as P
 from src.layers.ship import Ship
+from src.layers.sail import Sail
 
 class GenLayers:
 
+    """
+    OBS this time it's only the background that is being ax.shown here. The other ax objects are gona be added and
+    deleted within the animation loop.
+    """
+
     def __init__(self):
         self.pics = load_pics()
+        self.PATH_IMAGES = './images/processed/'
 
     def gen_backgr(self, ax, im_ax):
         im_ax['backgr'] = ax.imshow(self.pics['backgr'], zorder=1, alpha=1)
@@ -27,19 +35,37 @@ class GenLayers:
             with open('./ship_info/' + P.MAP_SIZE + '/' + ship_id + '.json', 'r') as f:
                 ship_info = json.load(f)
 
-            ships[ship_id] = Ship(ship_info, self.pics['ships'][ship_id])
+            ships[ship_id] = Ship(ship_info, self.pics['ships'][ship_id]['ship'])
 
             # im_ax[ship_id].set_extent(ships[ship_id].extent[0])
 
         return ships
 
+    def gen_sails(self, ax, im_ax, ships):
+
+        for ship_id in ships:  # ships is a key-val dict
+
+            _, _, file_names = os.walk(self.PATH_IMAGES + '/ships/' + ship_id).__next__()
+
+            for file_name in file_names:
+                name_split = file_name.split('_')
+                if len(name_split) > 1 and name_split[1] == 's':
+                    sail = Sail(file_name[:-4],
+                                self.pics['ships'][ship_id]['sails'][file_name[:-4]],
+                                ships[ship_id])
+                    ships[ship_id].add_sail(sail)
 
 
-        # for S_id in P.SHIPS_TO_SHOW:
-        #     with open()
+                    adf = 5
+
+                gg = 5
 
 
 
+
+
+
+        return ships
 
 def gen_layers(ax, FRAMES_START, FRAMES_STOP, chronicle):
     waves = {}
@@ -99,7 +125,7 @@ def gen_layers(ax, FRAMES_START, FRAMES_STOP, chronicle):
         if smokr_id.split("_")[1] == 'bc':
             bc = True
         smokrs[smokr_id] = layers.Smoke(id=smokr_id, zorder=zorder, tl=[0, 0], pic=pics['smokrs'][smokr_id],
-                                  scale_vector=scale_vector, s_type='r', left_right=None, bc=bc)  # set inside
+                                        scale_vector=scale_vector, s_type='r', left_right=None, bc=bc)  # set inside
         im_ax[smokr_id] = ax.imshow(pics['smokrs'][smokr_id], zorder=zorder, alpha=0., extent=[0, 1, 1, 0])
 
     # SMOKAS ========
@@ -111,13 +137,13 @@ def gen_layers(ax, FRAMES_START, FRAMES_STOP, chronicle):
 
         zorder = P.Z_SMOKA
         smokas[smoka_id] = layers.Smoke(id=smoka_id, zorder=zorder, tl=[0, 0], pic=pics['smokas'][smoka_id],
-                                  scale_vector=scale_vector, s_type='a', left_right='r', bc=False)
+                                        scale_vector=scale_vector, s_type='a', left_right='r', bc=False)
         smoka = ax.imshow(pics['smokas'][smoka_id], zorder=zorder, alpha=0., extent=[0, 1, 1, 0])
         im_ax[smoka_id] = smoka
 
     # SPECIALS =========
     specials['smoka_left'] = layers.Smoke(id='smoka_left', zorder=6, tl=None, pic=pics['specials']['smoka_left'],
-                                             scale_vector=scale_vector, s_type='a', left_right='r', bc=True)
+                                          scale_vector=scale_vector, s_type='a', left_right='r', bc=True)
     special = ax.imshow(pics['specials']['smoka_left'], zorder=6, alpha=0., extent=[0, 1, 1, 0])
     im_ax['smoka_left'] = special
 
@@ -144,8 +170,8 @@ def gen_layers(ax, FRAMES_START, FRAMES_STOP, chronicle):
             im_ax[xid] = sail_ax
 
         ships[ship_id] = layers.Ship(id=ship_id, zorder=zorder, tl=ships_info[ship_id]['tl'], pic=ship_pic,
-                            FRAMES_START=FRAMES_START, FRAMES_STOP=FRAMES_STOP, scale_vector=scale_vector,
-                            xtra_pics=xtra_pics, ship_info=ships_info[ship_id], ship_ch=chronicle['ships'][ship_id])
+                                     FRAMES_START=FRAMES_START, FRAMES_STOP=FRAMES_STOP, scale_vector=scale_vector,
+                                     xtra_pics=xtra_pics, ship_info=ships_info[ship_id], ship_ch=chronicle['ships'][ship_id])
 
         init_val_bright = ships[ship_id].bright_start_array[P.FRAMES_START]
         ship_pic = change_brightness(init_val_bright, ship_pic)

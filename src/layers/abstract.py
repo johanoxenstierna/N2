@@ -11,8 +11,7 @@ class AbstractLayer:
         s.drawn = 0  # 0: not drawn, 1: start drawing, 2. continue drawing, 3. end drawing
         s.clock = 0
         s.frames_num = None  # number of frames to animate for
-        s.frame_start = None
-        s.frame_end = None
+        s.frame_ss = None
 
     def set_clock(s, i):
         """
@@ -20,12 +19,12 @@ class AbstractLayer:
         this essentially tells the ax what to do.
         """
 
-        if i == s.frame_start:
+        if i == s.frame_ss[0]:
             s.drawn = 1
-        elif i > s.frame_start and i < s.frame_end:
+        elif i > s.frame_ss[0] and i < s.frame_ss[1]:
             s.drawn = 2
             s.clock += 1
-        elif i == s.frame_end:
+        elif i == s.frame_ss[1]:
             s.drawn = 3
             s.clock = 0  # ONLY PLACE WHERE RESET
         else:
