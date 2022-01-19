@@ -12,6 +12,7 @@ class AbstractLayer:
         s.clock = 0
         s.frames_num = None  # number of frames to animate for
         s.frame_ss = None
+        s.index_im_ax = None
 
     def set_clock(s, i):
         """

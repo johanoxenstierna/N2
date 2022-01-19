@@ -1,8 +1,9 @@
-import numpy as np
+import json
 
-A = [[[1, 5], [6, 2], [6, 1]],
-     [[4, 2], [5, 7], [5, 2]]]
+with open('./data.json', 'r') as f:
+     raw = json.load(f)
 
-b = np.max([row[1][1] for row in A])
+the_json = json.loads(raw[0]['json'])
 
-hh = 5
+
+ff = 5

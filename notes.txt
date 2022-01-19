@@ -1,2 +1,5 @@
 t:
-34h
+42h
+
+log:
+42: wind transforms achieved.
