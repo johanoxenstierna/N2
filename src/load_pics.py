@@ -1,5 +1,5 @@
 import os
-from src import PARAMS as P
+import P as P
 from matplotlib.pyplot import imread
 
 def load_pics():

@@ -14,9 +14,14 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import cv2
-from copy import deepcopy
 
-from src import gen_layers, PARAMS as P, load_pics
+from src import gen_layers
+import P as P
+from src.chronicler import Chronicler
+
+Chronicler() # just outputs the json below
+with open('./src/chronicle.json', 'r') as f:
+    ch = json.load(f)
 
 
 WRITE = 0  #60  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
@@ -29,7 +34,7 @@ fig, ax = plt.subplots(figsize=(12, 8))
 
 # im_ax = {}
 im_ax = []
-g = gen_layers.GenLayers()
+g = gen_layers.GenLayers(ch)
 g.gen_backgr(ax, im_ax)  # ax is the canvas, im_ax contains pointers to what is plotted on canvas
 ships = g.gen_ships(ax, im_ax)  # ships is dict of pointers to all info about ship (except in im_ax)
 # ships = g.gen_sails(ax, im_ax, ships)
@@ -45,23 +50,13 @@ def animate(i):
     if i % 10 == 0:
         print(i)
 
-    # EXPLOSION EVENT. IF THIS HAPPENS A LIST OF COORDINATES SHOULD BE INITED AND THEN COL-CHANGES SHOULD BE AFFECTED
-
     for ship_id, ship in ships.items():
 
         ship.set_clock(i)  # sets drawn if clock is within draw range
 
         # THIS SHOULD BE GENERALIZED FOR ALL AFFINE LAYERS = MOVE TO FUNCTION
-        if ship.drawn == 0:  # 0: not drawn, 1: start drawing, 2. continue drawing, 3. end drawing
-            continue
-        elif ship.drawn == 1:
-            ship.index_im_ax = len(im_ax)
-            # im_ax[ship_id] = ax.imshow(ship.pic, zorder=1, alpha=1)
-            im_ax.append(ax.imshow(ship.pic, zorder=1, alpha=1))
-        elif ship.drawn == 2:
-            pass
-        elif ship.drawn == 3:
-            # im_ax[ship_id].remove()  # might save CPU-time
+        drawBool = ship.ani_update_step(ax, im_ax)  # uses clock set above
+        if drawBool == False:
             continue
 
         # PERHAPS MOVE ALL THIS INTO A FUNCTION (IN SHIP CLASS WITH IM_AX AS INPUT)
@@ -72,15 +67,12 @@ def animate(i):
             im_ax.pop(ship.index_im_ax)
             t0 = ship.tri_base
             t1 = ship.tris[ship.clock]
-            # image = g.pics['ships']['7']['ship']
-            image = ship.pic
-
-            if P.A_COLORS:
-                image = ship.apply_col_transform(expl_coords=[[50, 50]])
+            image = g.pics['ships']['7']['ship']
+            # image = ship.pic * ship.scale_vector[ship.clock]
 
             M = cv2.getAffineTransform(t0, t1)
-            dst = cv2.warpAffine(image, M, (int(ship.tri_max_x), int(ship.tri_max_y)))
-            image = np.zeros((ship.mask_y, ship.mask_x, 4))
+            dst = cv2.warpAffine(image, M, (int(ship.tri_max_ri), int(ship.tri_max_do)))
+            image = np.zeros((ship.mask_do, ship.mask_ri, 4))
             image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
 
             # im_ax[ship_id] = ax.imshow(image, zorder=5, alpha=1)
@@ -90,26 +82,20 @@ def animate(i):
         if P.A_SAILS:  # NOT CONVERTED TO LIST YET
             for sail_id, sail in ships[ship_id].sails.items():
                 sail.set_clock(i)
-                if sail.drawn == 0:  # 0: not drawn, 1: start drawing, 2. continue drawing, 3. end drawing
-                    continue
-                elif sail.drawn == 1:
-                    im_ax[sail_id] = ax.imshow(g.pics['ships'][ship_id]['sails'][sail_id], zorder=6, alpha=1)
-                elif sail.drawn == 2:
-                    pass
-                elif sail.drawn == 3:
-                    im_ax[sail_id].remove()  # might save CPU-time
-                    # im_ax[sail_id].remove()  # might save CPU-time
+                drawBool = sail.ani_update_step(ax, im_ax)
+                if drawBool == False:
                     continue
 
-                im_ax[sail_id].remove()
                 t0 = sail.tris[0]
                 t1 = sail.tris[sail.clock]
-                image = g.pics['ships'][ship_id]['sails'][sail_id]
+                image = sail.pic
                 M = cv2.getAffineTransform(t0, t1)
                 dst = cv2.warpAffine(image, M, (int(sail.tri_max_x), int(sail.tri_max_y)))
-                pad = np.zeros((sail.padding_y, sail.padding_x, 4))
-                pad[pad.shape[0] - dst.shape[0]:, pad.shape[1] - dst.shape[1]:, :] = dst
-                im_ax[sail_id] = ax.imshow(pad, zorder=6, alpha=1)
+                image = np.zeros((sail.mask_y, sail.mask_x, 4))
+                image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
+                # im_ax[sail_id] = ax.imshow(pad, zorder=6, alpha=1)
+                ship.index_im_ax = len(im_ax)
+                im_ax.append(ax.imshow(image, zorder=6, alpha=1))
 
 
     return im_ax

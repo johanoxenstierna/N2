@@ -1,9 +1,7 @@
 import os
-import random
 import json
-import numpy as np
 from src.load_pics import load_pics
-from src import PARAMS as P
+import P as P
 from src.layers.ship import Ship
 from src.layers.sail import Sail
 
@@ -14,9 +12,10 @@ class GenLayers:
     deleted within the animation loop.
     """
 
-    def __init__(self):
+    def __init__(self, ch):
         self.pics = load_pics()
         self.PATH_IMAGES = './images/processed/'
+        self.ch = ch
 
     def gen_backgr(self, ax, im_ax):
         # im_ax['backgr'] = ax.imshow(self.pics['backgr'], zorder=1, alpha=1)
@@ -34,12 +33,10 @@ class GenLayers:
 
         ships = {}
         for ship_id in P.SHIPS_TO_SHOW:  # number_id
-            with open('./ship_info/' + P.MAP_SIZE + '/' + ship_id + '.json', 'r') as f:
-                ship_info = json.load(f)
+            # with open('./ship_info/' + P.MAP_SIZE + '/' + ship_id + '.json', 'r') as f:
+            #     ship_info = json.load(f)
 
-            ships[ship_id] = Ship(ship_info, self.pics['ships'][ship_id]['ship'])
-
-            # im_ax[ship_id].set_extent(ships[ship_id].extent[0])
+            ships[ship_id] = Ship(self.ch['ships'][ship_id], self.pics['ships'][ship_id]['ship'])
 
         return ships
 

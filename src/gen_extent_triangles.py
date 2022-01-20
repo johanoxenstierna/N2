@@ -3,7 +3,7 @@ from copy import deepcopy
 
 def gen_extent(move_info, pic, padded=False):
     """
-    returns extent through time
+    returns linear motion extent through time
     extent_t is the same thing but shifted to origin at tl (since tri's have origin there).
     extent_t == UNSHIFTED FRAME
     """
@@ -88,13 +88,18 @@ def gen_triangles(extent_t, extent, move_info, pic):
 
     tri_base = np.float32([p0, p1, p2])
 
+    tri_min_le, tri_min_le_i = 9999, None
+    tri_max_le, tri_max_le_i = -9999, None
+    tri_max_ri, tri_max_ri_i = -9999, None
+    tri_min_do, tri_min_do_i = 9999, None
+    tri_max_do, tri_max_do_i = -9999, None
+
     for i in range(0, extent_t.shape[0]):
 
         ext = extent_t[i]
 
         width = ext[1] - ext[0]
         height = ext[2] - ext[3]
-        # mov_x = extent_t[i, ]
 
         p0 = [ext[0], ext[3] + height]
         p1 = [ext[0] + (width / 2), ext[3]]
@@ -102,12 +107,30 @@ def gen_triangles(extent_t, extent, move_info, pic):
 
         tri = np.float32([p0, p1, p2])
         tris.append(tri)
-    tris_s = deepcopy(tris)
 
-    tri_min_x = np.min([tri[0][0] for tri in tris])
-    tri_max_x = np.max([tri[2][0] for tri in tris])
-    tri_min_y = np.min([tri[1][1] for tri in tris])
-    tri_max_y = np.max([tri[0][1] for tri in tris])
+        if p0[0] < tri_min_le:
+            tri_min_le = p0[0]
+            tri_min_le_i = i
+        if p0[0] > tri_max_le:
+            tri_max_le = p0[0]
+            tri_max_le_i = i
+        if p2[0] > tri_max_ri:
+            tri_max_ri = p2[0]
+            tri_max_ri_i = i
+        if p1[1] < tri_min_do:
+            tri_min_do = p1[1]
+            tri_min_do_i = i
+        if p0[1] > tri_max_do:
+            tri_max_do = p0[1]
+            tri_max_do_i = i
+
+    tris_s = deepcopy(tris)  # tris_shifted (just for debugging)
+
+    # tri_min_le = np.min([tri[0][0] for tri in tris])
+    # tri_max_le = np.max([tri[0][0] for tri in tris])  # OBS ONLY FOR LEFT COORD, BECAUSE THAT'S WHAT'S USED IN INFO
+    # tri_min_do = np.min([tri[1][1] for tri in tris])
+    # tri_max_do = np.max([tri[0][1] for tri in tris])
+
 
     aa = 5
 
@@ -126,7 +149,7 @@ def gen_triangles(extent_t, extent, move_info, pic):
     # 2. SHIFT EVERYTHING IF IT IS EVER OUTSIDE BOUNDARY (warp frame, tris domain) OBS up -> down and left -> right
     shift_do = extent_t[0, 3] - extent_t[-1, 3]  # INCLUDES SCALING!
     if shift_do > 0:  # this means all tris need to be shifted down (base stays at tl 0, 0)
-        if tri_max_y + shift_do > max(move_info['ld_start'][1], move_info['ld_end'][1]):
+        if tri_max_do + shift_do > max(move_info['ld_start'][1], move_info['ld_end'][1]):
             shift_do = abs(move_info['ld_end'][1] - move_info['ld_start'][1])
         for i in range(0, len(tris_s)):
             tri = tris_s[i]
@@ -134,11 +157,12 @@ def gen_triangles(extent_t, extent, move_info, pic):
             tri[1, 1] += shift_do
             tri[2, 1] += shift_do
 
-        tri_min_y = np.min([tri[1][1] for tri in tris_s])
-        tri_max_y = np.max([tri[0][1] for tri in tris_s])
+        tri_min_do = np.min([tri[1][1] for tri in tris_s])
+        tri_max_do = np.max([tri[0][1] for tri in tris_s])
         # assert(tri_min_y < 0.01 and tri_min_y > -0.01)
 
-    if tri_max_x > max(move_info['ld_start'][0], move_info['ld_end'][0]):  # triangles want to go too far right
+    # PROB NEEDS FIXING
+    if tri_max_le > max(move_info['ld_start'][0], move_info['ld_end'][0]):  # triangles want to go too far right
         shift_le = -abs(move_info['ld_end'][0] - move_info['ld_start'][0])
         for i in range(0, len(tris_s)):
             tri = tris_s[i]
@@ -160,17 +184,27 @@ def gen_triangles(extent_t, extent, move_info, pic):
     #         tri[2, 1] += shift_ri
 
 
-    ## 3. BUILD MASK SHAPE ===================================
-    if tri_max_x <= max(move_info['ld_start'][0], move_info['ld_end'][0]):
-        mask_x = int(tri_max_x + min(move_info['ld_start'][0], move_info['ld_end'][0]))
+    ## 3. BUILD MASK SHAPE: If ===================================
+    if tri_max_le <= max(move_info['ld_start'][0], move_info['ld_end'][0]):
+        diff = max(move_info['ld_start'][0], move_info['ld_end'][0]) - tri_max_le
+        mask_ri = int(tris_s[tri_max_le_i][2][0] + diff)  # the tri with the max le, then use third point and its x
     else:
-        mask_x = int(tri_max_x)  # no right shifting
+        mask_ri = int(tri_max_le)  # no right shifting
 
-    if tri_max_y < max(move_info['ld_start'][1], move_info['ld_end'][1]):
-        mask_y = int(tri_max_y + min(move_info['ld_start'][1], move_info['ld_end'][1]))
+    if tri_max_do <= max(move_info['ld_start'][1], move_info['ld_end'][1]):
+        diff = max(move_info['ld_start'][1], move_info['ld_end'][1]) - tri_max_do
+        mask_do = int(tri_max_do + diff)
     else:
-        mask_y = int(tri_max_y)  # no down shifting
+        mask_do = int(tri_max_do)
 
-    return tri_base, tris_s, tri_max_x, tri_max_y, tri_min_x, tri_min_y, mask_x, mask_y
+
+    # if tri_max_y < max(move_info['ld_start'][1], move_info['ld_end'][1]):
+    #     # mask_y = int(tri_max_y + min(move_info['ld_start'][1], move_info['ld_end'][1]))
+    #     mask_y = int(tri_max_y + min(move_info['ld_start'][1], move_info['ld_end'][1]))
+    # else:
+    #     mask_y = int(tri_max_y)  # no down shifting
+
+    tris = tris_s  # undebug
+    return tri_base, tris, tri_max_le, tri_max_ri, tri_max_do, tri_min_le, tri_min_do, mask_ri, mask_do
 
 

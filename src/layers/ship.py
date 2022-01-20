@@ -1,7 +1,7 @@
 
 from src.gen_extent_triangles import *
 from src.layers.abstract import AbstractLayer
-from src import PARAMS as P
+import P as P
 from src.gen_colors import gen_colors
 # import copy
 import numpy as np
@@ -11,31 +11,40 @@ import random
 
 class Ship(AbstractLayer):
 
-    def __init__(s, ship_info, pic):
+    def __init__(_s, ship_info, pic):
         super().__init__()
-        s.ship_info = ship_info
-        s.pic = pic
-        s.frame_ss = ship_info['move']['frame_ss']
-        s.frames_tot = s.ship_info['move']['frame_ss'][1] - s.ship_info['move']['frame_ss'][0]
-        s.extent, s.extent_t, lds_log, s.scale_vector = gen_extent(ship_info['move'], pic, padded=False)  # left_down_log
-        s.tri_base, s.tris, s.tri_max_x, s.tri_max_y, s.tri_min_x, s.tri_min_y, s.mask_x, s.mask_y = \
-            gen_triangles(s.extent_t, s.extent, ship_info['move'], pic)
-        assert(len(s.extent) == len(s.tris))
-        if ship_info['id'] == '7':
-            s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
-            s.z_shear = s.gen_col_transforms()
-        # s.mov_black()
+        _s.ship_info = ship_info
+        _s.fill_info()
+        _s.pic = pic
+        _s.frame_ss = ship_info['move']['frame_ss']
+        _s.frames_tot = _s.ship_info['move']['frame_ss'][1] - _s.ship_info['move']['frame_ss'][0]
+        _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, padded=False)  # left_down_log
+        _s.tri_base, _s.tris, _s.tri_max_le, _s.tri_max_ri, _s.tri_max_do, _s.tri_min_x, _s.tri_min_y, \
+            _s.mask_ri, _s.mask_do = gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
+        assert(len(_s.extent) == len(_s.tris))
+        # if ship_info['id'] == '7':
+        #     _s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
+        #     _s.z_shear = _s.gen_col_transforms()
+        # _s.mov_black()
 
-        s.sails = {}
+        _s.sails = {}
 
-    def mov_black(s):
+    def fill_info(_s):
+        """Some values in ship_info are not gonna be there,
+        e.g. sail scale_vectors
+        """
+        for xtra_id, xtra in _s.ship_info['xtras'].items():
+            xtra['scale_ss'] = _s.ship_info['move']['scale_ss']
+        ddd = 6
+
+    def mov_black(_s):
         """
         Extra roll movement. Unique to ship
         """
         
-        mov_black = np.zeros(shape=(s.frames_tot, 2))
+        mov_black = np.zeros(shape=(_s.frames_tot, 2))
 
-        CYCLES = s.ship_info['move']['roll_cycles']
+        CYCLES = _s.ship_info['move']['roll_cycles']
         F_x = 5.6
         F_y = 0.24
 
@@ -43,20 +52,20 @@ class Ship(AbstractLayer):
             F_x = 10.3  # vid25: 2.0
             F_y = 0.1
 
-        cycles_currently = s.frames_tot / (2 * np.pi)
+        cycles_currently = _s.frames_tot / (2 * np.pi)
         d = cycles_currently / CYCLES
-        frames_p_cycle = s.frames_tot // CYCLES
+        frames_p_cycle = _s.frames_tot // CYCLES
         random_shift = random.uniform(-2.0, 2.0) * frames_p_cycle  # probably in radians
-        for i in range(s.frames_tot):
+        for i in range(_s.frames_tot):
             mov_black[i, 0] = F_x * np.sin(i / d + random_shift)
             mov_black[i, 1] = F_y * np.sin(i / d + random_shift)
 
-            s.tris[i][1, 0] += mov_black[i, 0]
+            _s.tris[i][1, 0] += mov_black[i, 0]
 
-    def add_sail(s, sail):
-        s.sails[sail.id] = sail
+    def add_sail(_s, sail):
+        _s.sails[sail.id] = sail
         
-    def gen_col_transforms(s):
+    def gen_col_transforms(_s):
         """
         WILL BE MOVED Only gonna be for sail (but easier to work with base layer; sail is anchored)
         Think about whether this can be generalized
@@ -70,14 +79,14 @@ class Ship(AbstractLayer):
         shear_distribution = [0.99, 0.01]  # shifting and cycling
 
         # SHIFTING
-        z_shear_shifting = np.linspace(shear_min, shear_max, s.frames_tot)
+        z_shear_shifting = np.linspace(shear_min, shear_max, _s.frames_tot)
 
         # CYCLING
-        z_shear_cycling_x = np.linspace(0, shear_cycles*2*np.pi, s.frames_tot)
-        z_shear_cycling_rand_x = np.zeros((s.frames_tot))
+        z_shear_cycling_x = np.linspace(0, shear_cycles*2*np.pi, _s.frames_tot)
+        z_shear_cycling_rand_x = np.zeros((_s.frames_tot))
 
         cur_pos = z_shear_cycling_x[0]
-        for i in range(s.frames_tot):  # OBS range of values odn\t matter here since sin will be taken
+        for i in range(_s.frames_tot):  # OBS range of values odn\t matter here since sin will be taken
             z_shear_cycling_rand_x[i] = cur_pos
 
             # Linear component and random component (otherwise the random component blows up)
@@ -95,40 +104,59 @@ class Ship(AbstractLayer):
 
         return z_shear
 
-    def apply_col_transform(s, expl_coords):
+    def apply_col_transform(_s, firing_frames, iii):
         """
         This is run on the readonly pic of ship at the internal clock
-        col_diff: 0-1 Heights and troughs in the pic
+        col_diff: 0-0.5  Heights and troughs in the pic. Can't be more than 0.5 since  0.5 neg + 0.5 pos = 1.0 i.e. max
         """
 
-        col_diff = 0.05  # 0.1
+        col_diff = 0.1  # 0.1
 
         # THIS SHOULD BE PRECOMPUTED!!!
         num_cycles_x = 5
         num_cycles_y = 1
-        x_ver = np.zeros((s.pic.shape[0], s.pic.shape[1]))
-        x_hor = np.zeros((s.pic.shape[0], s.pic.shape[1]))
-        for i in range(s.pic.shape[0]):
-            x_ver[i, :] = np.linspace(0, int(num_cycles_x * (2 * np.pi)), num=s.pic.shape[1])
-            x_hor[i, :] = np.linspace(0, int(num_cycles_y * (2 * np.pi)), num=s.pic.shape[1])
+        x_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+        x_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+        for i in range(_s.pic.shape[0]):
+            x_ver[i, :] = np.linspace(0, int(num_cycles_x * (2 * np.pi)), num=_s.pic.shape[1])
+            x_hor[i, :] = np.linspace(0, int(num_cycles_y * (2 * np.pi)), num=_s.pic.shape[1])
             num_cycles_x += 0.01  # too much=slows down movement
             num_cycles_y += 0.1
 
         # THIS SHOULD NOT BE PRECOMPUTED (CAN'T BECAUSE CLOCK NEEDED HERE)
-        y_ver = np.zeros((s.pic.shape[0], s.pic.shape[1]))
-        y_hor = np.zeros((s.pic.shape[0], s.pic.shape[1]))
-        for i in range(s.pic.shape[0]):
+        y_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+        y_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+        for i in range(_s.pic.shape[0]):
             # col diff first squeezes the curve down to desired range, then shifts it up to positive
-            y_ver[i, :] = (np.sin(x_ver[i, :] + i * s.z_shear[s.clock])) * col_diff + (1 - col_diff)  # / 4 means y range is -.25 to .25
-            y_hor[i, :] = (np.sin(x_hor[i, :] + i * s.z_shear[s.clock])) * col_diff + (1 - col_diff)
+            y_ver[i, :] = (np.sin(x_ver[i, :] + i * _s.z_shear[_s.clock])) * col_diff + (1 - col_diff)  # / 4 means y range is -.25 to .25
+            y_hor[i, :] = (np.sin(x_hor[i, :] + i * _s.z_shear[_s.clock])) * col_diff + (1 - col_diff)
 
         y = y_ver * y_hor
-        pic = s.pic.copy()  # REQUIRED
+        ex = 1
+        if iii in firing_frames:
+            ex = 0.8
+        pic = _s.pic.copy()  # REQUIRED
         pic[:, :, 0] = pic[:, :, 0] * y  # more y=more red, less=more green
-        pic[:, :, 1] = pic[:, :, 1] * y  # more y=more green, less=more red
-        pic[:, :, 2] = pic[:, :, 2] * y  # DOESN'T DO ANYTHING???
-        pic[:, :, 3] = pic[:, :, 3] * y  # will prob not be y
+        pic[:, :, 1] = pic[:, :, 1] * ex * y  # more y=more green, less=more red
+        pic[:, :, 2] = pic[:, :, 2] * ex * y  # Needed to complement red and green
+        # pic[:, :, 3] = pic[:, :, 3] * y  # will prob not be y
 
         return pic
+
+    def ani_update_step(_s, ax, im_ax):
+
+        if _s.drawn == 0:  # not drawn,
+            return False
+        elif _s.drawn == 1: # start and continue
+            _s.index_im_ax = len(im_ax)
+            # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
+            im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
+            return True
+        elif _s.drawn == 2:  # continue drawing
+            return True
+        elif _s.drawn == 3:  # end drawing
+            im_ax[_s.ship_info['id']].remove()  # might save CPU-time
+            im_ax.pop(_s.index_im_ax)
+            return False
 
 

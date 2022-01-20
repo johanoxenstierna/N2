@@ -8,14 +8,23 @@ class Sail(AbstractLayer):
 
 	def __init__(_s, id, pic, ship):
 		super().__init__()
+		_s.pic = pic
 		_s.id = id
+		_s.ship = ship
 		_s.sail_info = ship.ship_info['xtras'][id]
+
 		_s.frame_ss = [ship.frame_ss[0] + _s.sail_info['frame_ss'][0], ship.frame_ss[0] + _s.sail_info['frame_ss'][1]]
 		tl = _s.gen_tl(ship)
-		_s.extent = _s.gen_extent_black(pic, ship, tl)
-		_s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.padding_x, _s.padding_y = \
-			gen_triangles(_s.extent, pic)
+		_s.finish_sail_info(tl)
+		_s.extent_t, _s.extent, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
+		_s.tri_base, _s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.mask_x, _s.mask_y = \
+			gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
 		_s.alpha_array = _s.gen_alpha()
+
+	def finish_sail_info(_s, tl):
+		_s.sail_info['ld_start'] = tl[0] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
+		_s.sail_info['ld_end'] = tl[-1] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
+
 
 	def gen_tl(_s, ship):
 		"""
@@ -41,19 +50,47 @@ class Sail(AbstractLayer):
 	def gen_extent_black(_s, pic, ship, tl):
 		"""
 		This function is unique to sails i.e. kept inside this class since they must follow the roll movement.
+		TODO
 		"""
 
 		width = pic.shape[1]
 		height = pic.shape[0]
 
+		scale_vector = np.linspace(_s.sail_info['scale_ss'][0], _s.sail_info['scale_ss'][1], len(tl))
+
 		extent = np.zeros((len(tl), 4))
+		extent_t = np.zeros((len(tl), 4))
 
 		for i in range(len(tl)):
+
+			width_m = width * scale_vector[i]
+			height_m = height * scale_vector[i]
+
 			extent[i, 0] = tl[i, 0]
 			extent[i, 1] = tl[i, 0] + width
 			extent[i, 2] = tl[i, 1] + height
 			extent[i, 3] = tl[i, 1]
-		return extent
+
+			extent_t[i] = [extent[i, 0] - extent[0, 0],  # left
+			               extent[i, 1] - extent[0, 0],  # right
+			               extent[i, 2] - extent[0, 3],  # down
+			               extent[i, 3] - extent[0, 3]]  # up
+
+		return extent, extent_t, scale_vector
+
+	def ani_update_step(_s, ax, im_ax):
+
+		if _s.drawn == 0:  # not drawn,
+			return False
+		elif _s.drawn == 1:  # start and continue
+			_s.index_im_ax = len(im_ax)
+			im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
+			return True
+		elif _s.drawn == 2:  # continue drawing
+			return True
+		elif _s.drawn == 3:  # end drawing
+			# im_ax[ship_id].remove()  # might save CPU-time
+			return False
 
 	def DEPRgen_triangles(_s, pic, ship):
 		"""
