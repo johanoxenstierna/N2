@@ -176,8 +176,8 @@ def shift_triangles(tris, mi, extent_t, tri_ext):
             tri[1, 1] += shift_do
             tri[2, 1] += shift_do
 
-        tri_min_do = np.min([tri[1][1] for tri in tris])
-        tri_max_do = np.max([tri[0][1] for tri in tris])
+        tri_ext['min_do'] = np.min([tri[1][1] for tri in tris])
+        tri_ext['max_do'] = np.max([tri[0][1] for tri in tris])
 
     # SHIFT TRIS HORIZONTAL
 
@@ -191,6 +191,11 @@ def shift_triangles(tris, mi, extent_t, tri_ext):
             tri[0, 0] += shift_hor
             tri[1, 0] += shift_hor
             tri[2, 0] += shift_hor
+        tri_ext['min_le'] += shift_hor
+        tri_ext['max_le'] += shift_hor
+        tri_ext['max_ri'] += shift_hor
+
+
 
 
 

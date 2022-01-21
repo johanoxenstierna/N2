@@ -72,14 +72,15 @@ def animate(i):
             # image = ship.pic * ship.scale_vector[ship.clock]
 
             M = cv2.getAffineTransform(t0, t1)
+            # dst = cv2.warpAffine(image, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
             dst = cv2.warpAffine(image, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
-            # image = np.zeros((ship.mask_do, ship.mask_ri, 4))
-            image = np.zeros((ship.mask_do, ship.mask_ri, 4))
-            image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
+            img = np.zeros((ship.mask_do, ship.mask_ri, 4))
+            # img = np.zeros((300, ship.mask_ri, 4))
+            img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
 
             # im_ax[ship_id] = ax.imshow(image, zorder=5, alpha=1)
             ship.index_im_ax = len(im_ax)
-            im_ax.append(ax.imshow(image, zorder=5, alpha=1))
+            im_ax.append(ax.imshow(img, zorder=5, alpha=1))
 
         if P.A_SAILS:  # NOT CONVERTED TO LIST YET
             for sail_id, sail in ships[ship_id].sails.items():
