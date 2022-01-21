@@ -17,8 +17,12 @@ class Sail(AbstractLayer):
 		tl = _s.gen_tl(ship)
 		_s.finish_sail_info(tl)
 		_s.extent_t, _s.extent, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
-		_s.tri_base, _s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.mask_x, _s.mask_y = \
-			gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
+		# _s.tri_base, _s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.mask_x, _s.mask_y = \
+		# 	gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
+
+		_s.tri_base, _s.tris, _s.tri_max_le, _s.tri_max_ri, _s.tri_max_do, _s.tri_min_x, _s.tri_min_y, \
+			_s.mask_ri, _s.mask_do = gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
+
 		_s.alpha_array = _s.gen_alpha()
 
 	def finish_sail_info(_s, tl):

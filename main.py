@@ -37,7 +37,8 @@ im_ax = []
 g = gen_layers.GenLayers(ch)
 g.gen_backgr(ax, im_ax)  # ax is the canvas, im_ax contains pointers to what is plotted on canvas
 ships = g.gen_ships(ax, im_ax)  # ships is dict of pointers to all info about ship (except in im_ax)
-# ships = g.gen_sails(ax, im_ax, ships)
+if P.A_SAILS:
+    ships = g.gen_sails(ax, im_ax, ships)
 
 aa = 5
 
@@ -71,7 +72,8 @@ def animate(i):
             # image = ship.pic * ship.scale_vector[ship.clock]
 
             M = cv2.getAffineTransform(t0, t1)
-            dst = cv2.warpAffine(image, M, (int(ship.tri_max_ri), int(ship.tri_max_do)))
+            dst = cv2.warpAffine(image, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
+            # image = np.zeros((ship.mask_do, ship.mask_ri, 4))
             image = np.zeros((ship.mask_do, ship.mask_ri, 4))
             image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
 
@@ -90,8 +92,8 @@ def animate(i):
                 t1 = sail.tris[sail.clock]
                 image = sail.pic
                 M = cv2.getAffineTransform(t0, t1)
-                dst = cv2.warpAffine(image, M, (int(sail.tri_max_x), int(sail.tri_max_y)))
-                image = np.zeros((sail.mask_y, sail.mask_x, 4))
+                dst = cv2.warpAffine(image, M, (int(sail.tri_max_ri), int(sail.tri_max_do)))
+                image = np.zeros((sail.mask_do, sail.mask_ri, 4))
                 image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
                 # im_ax[sail_id] = ax.imshow(pad, zorder=6, alpha=1)
                 ship.index_im_ax = len(im_ax)

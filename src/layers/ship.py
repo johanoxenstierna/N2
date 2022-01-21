@@ -14,13 +14,13 @@ class Ship(AbstractLayer):
     def __init__(_s, ship_info, pic):
         super().__init__()
         _s.ship_info = ship_info
+        _s.pic = pic  # NOT SCALED
         _s.fill_info()
-        _s.pic = pic
         _s.frame_ss = ship_info['move']['frame_ss']
         _s.frames_tot = _s.ship_info['move']['frame_ss'][1] - _s.ship_info['move']['frame_ss'][0]
         _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, padded=False)  # left_down_log
-        _s.tri_base, _s.tris, _s.tri_max_le, _s.tri_max_ri, _s.tri_max_do, _s.tri_min_x, _s.tri_min_y, \
-            _s.mask_ri, _s.mask_do = gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
+        _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
+            gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
         assert(len(_s.extent) == len(_s.tris))
         # if ship_info['id'] == '7':
         #     _s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
@@ -30,12 +30,22 @@ class Ship(AbstractLayer):
         _s.sails = {}
 
     def fill_info(_s):
-        """Some values in ship_info are not gonna be there,
-        e.g. sail scale_vectors
+        """
+        Some values in ship_info are not gonna be there,
+        e.g. sail scale_vectors.
+        Have to be computed
         """
         for xtra_id, xtra in _s.ship_info['xtras'].items():
             xtra['scale_ss'] = _s.ship_info['move']['scale_ss']
-        ddd = 6
+
+        # Compute the maximum extent right of move_info (needed to get transforms right)
+        # a = _s.ship_info['move']['ld_ss'][0][0]
+        # b = _s.ship_info['move']['ld_ss'][1][0]
+        index_with_most_ld_x = np.argmax([_s.ship_info['move']['ld_ss'][0][0], _s.ship_info['move']['ld_ss'][1][0]])
+        _s.ship_info['move']['max_ri'] = _s.ship_info['move']['ld_ss'][index_with_most_ld_x][0] + _s.pic.shape[1] * _s.ship_info['move']['scale_ss'][index_with_most_ld_x]
+        # _s.tc[str(i)]['ld_ss'][index_with_most_ld_x][0] + pic.shape[1] * _s.tc[str(i)]['scale_ss'][index_with_most_ld_x]
+
+        gg=5
 
     def mov_black(_s):
         """

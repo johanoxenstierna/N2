@@ -28,10 +28,14 @@ class Test:
 				i = test_case_num
 				_s.i_data = test_case_num
 
+			index_with_most_ld_x = np.argmax([_s.tc[str(i)]['ld_ss'][0][0], _s.tc[str(i)]['ld_ss'][1][0]])
+			_s.tc[str(i)]['max_ri'] = _s.tc[str(i)]['ld_ss'][index_with_most_ld_x][0] + \
+			                          pic.shape[1] * _s.tc[str(i)]['scale_ss'][index_with_most_ld_x]
+
 			_s.extent, _s.extent_t, _s.lds_log, _s.scale_vector = gen_extent(_s.tc[str(i)], pic,
 			                                                                 padded=False)  # left_down_log
-			_s.tri_base, _s.tris, _s.tri_max_le, _s.tri_max_ri, _s.tri_max_do, _s.tri_min_le, _s.tri_min_do, \
-				_s.mask_ri, _s.mask_do = gen_triangles(_s.extent_t, _s.extent, _s.tc[str(i)], pic)
+			_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
+				gen_triangles(_s.extent_t, _s.extent, _s.tc[str(i)], pic)
 
 			_s.test_fours()
 			_s.test_tris()
