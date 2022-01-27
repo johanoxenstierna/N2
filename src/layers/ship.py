@@ -22,9 +22,9 @@ class Ship(AbstractLayer):
         _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
             gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
         assert(len(_s.extent) == len(_s.tris))
-        # if ship_info['id'] == '7':
-        #     _s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
-        #     _s.z_shear = _s.gen_col_transforms()
+        if ship_info['id'] == '7':
+            _s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
+            _s.z_shear = _s.gen_col_transforms()
         # _s.mov_black()
 
         _s.sails = {}
@@ -41,7 +41,11 @@ class Ship(AbstractLayer):
         # Compute the maximum extent right of move_info (needed to get transforms right)
         # a = _s.ship_info['move']['ld_ss'][0][0]
         # b = _s.ship_info['move']['ld_ss'][1][0]
+        # aa = _s.ship_info['move']['ld_ss']
+
+        # EITHER FIRST OR LAST INDEX WILL CONTAIN MAX_X (ld_ss starts with ss, then ld)
         index_with_most_ld_x = np.argmax([_s.ship_info['move']['ld_ss'][0][0], _s.ship_info['move']['ld_ss'][1][0]])
+
         _s.ship_info['move']['max_ri'] = _s.ship_info['move']['ld_ss'][index_with_most_ld_x][0] + _s.pic.shape[1] * _s.ship_info['move']['scale_ss'][index_with_most_ld_x]
         # _s.tc[str(i)]['ld_ss'][index_with_most_ld_x][0] + pic.shape[1] * _s.tc[str(i)]['scale_ss'][index_with_most_ld_x]
 
@@ -153,20 +157,20 @@ class Ship(AbstractLayer):
 
         return pic
 
-    def ani_update_step(_s, ax, im_ax):
-
-        if _s.drawn == 0:  # not drawn,
-            return False
-        elif _s.drawn == 1: # start and continue
-            _s.index_im_ax = len(im_ax)
-            # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
-            im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
-            return True
-        elif _s.drawn == 2:  # continue drawing
-            return True
-        elif _s.drawn == 3:  # end drawing
-            im_ax[_s.ship_info['id']].remove()  # might save CPU-time
-            im_ax.pop(_s.index_im_ax)
-            return False
+    # def ani_update_step(_s, ax, im_ax):
+    #
+    #     if _s.drawn == 0:  # not drawn,
+    #         return False
+    #     elif _s.drawn == 1: # start and continue
+    #         _s.index_im_ax = len(im_ax)
+    #         # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
+    #         im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
+    #         return True
+    #     elif _s.drawn == 2:  # continue drawing
+    #         return True
+    #     elif _s.drawn == 3:  # end drawing
+    #         im_ax[_s.index_im_ax].remove()  # might save CPU-time
+    #         im_ax.pop(_s.index_im_ax)
+    #         return False
 
 

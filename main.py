@@ -1,6 +1,7 @@
 """
 warpAffine current solution: The extent of the warp is always by the maximum triangle value.
 WARP AFFINE DOES NOT WORK WITH NEGATIVE VALUES!!!! CANNOT WARP TO NEGATIVE VALUE (PIC WILL JUST DISSAPEAR)
+im_ax li: 2.9  35 min/vid
 """
 
 # geometric image transformations.
@@ -49,7 +50,7 @@ def init():
 def animate(i):
 
     if i % 10 == 0:
-        print(i)
+        print("i: " + str(i), "  len_im_ax: " + str(len(im_ax)))
 
     for ship_id, ship in ships.items():
 
@@ -64,42 +65,39 @@ def animate(i):
         if P.A_AFFINE_TRANSFORM == 0:
             im_ax[ship_id].set_extent(ship.extent[ship.clock])
         else:
-            # im_ax[ship_id].remove()
-            im_ax.pop(ship.index_im_ax)
+            im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
+            im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
             t0 = ship.tri_base
             t1 = ship.tris[ship.clock]
-            image = g.pics['ships']['7']['ship']
-            # image = ship.pic * ship.scale_vector[ship.clock]
+            # img = g.pics['ships']['7']['ship']
+            img = ship.pic  # pic with base scale always used.
+            if P.A_COLORS:
+                img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
 
             M = cv2.getAffineTransform(t0, t1)
-            # dst = cv2.warpAffine(image, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
-            dst = cv2.warpAffine(image, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
+            dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
             img = np.zeros((ship.mask_do, ship.mask_ri, 4))
-            # img = np.zeros((300, ship.mask_ri, 4))
             img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-
-            # im_ax[ship_id] = ax.imshow(image, zorder=5, alpha=1)
-            ship.index_im_ax = len(im_ax)
-            im_ax.append(ax.imshow(img, zorder=5, alpha=1))
+            im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=5, alpha=1))
 
         if P.A_SAILS:  # NOT CONVERTED TO LIST YET
             for sail_id, sail in ships[ship_id].sails.items():
+                if i == 20:
+                    gg = 6
                 sail.set_clock(i)
                 drawBool = sail.ani_update_step(ax, im_ax)
                 if drawBool == False:
                     continue
-
+                im_ax[sail.index_im_ax].remove()
+                im_ax.pop(sail.index_im_ax)
                 t0 = sail.tris[0]
                 t1 = sail.tris[sail.clock]
-                image = sail.pic
+                img = sail.pic
                 M = cv2.getAffineTransform(t0, t1)
-                dst = cv2.warpAffine(image, M, (int(sail.tri_max_ri), int(sail.tri_max_do)))
-                image = np.zeros((sail.mask_do, sail.mask_ri, 4))
-                image[image.shape[0] - dst.shape[0]:, image.shape[1] - dst.shape[1]:, :] = dst
-                # im_ax[sail_id] = ax.imshow(pad, zorder=6, alpha=1)
-                ship.index_im_ax = len(im_ax)
-                im_ax.append(ax.imshow(image, zorder=6, alpha=1))
-
+                dst = cv2.warpAffine(img, M, (int(sail.tri_ext['max_ri']), int(sail.tri_ext['max_do'])))
+                img = np.zeros((sail.mask_do, sail.mask_ri, 4))
+                img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
+                im_ax.insert(sail.index_im_ax, ax.imshow(img, zorder=6, alpha=1))
 
     return im_ax
 

@@ -33,8 +33,11 @@ def gen_extent(mi, pic, padded=False):
 
         extent[i] = [lds_log[i, 0],  # left
                      lds_log[i, 0] + width_m,  # right
-                     lds_log[i, 1] + (1 - y_mid) * height_m,  # down
-                     lds_log[i, 1] - y_mid * height_m]  # up
+                     # lds_log[i, 1] + (1 - y_mid) * height_m,  # down
+                     lds_log[i, 1] + 0,  # down
+                     # lds_log[i, 1] - y_mid * height_m  # up
+                     lds_log[i, 1] - height_m  # up
+                     ]
 
         extent_t[i] = [extent[i, 0] - extent[0, 0],  # left
                        extent[i, 1] - extent[0, 0],  # right
@@ -48,20 +51,21 @@ def gen_extent(mi, pic, padded=False):
 
     # WHEN y_mid IS LESS THAN 1.0, THE WHOLE THING NEEDS TO BE SHIFTED
 
+    # DEPR because only tris shifted.
     # # UNSHIFT WHEN EXTENT FRAME IS LARGER THAN WHAT IS PERMITTED BY LDS_LOG
-    diff_do = extent[0, 2] - lds_log[0, 1]  # if the first tri wants to go further down than what lds_log permits
-    if diff_do > 0:  # This means y_mid is less than 1
-        extent[:, 2] -= diff_do
-        extent[:, 3] -= diff_do
-        extent_t[:, 2] -= diff_do
-        extent_t[:, 3] -= diff_do
-
-    diff_le = extent[0, 0] - lds_log[0, 0]  # if the first tri wants to go further down than what lds_log permits
-    if diff_le > 0:  # This means y_mid is less than 1
-        extent[:, 2] -= diff_le
-        extent[:, 3] -= diff_le
-        extent_t[:, 2] -= diff_le
-        extent_t[:, 3] -= diff_le
+    # diff_do = extent[0, 2] - lds_log[0, 1]  # if the first tri wants to go further down than what lds_log permits
+    # if diff_do > 0:  # This means y_mid is less than 1
+    #     # extent[:, 2] -= diff_do
+    #     # extent[:, 3] -= diff_do
+    #     extent_t[:, 2] -= diff_do
+    #     extent_t[:, 3] -= diff_do
+    #
+    # diff_le = extent[0, 0] - lds_log[0, 0]  # if the first tri wants to go further  than what lds_log permits
+    # if diff_le > 0:  # This means y_mid is less than 1
+    #     # extent[:, 2] -= diff_le
+    #     # extent[:, 3] -= diff_le
+    #     extent_t[:, 2] -= diff_le
+    #     extent_t[:, 3] -= diff_le
 
     return extent, extent_t, lds_log, scale_vector
 
@@ -134,7 +138,7 @@ def gen_triangles(extent_t, extent, mi, pic):
     tris_s = shift_triangles(deepcopy(tris), mi, extent_t, tri_ext)
 
     ## 3. BUILD MASK SHAPE: If ===================================
-    if tri_ext['max_le'] <= max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):
+    if tri_ext['max_le'] <= max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):  # ld_ss is a bit weird (first start/stop, then ld)
         diff = max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]) - tri_ext['max_le']
         mask_ri = int(tris_s[tri_ext['max_le_i']][2][0] + diff)  # the tri with the max le, then use third point and its x
     else:
@@ -179,23 +183,23 @@ def shift_triangles(tris, mi, extent_t, tri_ext):
         tri_ext['min_do'] = np.min([tri[1][1] for tri in tris])
         tri_ext['max_do'] = np.max([tri[0][1] for tri in tris])
 
-    # SHIFT TRIS HORIZONTAL
-
-
+    # SHIFT TRIS TO LEFT IF MAX TRI RI EXTENT GOES BEYOND ABSOLUTE BORDER
+    shift_hor = 0
     if tri_ext['max_ri'] > mi['max_ri']:  # e.g. case 5: shift left by 100
         shift_hor = mi['max_ri'] - tri_ext['max_ri']
-        # if tri_ext['max_ri'] > mi['max_ri']:  # THIS MEANS TRIS HAVE TO BE SHIFTED LEFT BY THE DIFF
-        # shift_hor = mi['max_ri'] - tri_ext['max_ri']
-        for i in range(0, len(tris)):
-            tri = tris[i]
-            tri[0, 0] += shift_hor
-            tri[1, 0] += shift_hor
-            tri[2, 0] += shift_hor
-        tri_ext['min_le'] += shift_hor
-        tri_ext['max_le'] += shift_hor
-        tri_ext['max_ri'] += shift_hor
 
+    # SHIFT TRIS TO RIGHT IF MIN_LE IS NEGATIVE (I.E. INVISIBLE) WHILE MI LE IS ALWAYS POSITIVE (ALWAYS VISIBLE)
+    elif tri_ext['min_le'] < 0 and min(mi['ld_ss'][0][0], mi['ld_ss'][0][1]) > 0:
+        shift_hor = abs(tri_ext['min_le'])  # just to make them positive
 
+    for i in range(0, len(tris)):
+        tri = tris[i]
+        tri[0, 0] += shift_hor
+        tri[1, 0] += shift_hor
+        tri[2, 0] += shift_hor
+    tri_ext['min_le'] += shift_hor
+    tri_ext['max_le'] += shift_hor
+    tri_ext['max_ri'] += shift_hor
 
 
 

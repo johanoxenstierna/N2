@@ -16,19 +16,31 @@ class Sail(AbstractLayer):
 		_s.frame_ss = [ship.frame_ss[0] + _s.sail_info['frame_ss'][0], ship.frame_ss[0] + _s.sail_info['frame_ss'][1]]
 		tl = _s.gen_tl(ship)
 		_s.finish_sail_info(tl)
-		_s.extent_t, _s.extent, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
+		_s.extent, _s.extent_t, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
 		# _s.tri_base, _s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.mask_x, _s.mask_y = \
 		# 	gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
 
-		_s.tri_base, _s.tris, _s.tri_max_le, _s.tri_max_ri, _s.tri_max_do, _s.tri_min_x, _s.tri_min_y, \
-			_s.mask_ri, _s.mask_do = gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
+		_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
+			gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
 
-		_s.alpha_array = _s.gen_alpha()
+		# _s.alpha_array = _s.gen_alpha()
+		sfg = 6
 
 	def finish_sail_info(_s, tl):
-		_s.sail_info['ld_start'] = tl[0] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
-		_s.sail_info['ld_end'] = tl[-1] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
 
+		# Convert from tl
+		ld_start = [tl[0][0], int(tl[0][1] + _s.pic.shape[0] * _s.ship.scale_vector[0])]  # left start stop
+		ld_stop = [tl[-1][0], int(tl[-1][1] + _s.pic.shape[0] * _s.ship.scale_vector[-1])]
+
+		_s.sail_info['ld_ss'] = [ld_start, ld_stop]
+
+		# _s.sail_info['ld_start'] = tl[0] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
+		# _s.sail_info['ld_end'] = tl[-1] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
+		index_with_most_ld_x = np.argmax([_s.sail_info['ld_ss'][0][0], _s.sail_info['ld_ss'][1][0]])
+		_s.sail_info['max_ri'] = _s.sail_info['ld_ss'][index_with_most_ld_x][0] + _s.pic.shape[1] * \
+		                                 _s.sail_info['scale_ss'][index_with_most_ld_x]
+
+		adf = 5
 
 	def gen_tl(_s, ship):
 		"""
@@ -71,8 +83,8 @@ class Sail(AbstractLayer):
 			height_m = height * scale_vector[i]
 
 			extent[i, 0] = tl[i, 0]
-			extent[i, 1] = tl[i, 0] + width
-			extent[i, 2] = tl[i, 1] + height
+			extent[i, 1] = tl[i, 0] + width_m
+			extent[i, 2] = tl[i, 1] + height_m
 			extent[i, 3] = tl[i, 1]
 
 			extent_t[i] = [extent[i, 0] - extent[0, 0],  # left
@@ -82,19 +94,21 @@ class Sail(AbstractLayer):
 
 		return extent, extent_t, scale_vector
 
-	def ani_update_step(_s, ax, im_ax):
-
-		if _s.drawn == 0:  # not drawn,
-			return False
-		elif _s.drawn == 1:  # start and continue
-			_s.index_im_ax = len(im_ax)
-			im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
-			return True
-		elif _s.drawn == 2:  # continue drawing
-			return True
-		elif _s.drawn == 3:  # end drawing
-			# im_ax[ship_id].remove()  # might save CPU-time
-			return False
+	# def ani_update_step(_s, ax, im_ax):
+	#
+	# 	if _s.drawn == 0:  # not drawn,
+	# 		return False
+	# 	elif _s.drawn == 1:  # start and continue
+	# 		_s.index_im_ax = len(im_ax)
+	# 		im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
+	# 		return True
+	# 	elif _s.drawn == 2:  # continue drawing
+	# 		return True
+	# 	elif _s.drawn == 3:  # end drawing
+	# 		im_ax[_s.index_im_ax].remove()  # might save CPU-time
+	# 		im_ax.pop(_s.index_im_ax)
+	#
+	# 		return False
 
 	def DEPRgen_triangles(_s, pic, ship):
 		"""
