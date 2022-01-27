@@ -9,17 +9,27 @@ def gen_extent(mi, pic, padded=False):
     """
 
     frame_num = mi['frame_ss'][1] - mi['frame_ss'][0]
-    y_mid = mi['y_mid']
+    # y_mid = mi['y_mid']
+
+    # LEFT BOTTOM POSITION THROUGH TIME: for now only allowed for growing objects (smokes) ================
+    if mi['y_mid'] < 1.0:  # the object is not scaled completely from bottom up
+        assert(mi['ld_ss'][1][1] == None)
+
+        #How Much Would Height Increase If Y_mid Was 1.0: hmw.  How much actual up: hmau. How much actual down: hmad
+        height_at_beg = mi['scale_ss'][0] * pic.shape[0]
+        height_at_end = mi['scale_ss'][1] * pic.shape[0]
+        hmw = height_at_end - height_at_beg  # ONLY WORKS WITH GROWING SCALE
+        hmau = mi['y_mid'] * hmw
+        hmad = (1 - mi['y_mid']) * hmw
+        down_stop = mi['ld_ss'][0][1] + hmad
+        mi['ld_ss'][1][1] = down_stop
+        lds_log = np.linspace(mi['ld_ss'][0], mi['ld_ss'][1], frame_num)
+        aa = 6
+    else:
+        lds_log = np.linspace(mi['ld_ss'][0], mi['ld_ss'][1], frame_num)  # left downs through time
 
     extent = np.zeros((frame_num, 4))  # left, right, bottom, top borders
     extent_t = np.zeros((frame_num, 4))  # left, right, bottom, top borders
-
-    # LEFT BOTTOM POSITION THROUGH TIME ================
-    # pos_log = np.zeros((frame_num, 2))
-    # if padded == False:
-    lds_log = np.linspace(mi['ld_ss'][0], mi['ld_ss'][1], frame_num)  # left downs through time
-    # else:
-    #     lds_log = np.linspace([0, mi['ld_start'][1]], mi['ld_end'], frame_num)  # left downs through time
 
     # SCALING =============
     scale_vector = np.linspace(mi['scale_ss'][0], mi['scale_ss'][1], frame_num)
@@ -138,9 +148,9 @@ def gen_triangles(extent_t, extent, mi, pic):
     tris_s = shift_triangles(deepcopy(tris), mi, extent_t, tri_ext)
 
     ## 3. BUILD MASK SHAPE: If ===================================
-    if tri_ext['max_le'] <= max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):  # ld_ss is a bit weird (first start/stop, then ld)
+    if tri_ext['max_le'] < max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):  # ld_ss is a bit weird (first start/stop, then ld)
         diff = max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]) - tri_ext['max_le']
-        mask_ri = int(tris_s[tri_ext['max_le_i']][2][0] + diff)  # the tri with the max le, then use third point and its x
+        mask_ri = int(tris_s[tri_ext['max_ri_i']][2][0] + diff)  # the tri with the max le, then use third point and its x
     else:
         mask_ri = int(tri_ext['max_ri'])  # no right shifting
 
@@ -166,6 +176,7 @@ def shift_triangles(tris, mi, extent_t, tri_ext):
     tris are deepcopied
     OBS shift_do only works currently because the scenario where things have to be shifted up, i.e. when things go
     out of bounds down, is not covered.
+    OBS possibly still work to be done here.
     :keywordd
     """
 

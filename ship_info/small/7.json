@@ -7,9 +7,9 @@
   "move_vector": [],
   "move": {"d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
     "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss",
-    "ld_ss": [[100, 300], [50, 300]],
-    "scale_ss": [1.0, 1.0],
-    "y_mid": 1.0,
+    "ld_ss": [[100, 300], [100, null]],
+    "scale_ss": [0.5, 1.0],
+    "y_mid": 0.5,
     "frame_ss": [5, 100],
     "roll_cycles": 5
   },
