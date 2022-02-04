@@ -17,6 +17,7 @@ import matplotlib.animation as animation
 import cv2
 
 from src import gen_layers
+from src.ani_helpers import *
 import P as P
 from src.chronicler import Chronicler
 
@@ -41,7 +42,10 @@ ships = g.gen_ships(ax, im_ax)  # ships is dict of pointers to all info about sh
 if P.A_SAILS:
     ships = g.gen_sails(ax, im_ax, ships)
 
-aa = 5
+if P.A_SMOKAS:
+    ships = g.gen_smokes(ax, im_ax, ships, type='a')
+
+aa = 2
 
 def init():
     return im_ax
@@ -49,8 +53,8 @@ def init():
 
 def animate(i):
 
-    if i % 10 == 0:
-        print("i: " + str(i), "  len_im_ax: " + str(len(im_ax)))
+    # if i % 10 == 0:
+    print("i: " + str(i), "  len_im_ax: " + str(len(im_ax)))
 
     for ship_id, ship in ships.items():
 
@@ -65,20 +69,24 @@ def animate(i):
         if P.A_AFFINE_TRANSFORM == 0:
             im_ax[ship_id].set_extent(ship.extent[ship.clock])
         else:
-            im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
-            im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
-            t0 = ship.tri_base
-            t1 = ship.tris[ship.clock]
-            # img = g.pics['ships']['7']['ship']
-            img = ship.pic  # pic with base scale always used.
-            if P.A_COLORS:
-                img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
 
-            M = cv2.getAffineTransform(t0, t1)
-            dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
-            img = np.zeros((ship.mask_do, ship.mask_ri, 4))
-            img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-            im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=5, alpha=1))
+            warp_affine(i, ax, im_ax, ship, ch)
+
+            # im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
+            # im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
+            #
+            # t0 = ship.tri_base
+            # t1 = ship.tris[ship.clock]
+            # # img = g.pics['ships']['7']['ship']
+            # img = ship.pic  # pic with base scale always used.
+            # # if P.A_COLORS:
+            # #     img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
+            #
+            # M = cv2.getAffineTransform(t0, t1)
+            # dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
+            # img = np.zeros((ship.mask_do, ship.mask_ri, 4))
+            # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
+            # im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=ship.ship_info['zorder'], alpha=1))
 
         if P.A_SAILS:  # NOT CONVERTED TO LIST YET
             for sail_id, sail in ships[ship_id].sails.items():
@@ -88,18 +96,35 @@ def animate(i):
                 drawBool = sail.ani_update_step(ax, im_ax)
                 if drawBool == False:
                     continue
-                im_ax[sail.index_im_ax].remove()
-                im_ax.pop(sail.index_im_ax)
-                t0 = sail.tris[0]
-                t1 = sail.tris[sail.clock]
-                img = sail.pic
-                M = cv2.getAffineTransform(t0, t1)
-                dst = cv2.warpAffine(img, M, (int(sail.tri_ext['max_ri']), int(sail.tri_ext['max_do'])))
-                img = np.zeros((sail.mask_do, sail.mask_ri, 4))
-                img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-                im_ax.insert(sail.index_im_ax, ax.imshow(img, zorder=6, alpha=1))
 
-    return im_ax
+                warp_affine(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
+
+
+                #
+                # im_ax[sail.index_im_ax].remove()
+                # im_ax.pop(sail.index_im_ax)
+                #
+                # t0 = sail.tri_base
+                # t1 = sail.tris[sail.clock]
+                # img = sail.pic  # SHOULD WORK
+                # # img = g.pics['ships']['7']['sails']['7_s_0']
+                # if P.A_COLORS:
+                #     img = sail.apply_transform(ch['ships'][ship_id]['firing_frames'], i)
+                # M = cv2.getAffineTransform(t0, t1)
+                # dst = cv2.warpAffine(img, M, (int(sail.tri_ext['max_ri']), int(sail.tri_ext['max_do'])))
+                # img = np.zeros((sail.mask_do, sail.mask_ri, 4))
+                # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
+                # im_ax.insert(sail.index_im_ax, ax.imshow(img, zorder=sail.gi['zorder'], alpha=0.7))
+
+    # INFO IS FOUND IN SHIPS, BUT IM_AX IS STORED SEPARATELY (BECAUSE SHIPS CAN GO AWAY WHILE SMOKE PERSISTS)
+    if P.A_SMOKAS:
+        for ship_id, ship in ships.items():
+            for smoka_id, smoka in ships[ship_id].smokas.items():
+                pass
+        pass
+
+
+    return im_ax  # if run live, it runs until window is closed
 
 
 sec_vid = ((P.FRAMES_STOP - P.FRAMES_START) / FPS)

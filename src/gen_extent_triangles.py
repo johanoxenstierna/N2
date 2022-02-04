@@ -148,7 +148,7 @@ def gen_triangles(extent_t, extent, mi, pic):
     tris_s = shift_triangles(deepcopy(tris), mi, extent_t, tri_ext)
 
     ## 3. BUILD MASK SHAPE: If ===================================
-    if tri_ext['max_le'] < max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):  # ld_ss is a bit weird (first start/stop, then ld)
+    if tri_ext['max_le'] <= max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]):  # ld_ss is a bit weird (first start/stop, then ld)
         diff = max(mi['ld_ss'][0][0], mi['ld_ss'][1][0]) - tri_ext['max_le']
         mask_ri = int(tris_s[tri_ext['max_ri_i']][2][0] + diff)  # the tri with the max le, then use third point and its x
     else:

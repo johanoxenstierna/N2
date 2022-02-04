@@ -1,27 +1,34 @@
 import numpy as np
 from src.layers.abstract import AbstractLayer
 from src.gen_extent_triangles import *
+from src.gen_colors import gen_colors
 import cv2
+import random
+
 
 
 class Sail(AbstractLayer):
+	"""
+	si denotes sail_info
+	"""
 
 	def __init__(_s, id, pic, ship):
 		super().__init__()
 		_s.pic = pic
 		_s.id = id
 		_s.ship = ship
-		_s.sail_info = ship.ship_info['xtras'][id]
+		_s.gi = ship.gi['xtras'][id]
 
-		_s.frame_ss = [ship.frame_ss[0] + _s.sail_info['frame_ss'][0], ship.frame_ss[0] + _s.sail_info['frame_ss'][1]]
+		_s.frame_ss = [ship.frame_ss[0] + _s.gi['frame_ss'][0], ship.frame_ss[0] + _s.gi['frame_ss'][1]]
 		tl = _s.gen_tl(ship)
 		_s.finish_sail_info(tl)
 		_s.extent, _s.extent_t, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
-		# _s.tri_base, _s.tris, _s.tri_max_x, _s.tri_max_y, _s.tri_min_x, _s.tri_min_y, _s.mask_x, _s.mask_y = \
-		# 	gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
-
 		_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
-			gen_triangles(_s.extent_t, _s.extent, _s.sail_info, pic)
+			gen_triangles(_s.extent_t, _s.extent, _s.gi, pic)
+
+		# if ship_info['id'] == '7':
+		# _s.pic = gen_colors(pic)  # WILL BE USED
+		_s.z_shear, _s.t_x_ver, _s.t_x_hor  = _s.gen_col_transforms()
 
 		# _s.alpha_array = _s.gen_alpha()
 		sfg = 6
@@ -32,13 +39,13 @@ class Sail(AbstractLayer):
 		ld_start = [tl[0][0], int(tl[0][1] + _s.pic.shape[0] * _s.ship.scale_vector[0])]  # left start stop
 		ld_stop = [tl[-1][0], int(tl[-1][1] + _s.pic.shape[0] * _s.ship.scale_vector[-1])]
 
-		_s.sail_info['ld_ss'] = [ld_start, ld_stop]
+		_s.gi['ld_ss'] = [ld_start, ld_stop]
 
-		# _s.sail_info['ld_start'] = tl[0] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
-		# _s.sail_info['ld_end'] = tl[-1] + _s.pic.shape[0] * _s.sail_info['scale_ss'][0]
-		index_with_most_ld_x = np.argmax([_s.sail_info['ld_ss'][0][0], _s.sail_info['ld_ss'][1][0]])
-		_s.sail_info['max_ri'] = _s.sail_info['ld_ss'][index_with_most_ld_x][0] + _s.pic.shape[1] * \
-		                                 _s.sail_info['scale_ss'][index_with_most_ld_x]
+		# _s.gi['ld_start'] = tl[0] + _s.pic.shape[0] * _s.gi['scale_ss'][0]
+		# _s.gi['ld_end'] = tl[-1] + _s.pic.shape[0] * _s.gi['scale_ss'][0]
+		index_with_most_ld_x = np.argmax([_s.gi['ld_ss'][0][0], _s.gi['ld_ss'][1][0]])
+		_s.gi['max_ri'] = _s.gi['ld_ss'][index_with_most_ld_x][0] + _s.pic.shape[1] * \
+		                                 _s.gi['scale_ss'][index_with_most_ld_x]
 
 		adf = 5
 
@@ -46,19 +53,29 @@ class Sail(AbstractLayer):
 		"""
 		Since the offset is given for extent, but mov_black is for triangles,
 		a tl is needed in tri space.
-		DONT FORGET SCALE
-		"""
-		assert(len(ship.tris) >= _s.sail_info['frame_ss'][1])
-		tl = np.zeros((_s.sail_info['frame_ss'][1] - _s.sail_info['frame_ss'][0], 2))
+		d_offset: Since mov_black concerns the highest tri point but the sail starts somewhere below, this
+		is manually set to reduce the amount of mov_black for sail.
 
-		offset = [_s.sail_info['offset'][0] * ship.scale_vector[0], _s.sail_info['offset'][1] * ship.scale_vector[1]]
+		tri_ship_mid_base: This is the mid-point (x) from which mov_x is computed. Since the sail starts at some
+		random frame and doesn't know the base point from the ships frame of reference, mid_base is here computed
+		as the mean of all ship tri mid point x coords.
+		"""
+
+		# DECREASE_OFFSET = 0.7  # USED SINCE OFFSET IS FOR TOP TRI POINT (perhaps gona be unique for ship)
+		assert(len(ship.tris) >= _s.gi['frame_ss'][1])
+		tl = np.zeros((_s.gi['frame_ss'][1] - _s.gi['frame_ss'][0], 2))
+
+		offset = [_s.gi['offset'][0] * ship.scale_vector[0], _s.gi['offset'][1] * ship.scale_vector[1]]
 		offset[0] += ship.extent[0, 0]
 		offset[1] += ship.extent[0, 3]
+		tri_ship_mid_x_base = np.mean([x[1][0] for x in ship.tris])
 
 		for i in range(len(tl)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
-			mov_x = ship.tris[_s.sail_info['frame_ss'][0] + i][1, 0] - ship.tris[_s.sail_info['frame_ss'][0]][1, 0]
-			mov_y = ship.tris[_s.sail_info['frame_ss'][0] + i][1, 1] - ship.tris[_s.sail_info['frame_ss'][0]][1, 1]
-			tl[i, 0] = offset[0] + mov_x
+			tri_ship_mid_x_at_frame = ship.tris[_s.gi['frame_ss'][0] + i][1, 0]
+			mov_x = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
+
+			mov_y = ship.tris[_s.gi['frame_ss'][0] + i][1, 1] - ship.tris[_s.gi['frame_ss'][0]][1, 1]
+			tl[i, 0] = offset[0] + mov_x * _s.gi['d_offset']
 			tl[i, 1] = offset[1] + mov_y
 
 		return tl
@@ -72,7 +89,7 @@ class Sail(AbstractLayer):
 		width = pic.shape[1]
 		height = pic.shape[0]
 
-		scale_vector = np.linspace(_s.sail_info['scale_ss'][0], _s.sail_info['scale_ss'][1], len(tl))
+		scale_vector = np.linspace(_s.gi['scale_ss'][0], _s.gi['scale_ss'][1], len(tl))
 
 		extent = np.zeros((len(tl), 4))
 		extent_t = np.zeros((len(tl), 4))
@@ -94,110 +111,13 @@ class Sail(AbstractLayer):
 
 		return extent, extent_t, scale_vector
 
-	# def ani_update_step(_s, ax, im_ax):
-	#
-	# 	if _s.drawn == 0:  # not drawn,
-	# 		return False
-	# 	elif _s.drawn == 1:  # start and continue
-	# 		_s.index_im_ax = len(im_ax)
-	# 		im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
-	# 		return True
-	# 	elif _s.drawn == 2:  # continue drawing
-	# 		return True
-	# 	elif _s.drawn == 3:  # end drawing
-	# 		im_ax[_s.index_im_ax].remove()  # might save CPU-time
-	# 		im_ax.pop(_s.index_im_ax)
-	#
-	# 		return False
-
-	def DEPRgen_triangles(_s, pic, ship):
-		"""
-		DEPR: Just use extent_log
-		Similar to default function but specialized to follow ship movements.
-		ONLY POSITIVE VALUES HERE
-		"""
-
-		width = pic.shape[1]
-		height = pic.shape[0]
-
-		tris = []
-
-		p0 = [0, height]
-		p1 = [0 + (width / 2), 0]
-		p2 = [0 + width, height]
-
-		tris.append(np.float32([p0, p1, p2]))
-		ext_base = np.array([0., width, height, 0])
-		num_iters_temp = 30
-
-		for i in range(1, num_iters_temp):
-
-			# ext = extent_log[i]
-
-			p0 = [0, height]
-			p1 = [0 + (width / 2), 0]
-			p2 = [0 + width, height]
-
-			# mov_x = ext[0] - ext_base[0]
-			#
-			# mov_y = ext[2] - ext_base[2]
-			#
-			# width = ext[1] - ext[0]
-			# height = ext[2] - ext[3]
-			#
-			# if np.min(extent_log) < 0:  # For neg values, larger mask has to be used.
-			# 	p0 = [ext[0], ext[3] + (height)]
-			# 	p1 = [ext[0] + (width / 2), ext[3]]
-			# 	p2 = [ext[0] + (width), ext[3] + (height)]
-			# else:
-			# 	# p0 = [mov_x, mov_y + height]
-			# 	# p1 = [mov_x + (width / 2), mov_y]
-			# 	# p2 = [mov_x + width, mov_y + height]
-			#
-			# 	p0 = [mov_x, mov_y + pic.shape[0]]
-			# 	p1 = [mov_x + (width / 2), mov_y + pic.shape[0] - height]
-			# 	p2 = [mov_x + width, mov_y + pic.shape[0]]
-
-			tri = np.float32([p0, p1, p2])
-			tris.append(tri)
-
-			# # Max's needed to be able to pad. OBS min here means left or up
-			# if p2[0] > tri_max_x:
-			# 	tri_max_x = p2[0]
-			# if p2[1] > tri_max_y:
-			# 	tri_max_y = p2[1]
-			# if p0[0] < tri_min_x:
-			# 	tri_min_x = p0[0]
-			# if p1[1] < tri_min_y:
-			# 	tri_min_y = p1[1]
-
-		# padding_x = int(np.max(extent_log[:, 1]))  # covers whole movement in y
-		# padding_y = int(np.max(extent_log[:, 2]))  # covers whole movement in y
-
-		# if tri_min_y < 0:
-		#     padding_y = int(padding_y - tri_min_y)  # larger pad needed
-		# padding_y = 330
-
-		# TEMPS ==================
-		# HERE
-		tri_max_x = 100  # HERE
-		tri_max_y = 100
-		tri_min_x = 0
-		tri_min_y = 0
-		padding_x = 200
-		padding_y = 200
-
-		return tris, tri_max_x, tri_max_y, tri_min_x, tri_min_y, padding_x, padding_y
-
 	def gen_alpha(_s):
 		return 0
 
 	def change_brightness(value, ship_pic):
 		"""
+		NOt used currently
         OBS if brightness reaches threshold things WILL get messed up, e.g. brightness cannot be restored ok.
-        :param value:
-        :param ship_pic:
-        :return:
         """
 		img = ship_pic
 		hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -218,6 +138,137 @@ class Sail(AbstractLayer):
 			img[row, col, ch] = 1.0
 
 		return img
+
+	def gen_col_transforms(_s):
+		"""
+		WILL BECOME ABSTRACT LAYER (TAKE ARGUMENTS FROM SAIL INFO). JUST CALL IT WHEN BUILDING SAIL, NOT OTHERWISE
+		cycling and shifting shear
+		For cycling noise is required since it's too obvious otherwise
+		ver denotes axis at which the trough/high follows (think shirt)
+
+		PARAMS:
+		sh_cyc: shear_cycles
+		sh_mm: shear min/max
+		sh_dist: shear distribution between shifting and cycling
+		num_cyc_ver: ver here is what looks like horizontal lines (transform for each col)
+		num_cyc_hor: hor here is what looks like vertical lines (transform for each row)
+		sh_ver_incr: increase_in_shear_ver. SEEMS TO AFFECT DIRECTION EVENLY THROUGHOUT ITERS
+		sh_hor_incr
+		"""
+
+		# shear_cycles = 5  # 16 HOW MANY TIMES IT GOES BACK/FORTH
+		# shear_min = 0.2  # 0.1 these guys seem to affect the speed and direction of the shear
+		# shear_max = 0.9  # 0.5
+		shear_range = (_s.gi['sh_mm'][1] - _s.gi['sh_mm'][0]) / 2  # div by 2 since it's applied to both pos and neg numbers
+		# shear_distribution = [0.98, 0.02]  # shifting and cycling
+		#
+		# # THESE DICTATE HOW MANY THROUGHT/TOPS THERE WILL BE
+		# num_cycles_ver = 1.2  # 30  # hor here is what looks like vertical lines
+		# num_cycles_hor = 1.2  # 10
+		# weird_multiplier_ver = 50
+		# weird_multiplier_hor = 5
+		# increase_in_shear_ver = 0.08
+		# increase_in_shear_hor = 0.03
+
+		# SHIFTING
+		z_shear_shifting = np.linspace(_s.gi['sh_mm'][0], _s.gi['sh_mm'][1], _s.ship.frames_tot)
+
+		# CYCLING
+		z_shear_cycling_x = np.linspace(0, _s.gi['sh_cyc'] * 2 * np.pi, _s.ship.frames_tot)
+		z_shear_cycling_rand_x = np.zeros((_s.ship.frames_tot))
+
+		cur_pos = z_shear_cycling_x[0]
+		for i in range(_s.ship.frames_tot):  # OBS range of values odn\t matter here since sin will be taken
+			z_shear_cycling_rand_x[i] = cur_pos
+
+			# Linear component and random component (otherwise the random component blows up)
+			cur_pos = 0.9 * z_shear_cycling_x[i] + 0.1 * (cur_pos + random.random() * random.choice([-1, 1]))
+
+		# aa = np.sin(z_shear_cycling_rand_x * 6)/6
+		z_shear_cycling = (0.9 * np.sin(z_shear_cycling_x) + 0.1 * np.sin(
+			z_shear_cycling_rand_x * 2)) * shear_range + shear_range + _s.gi['sh_mm'][0]
+
+		assert (max(z_shear_shifting) <= _s.gi['sh_mm'][1])
+		assert (min(z_shear_shifting) >= _s.gi['sh_mm'][0])
+		assert (max(z_shear_cycling) <= _s.gi['sh_mm'][1])
+		assert (min(z_shear_cycling) >= _s.gi['sh_mm'][0])
+
+		z_shear = z_shear_shifting * _s.gi['sh_dist'][0] + z_shear_cycling * _s.gi['sh_dist'][1]
+
+		# THESE GIVE HOW MUCH THE SHEAR SHOULD CHANGE THROUGH TIME (CYCLES
+		t_x_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		t_x_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+
+		# VERTICAL SHAPE (TRANS APPLIED TO ROWS)
+		start_val = 0  # THE ONLY THING THAT ARANGE CONTRIBUTES HERE IS REMOVAL OF SQUARY SHAPE IN ANIMATION
+		stop_val = _s.gi['num_cyc_ver']
+		step_size = 1.0001 * _s.gi['num_cyc_ver'] / t_x_ver.shape[1]  # never changes. Mult makes sure it's always fittable within t_x_ver
+		for i in range(_s.pic.shape[0]):
+			# ver_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[1])  # QUALITY LOSS HERE
+			ver_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
+			t_x_ver[i, :len(ver_x_base)] = _s.gi['weird_multiplier_ver'] * (np.sin(ver_x_base) * 0.5 + (1 - 0.5))
+
+			_s.gi['num_cyc_ver'] += _s.gi['sh_ver_incr']  # too much=slows down movement
+			start_val += _s.gi['sh_ver_incr']
+			stop_val += _s.gi['sh_ver_incr'] / 2
+			step_size = step_size + step_size * 0.002
+
+		# HORIZ SHAPE (TRANS APPLIED TO COLS)
+		start_val = 0
+		stop_val = _s.gi['num_cyc_hor']
+		step_size = 1.0001 * _s.gi['num_cyc_hor'] / t_x_hor.shape[0]  # never changes. Mult makes sure it's always fittable within t_x_ver
+		for i in range(_s.pic.shape[1]):
+			# hor_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[0])
+			hor_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
+			t_x_hor[:len(hor_x_base), i] = _s.gi['weird_multiplier_hor'] * np.sin(hor_x_base) * 0.5 + (1 - 0.5)
+			_s.gi['num_cyc_hor'] += _s.gi['sh_hor_incr']  # too much=slows down movement
+			start_val += _s.gi['sh_hor_incr']
+			stop_val += _s.gi['sh_hor_incr'] / 2
+			step_size = step_size + step_size * 0.01
+
+		return z_shear, t_x_ver, t_x_hor
+
+	def apply_transform(_s, firing_frames, iii):
+
+		"""
+		This is run on the readonly pic of ship at the internal clock
+		col_diff: 0-0.5  Heights and troughs in the pic. Can't be more than 0.5 since  0.5 neg + 0.5 pos = 1.0 i.e. max
+		col_diff DOES not have the same range for colors (0.5-1.0) as it does for alpha (0.0 - 1.0). It is
+		therefore NORMALIZED to 0-1 range
+		"""
+
+		# alpha_diff = 0.6
+		
+		# APPLY SIN TO T_X_ MATS[i] AND Z_SHEAR VECTORS (CAN'T BE PRECOMPUTED BECAUSE CLOCK NEEDED HERE)
+		y_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		y_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		for i in range(_s.pic.shape[0]):
+			# col diff first squeezes the curve down to desired range, then shifts it up to positive
+			y_ver[i, :] = (np.sin(_s.t_x_ver[i, :] * _s.z_shear[_s.clock])) * _s.gi['col_diff'] + \
+			              (1 - _s.gi['col_diff'])  # / 4 means y range is -.25 to .25
+
+		for i in range(_s.pic.shape[1]):
+			y_hor[:, i] = (np.sin(_s.t_x_hor[:, i] * _s.z_shear[_s.clock])) * _s.gi['col_diff'] + \
+			              (1 - _s.gi['col_diff'])
+
+		y_col = y_ver * y_hor
+		y_alpha = (y_ver * 0.5 + y_hor * 0.5) / 2
+
+		# NORMALIZATION FOR ALPHA CHANGE
+		mn, mx = np.min(y_alpha), np.max(y_alpha)
+		y_alpha = (((y_alpha - mn) / (mx - mn)) * _s.gi['alpha_diff']) + (1 - _s.gi['alpha_diff'])
+
+		ex = 1.0
+		if iii in firing_frames:
+			ex = 0.99  # decrease in green and blue
+		pic = _s.pic.copy()  # REQUIRED
+		pic[:, :, 0] = pic[:, :, 0] * y_col  # more y=more red, less=more green
+		pic[:, :, 1] = pic[:, :, 1] * ex * y_col  # more y=more green, less=more red
+		pic[:, :, 2] = pic[:, :, 2] * ex * y_col  # Needed to complement red and green
+		alpha_shift = pic[:, :, 3] * y_alpha  # will prob not be y
+		pic[:, :, 3] = alpha_shift
+
+		return pic
 
 
 

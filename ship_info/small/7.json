@@ -7,11 +7,11 @@
   "move_vector": [],
   "move": {"d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
     "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss",
-    "ld_ss": [[100, 300], [100, null]],
-    "scale_ss": [0.5, 1.0],
-    "y_mid": 0.5,
-    "frame_ss": [5, 100],
-    "roll_cycles": 5
+    "ld_ss": [[100, 270], [100, 270]],
+    "scale_ss": [1.0, 1.0],
+    "y_mid": 1,
+    "frame_ss": [1, 100],
+    "roll_cycles": 2
   },
   "splash_zones": [],
   "explosion_offset": [],
@@ -21,9 +21,22 @@
   "brightness_frame_value": [],
   "xtra_init_frames": [],
   "zorder": 5,
+  "d_xtras": "descr for sails found in sail.py gen_col_transforms()",
   "xtras": {
-    "7_s_0": {"offset": [52, 107], "frame_ss": [5, 20], "cycles": 5, "zorder": 6,
-      "d": "offset is from tl to tl, OBS tune it for mov_black. frame_ss here is index in ship.extent"},
-    "ws_0": {"offset": [65, 149]}
+    "7_s_0": {"offset": [55, 107], "frame_ss": [1, 10], "cycles": 5, "zorder": 7, "d_offset": 0.7, "col_diff": 0.1,
+      "sh_cyc": 5, "sh_mm": [0.1, 0.8], "sh_dist": [0.98, 0.02],
+      "num_cyc_ver": 1, "num_cyc_hor": 1,
+      "weird_multiplier_ver": 100, "weird_multiplier_hor": 5,
+      "sh_ver_incr": 0.02, "sh_hor_incr": 0.02,
+      "alpha_diff": 0.5,
+      "d": "Description in FILE"},
+    "7_s_1": {"offset": [55, 107], "frame_ss": [1, 80], "cycles": 5, "zorder": 6, "d_offset": 0.7, "col_diff": 0.01,
+      "sh_cyc": 5, "sh_mm": [0.5, 2.5], "sh_dist": [0.98, 0.02],
+      "num_cyc_ver": 1, "num_cyc_hor": 2,
+      "weird_multiplier_ver": 50, "weird_multiplier_hor": 30,
+      "sh_ver_incr": 0.002, "sh_hor_incr": 0.01,
+      "alpha_diff": 0.4,
+      "d": "Description in FILE"},
+    "7_a_0": {"offset": [65, 149]}
   }
 }

@@ -35,18 +35,21 @@ def load_pics():
     #     for file_name in file_names:
     #         pics['spls'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
     #
+
+    # PATH = './images_mut/smokas/'
+    # _, _, file_names = os.walk(PATH).__next__()
+    # for i in range(P.NUM_SMOKAS):
+    #     for file_name in file_names:
+    #         pics['smokas'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
+
+
     # PATH = './images_mut/smokrs/'
     # _, _, file_names = os.walk(PATH).__next__()
     # for i in range(PARAMS.NUM_SMOKRS):
     #     for file_name in file_names:
     #         pics['smokrs'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
     #
-    # PATH = './images_mut/smokas/'
-    # _, _, file_names = os.walk(PATH).__next__()
-    # for i in range(PARAMS.NUM_SMOKAS):
-    #     for file_name in file_names:
-    #         pics['smokas'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
-    #
+
     # PATH = './images_mut/specials/'
     # _, _, file_names = os.walk(PATH).__next__()
     # for file_name in file_names:
@@ -57,6 +60,7 @@ def load_pics():
     for folder_name in folder_names:
         pics['ships'][folder_name] = {}
         pics['ships'][folder_name]['sails'] = {}
+        pics['ships'][folder_name]['smokas'] = {}
         _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
         for file_name in file_names:
             name_split = file_name.split('_')
@@ -65,6 +69,9 @@ def load_pics():
             elif len(name_split) > 1 and name_split[1] == 's':
                 # aa = imread(PATH + '/' + folder_name + '/' + file_name)
                 pics['ships'][folder_name]['sails'][file_name[:-4]] = imread(PATH + '/' + folder_name + '/' + file_name)
+            elif len(name_split) > 1 and name_split[1] == 'a':
+                # aa = imread(PATH + '/' + folder_name + '/' + file_name)
+                pics['ships'][folder_name]['smokas'][file_name[:-4]] = imread(PATH + '/' + folder_name + '/' + file_name)
 
 
     aa = 5

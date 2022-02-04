@@ -4,6 +4,7 @@ from src.load_pics import load_pics
 import P as P
 from src.layers.ship import Ship
 from src.layers.sail import Sail
+from src.layers.smoke import Smoke
 
 class GenLayers:
 
@@ -41,6 +42,7 @@ class GenLayers:
         return ships
 
     def gen_sails(self, ax, im_ax, ships):
+        """ax im_ax stuff not only in animate()"""
 
         for ship_id in ships:  # ships is a key-val dict
 
@@ -48,16 +50,28 @@ class GenLayers:
 
             for file_name in file_names:
                 name_split = file_name.split('_')
-                if len(name_split) > 1 and name_split[1] == 's':
+                if len(name_split) > 1 and name_split[1] == 's' and len(name_split) < 4:
                     sail = Sail(file_name[:-4],
                                 self.pics['ships'][ship_id]['sails'][file_name[:-4]],
                                 ships[ship_id])
-                    ships[ship_id].add_sail(sail)
+                    # ships[ship_id].add_sail(sail)
+                    ships[ship_id].sails[sail.id] = sail
+        return ships
 
+    def gen_smokes(self, ax, im_ax, ships, type='both'):
 
-                    adf = 5
+        for ship_id in ships:  # ships is a key-val dict
 
-                gg = 5
+            _, _, file_names = os.walk(self.PATH_IMAGES + '/ships/' + ship_id).__next__()
+
+            for file_name in file_names:
+                name_split = file_name.split('_')
+                if len(name_split) > 1 and name_split[1] == 'a' and len(name_split) < 4:
+                    smoka = Smoke(file_name[:-4],
+                                  self.pics['ships'][ship_id]['smokas'][file_name[:-4]],
+                                  ships[ship_id], type='a')
+                    ships[ship_id].smokas[smoka.id] = smoka
+        gg = 5
 
         return ships
 #

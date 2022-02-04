@@ -1,5 +1,5 @@
 
-
+import numpy as np
 
 class AbstractLayer:
     """
@@ -14,7 +14,6 @@ class AbstractLayer:
         _s.frame_ss = None
         _s.index_im_ax = None
         _s.pic = None
-
 
     def set_clock(_s, i):
         """
@@ -51,7 +50,10 @@ class AbstractLayer:
         elif _s.drawn == 3:  # end drawing
             im_ax[_s.index_im_ax].remove()  # might save CPU-time
             im_ax.pop(_s.index_im_ax)
+            _s.index_im_ax = None  # THIS IS NEEDED BUT NOT SURE WHY
             return False
+
+
 
 
 
