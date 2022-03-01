@@ -2,19 +2,14 @@
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 import numpy as np
+from src.trig_functions import _normal
 
-def gen_alpha(num_frames, plot=False):
-	x = np.linspace(0, 1.0, 100)
-	y = norm.pdf(x, loc=0.5, scale=0.15) / 2.7
-
-
-	if plot == True:
-		fig, ax = plt.subplots(figsize=(12, 8))
-		ax.plot(x, y, 'r-', lw=5, alpha=0.6, label='norm pdf')
-		plt.show()
-	return y
+def gen_alpha(gi, fun_plot, plot=False):
+	X = np.arange(0, gi['frame_ss'][-1] - gi['frame_ss'][0])
+	alpha = None
+	if fun_plot == 'normal':
+		alpha = _normal(X, mean=len(X)//2, var=len(X)//4, y_range=[0, 0.2])
+	return alpha
 
 
-if __name__ == "__main__":
 
-	a = gen_alpha(100, plot=True)

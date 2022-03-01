@@ -34,8 +34,14 @@ class Sail(AbstractLayer):
 		sfg = 6
 
 	def finish_sail_info(_s, tl):
+		"""
+		max_ri is needed by warp_affine to limit the warp space
+		"""
 
-		# Convert from tl
+		# scale from ship
+		_s.gi['scale_ss'] = _s.ship.gi['move']['scale_ss']
+
+		# Convert from tl to ld since this is what the
 		ld_start = [tl[0][0], int(tl[0][1] + _s.pic.shape[0] * _s.ship.scale_vector[0])]  # left start stop
 		ld_stop = [tl[-1][0], int(tl[-1][1] + _s.pic.shape[0] * _s.ship.scale_vector[-1])]
 
@@ -141,10 +147,11 @@ class Sail(AbstractLayer):
 
 	def gen_col_transforms(_s):
 		"""
-		WILL BECOME ABSTRACT LAYER (TAKE ARGUMENTS FROM SAIL INFO). JUST CALL IT WHEN BUILDING SAIL, NOT OTHERWISE
+		WILL BECOME ABSTRACT FOR ALL LAYERS THAT NEED TRIGONOMETRIC COLOR TRANSFORMS
 		cycling and shifting shear
-		For cycling noise is required since it's too obvious otherwise
-		ver denotes axis at which the trough/high follows (think shirt)
+		For cycling noise is required since it's too obvious otherwise: CURRENTLY NOT VERY GOOD, TODO: FIX
+		ver denotes axis at which the trough/high follows (think shirt).
+		One special thing about e.g. sails is that they take the scaling vector from ship its parent.
 
 		PARAMS:
 		sh_cyc: shear_cycles

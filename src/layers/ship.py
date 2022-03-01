@@ -13,6 +13,7 @@ class Ship(AbstractLayer):
 
     def __init__(_s, ship_info, pic):
         super().__init__()
+        _s.id = ship_info['id']
         _s.gi = ship_info
         _s.pic = pic  # NOT SCALED
         _s.fill_info()
@@ -40,8 +41,7 @@ class Ship(AbstractLayer):
         e.g. sail scale_vectors.
         Have to be computed
         """
-        for xtra_id, xtra in _s.gi['xtras'].items():
-            xtra['scale_ss'] = _s.gi['move']['scale_ss']
+
 
         # Compute the maximum extent right of move_info (needed to get transforms right)
         # a = _s.gi['move']['ld_ss'][0][0]

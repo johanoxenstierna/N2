@@ -1,6 +1,9 @@
 """
 warpAffine current solution: The extent of the warp is always by the maximum triangle value.
 WARP AFFINE DOES NOT WORK WITH NEGATIVE VALUES!!!! CANNOT WARP TO NEGATIVE VALUE (PIC WILL JUST DISSAPEAR)
+
+gi: general info. OBS is unique to each layer
+
 im_ax li: 2.9  35 min/vid
 """
 
@@ -38,12 +41,17 @@ fig, ax = plt.subplots(figsize=(12, 8))
 im_ax = []
 g = gen_layers.GenLayers(ch)
 g.gen_backgr(ax, im_ax)  # ax is the canvas, im_ax contains pointers to what is plotted on canvas
+
+# BELOW THE PY OBJECTS THAT TRACK THEIR IM_AX COUNTERPARTS ARE GENERATED
 ships = g.gen_ships(ax, im_ax)  # ships is dict of pointers to all info about ship (except in im_ax)
 if P.A_SAILS:
     ships = g.gen_sails(ax, im_ax, ships)
 
 if P.A_SMOKAS:
-    ships = g.gen_smokes(ax, im_ax, ships, type='a')
+    ships = g.gen_smokes(ax, im_ax, ships, ch, type='a')
+
+# if P.A_WAVES:
+waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
 aa = 2
 
@@ -61,68 +69,82 @@ def animate(i):
         ship.set_clock(i)  # sets drawn if clock is within draw range
 
         # THIS SHOULD BE GENERALIZED FOR ALL AFFINE LAYERS = MOVE TO FUNCTION
-        drawBool = ship.ani_update_step(ax, im_ax)  # uses clock set above
-        if drawBool == False:
+        drawBool, index_removed = ship.ani_update_step(ax, im_ax)  # uses clock set above
+        if drawBool == 0:
+            continue
+        elif drawBool == 2:
+            decrement_all_index_im_ax(index_removed, ships, waves)
             continue
 
-        # PERHAPS MOVE ALL THIS INTO A FUNCTION (IN SHIP CLASS WITH IM_AX AS INPUT)
-        if P.A_AFFINE_TRANSFORM == 0:
-            im_ax[ship_id].set_extent(ship.extent[ship.clock])
-        else:
+        # DRAW ================
+        warp_affine(i, ax, im_ax, ship, ch)
 
-            warp_affine(i, ax, im_ax, ship, ch)
-
-            # im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
-            # im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
-            #
-            # t0 = ship.tri_base
-            # t1 = ship.tris[ship.clock]
-            # # img = g.pics['ships']['7']['ship']
-            # img = ship.pic  # pic with base scale always used.
-            # # if P.A_COLORS:
-            # #     img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
-            #
-            # M = cv2.getAffineTransform(t0, t1)
-            # dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
-            # img = np.zeros((ship.mask_do, ship.mask_ri, 4))
-            # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-            # im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=ship.ship_info['zorder'], alpha=1))
+        # im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
+        # im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
+        #
+        # t0 = ship.tri_base
+        # t1 = ship.tris[ship.clock]
+        # # img = g.pics['ships']['7']['ship']
+        # img = ship.pic  # pic with base scale always used.
+        # # if P.A_COLORS:
+        # #     img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
+        #
+        # M = cv2.getAffineTransform(t0, t1)
+        # dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
+        # img = np.zeros((ship.mask_do, ship.mask_ri, 4))
+        # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
+        # im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=ship.ship_info['zorder'], alpha=1))
 
         if P.A_SAILS:  # NOT CONVERTED TO LIST YET
             for sail_id, sail in ships[ship_id].sails.items():
-                if i == 20:
-                    gg = 6
+
                 sail.set_clock(i)
-                drawBool = sail.ani_update_step(ax, im_ax)
-                if drawBool == False:
+                drawBool, index_removed = sail.ani_update_step(ax, im_ax)
+                if drawBool == 0:
+                    continue
+                elif drawBool == 2:
+                    decrement_all_index_im_ax(index_removed, ships, waves)
                     continue
 
                 warp_affine(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
 
+        if P.A_SMOKAS:
 
-                #
-                # im_ax[sail.index_im_ax].remove()
-                # im_ax.pop(sail.index_im_ax)
-                #
-                # t0 = sail.tri_base
-                # t1 = sail.tris[sail.clock]
-                # img = sail.pic  # SHOULD WORK
-                # # img = g.pics['ships']['7']['sails']['7_s_0']
-                # if P.A_COLORS:
-                #     img = sail.apply_transform(ch['ships'][ship_id]['firing_frames'], i)
-                # M = cv2.getAffineTransform(t0, t1)
-                # dst = cv2.warpAffine(img, M, (int(sail.tri_ext['max_ri']), int(sail.tri_ext['max_do'])))
-                # img = np.zeros((sail.mask_do, sail.mask_ri, 4))
-                # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-                # im_ax.insert(sail.index_im_ax, ax.imshow(img, zorder=sail.gi['zorder'], alpha=0.7))
+            if i == 19:
+                adf = 5 + 3
+                asdf = 5
 
-    # INFO IS FOUND IN SHIPS, BUT IM_AX IS STORED SEPARATELY (BECAUSE SHIPS CAN GO AWAY WHILE SMOKE PERSISTS)
-    if P.A_SMOKAS:
-        for ship_id, ship in ships.items():
             for smoka_id, smoka in ships[ship_id].smokas.items():
-                pass
-        pass
+                smoka.set_clock(i)
+                drawBool, index_removed = smoka.ani_update_step(ax, im_ax)
+                if drawBool == 0:
+                    continue
+                elif drawBool == 2:
+                    decrement_all_index_im_ax(index_removed, ships, waves)
+                    continue
 
+                warp_affine(i, ax, im_ax, smoka, ch)  # parent obj required for sail
+                aa = 5
+
+    if P.A_WAVES:
+        for wave_id, wave in waves.items():
+            if i == 15:
+                adf = 5
+            # wave.set_ss(i)  # special function for wave to set the current frame_ss and ld_ss (since the same wave will be plotted several times)
+            print(str(wave.frame_ss) + "  " + str(wave.clock))
+            wave.set_clock(i)  # sets drawn if clock is within draw range NEEDS frame_ss
+            drawBool, index_removed = wave.ani_update_step(ax, im_ax)  # uses clock set above
+            if drawBool == 0:
+                continue
+            elif drawBool == 2:
+                decrement_all_index_im_ax(index_removed, ships, waves)
+                continue
+
+            # DRAW ================
+            im_ax[wave.index_im_ax].set_extent(wave.extent[wave.clock])
+            # except:
+            #     adf = 5
+            im_ax[wave.index_im_ax].set_alpha(wave.alpha[wave.clock])
 
     return im_ax  # if run live, it runs until window is closed
 

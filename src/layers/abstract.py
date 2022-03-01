@@ -12,6 +12,7 @@ class AbstractLayer:
         _s.clock = 0
         _s.frames_num = None  # number of frames to animate for
         _s.frame_ss = None
+        # _s.frame_ss_start_offset = None
         _s.index_im_ax = None
         _s.pic = None
 
@@ -36,22 +37,31 @@ class AbstractLayer:
         """
         Based on the drawn condition, draw, remove
         If it's drawn, return True (used in animation loop)
+        OBS major bug discovered: im_ax.pop(index_im_ax) OBVIOUSLY results in that all index_im_ax after popped get
+        screwed.
+        0: don't draw
+        1: draw
+        2: don't draw and decrement all index_im_ax's
         """
 
         if _s.drawn == 0:  # not drawn,
-            return False
+            return 0, None
         elif _s.drawn == 1: # start and continue
             _s.index_im_ax = len(im_ax)
             # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
             im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
-            return True
+            return 1, None
         elif _s.drawn == 2:  # continue drawing
-            return True
+            return 1, None
         elif _s.drawn == 3:  # end drawing
-            im_ax[_s.index_im_ax].remove()  # might save CPU-time
-            im_ax.pop(_s.index_im_ax)
+            try:
+                im_ax[_s.index_im_ax].remove()  # might save CPU-time
+                im_ax.pop(_s.index_im_ax)  # OBS OBS!!! MAKES im_ax shorter hence all items after index_im_ax now WRONG
+            except:
+                raise Exception("ani_update_step CANT REMOVE AX")
+            index_removed = _s.index_im_ax
             _s.index_im_ax = None  # THIS IS NEEDED BUT NOT SURE WHY
-            return False
+            return 2, index_removed
 
 
 

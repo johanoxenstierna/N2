@@ -5,6 +5,7 @@ import P as P
 from src.layers.ship import Ship
 from src.layers.sail import Sail
 from src.layers.smoke import Smoke
+from src.layers.wave import Wave
 
 class GenLayers:
 
@@ -58,22 +59,39 @@ class GenLayers:
                     ships[ship_id].sails[sail.id] = sail
         return ships
 
-    def gen_smokes(self, ax, im_ax, ships, type='both'):
-
+    def gen_smokes(self, ax, im_ax, ships, ch, type='both'):
+        """
+        OBS difference to waves is that here one object is created
+        ch needed to trigger when smoke to launch
+        """
         for ship_id in ships:  # ships is a key-val dict
 
-            _, _, file_names = os.walk(self.PATH_IMAGES + '/ships/' + ship_id).__next__()
+            for smoka_id, smoka_pic in self.pics['ships'][ship_id]['smokas'].items():
 
-            for file_name in file_names:
-                name_split = file_name.split('_')
-                if len(name_split) > 1 and name_split[1] == 'a' and len(name_split) < 4:
-                    smoka = Smoke(file_name[:-4],
-                                  self.pics['ships'][ship_id]['smokas'][file_name[:-4]],
-                                  ships[ship_id], type='a')
-                    ships[ship_id].smokas[smoka.id] = smoka
-        gg = 5
+                smoka = Smoke(smoka_id, smoka_pic, ships[ship_id], ch, type='a')
+
+                ships[ship_id].smokas[smoka.id] = smoka
+
+
+            # _, _, file_names = os.walk(self.PATH_IMAGES + '/ships/' + ship_id).__next__()
+            #
+            # for file_name in file_names:
+            #     name_split = file_name.split('_')
+            #     if len(name_split) > 1 and name_split[1] == 'a' and len(name_split) < 4:
+            #
+            #         smoka = Smoke(file_name[:-4],
+            #                       self.pics['ships'][ship_id]['smokas'][file_name[:-4]],
+            #                       ships[ship_id], type='a')
+            #         ships[ship_id].smokas[smoka.id] = smoka
 
         return ships
+
+    def gen_waves(self, ax, im_ax):
+        waves = {}
+        for wave_id, wave_pic in self.pics['waves'].items():
+            wave = Wave(wave_id, self.pics['waves'][wave_id])
+            waves[wave_id] = wave
+        return waves
 #
 # def gen_layers(ax, FRAMES_START, FRAMES_STOP, chronicle):
 #     waves = {}

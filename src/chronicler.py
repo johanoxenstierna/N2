@@ -1,5 +1,6 @@
 import json
 import uuid
+import random
 
 import P as P
 
@@ -34,6 +35,9 @@ class Chronicler:
 		return locs, zorders
 
 	def init_chronicle(_s):
+		"""
+		For ships it just loads ship_info into memory.
+		"""
 
 		_s.ch['ships'] = {}
 		_s.ch['bc'] = []
@@ -47,7 +51,7 @@ class Chronicler:
 		                   "spl_zone_centroids": spl_zone_centroids}
 
 		# with open('./utils/bc_template.json', 'r') as f:
-			# _s.bc_template = json.load(f)
+		# _s.bc_template = json.load(f)
 
 		_s.init_bc()
 
@@ -60,15 +64,43 @@ class Chronicler:
 				with open('./ship_info/' + P.MAP_SIZE + '/' + ship_nid + '.json', 'r') as f:
 					ship_info = json.load(f)
 			except:
-				raise Exception("adsf")
+				raise Exception("Haven't done ship info for big yet")
 
 			_s.ch['ships'][ship_nid] = ship_info  # needed for chronicler AI
 			kk = 8
 
 	def run(_s):
+		"""Think about how this is gona be iterated"""
+		_s.smoka_init_frames()
+	# aa = _s.ch['ships']['7']
+	# aa = 5
 
-		aa = _s.ch['ships']['7']
-		aa = 5
+	def smoka_init_frames(_s):
+		"""
+		OBS Strictly 1 per smoka (following same indexing as pic names generated later)
+		frame_sss IS WITH REFERENCE TO THE SHIPS frame_ss.
+		TODO: currently it's just some random values here
+		"""
+
+		for ship_id, ship in _s.ch['ships'].items():
+			num_frames_ship = ship['move']['frame_ss'][1] - ship['move']['frame_ss'][0]
+			for xtra_id, xtra in ship['xtras'].items():
+				if xtra_id.split('_')[1] == 'a':
+					for i in range(0, P.NUM_SMOKAS):
+						xtra_id_2 = xtra_id + '_' + str(i)
+						rand_frame_start = random.randint(5, 10)
+						rand_frame_stop = rand_frame_start + random.randint(10, 20)
+						# AGAIN OBS, THIS IS WRT SHIP FRAME_SS, SO IF SHIP SS IS [5, 50] AND SMOKE SS IS [10, 20], THE SMOKE WILL START AT FRAME 15
+						assert(rand_frame_stop < num_frames_ship)
+
+						xtra['frame_sss'][xtra_id_2] = [rand_frame_start, rand_frame_stop]
+
+
+						xtra['scale_sss'][xtra_id_2] = [0.1, 1.0]
+						aa = 5
+
+			fdf = 5
+		adf = 5
 
 	def check_arrays_not_empty(_s):
 
