@@ -33,15 +33,28 @@ def min_max_normalization(X, y_range):
 
 	return Y
 
+# def sigmoid(X):
+# 	return 1/(1 + np.exp(-X))
+
+def _sigmoid(x, grad_magn_inv=None, x_shift=None, y_magn=None, y_shift=None):
+	"""
+	the leftmost dictates gradient: 75=steep, 250=not steep
+	the rightmost one dictates y: 0.1=10, 0.05=20, 0.01=100, 0.005=200
+	"""
+	return (1 / (math.exp(-x / grad_magn_inv + x_shift) + y_magn)) + y_shift  # finfin
 
 
 if __name__ == '__main__':
 
 	fig, ax = plt.subplots(figsize=(10, 6))
 
-	# X = np.linspace(0, 100, num=50)
-	X = np.arange(0, 100)
-	Y = _normal(X)
+	# X = np.linspace(0, 1, num=50)
+	# Y = _normal(X)
+	# Y = ([sigmoid(x, grad_magn_inv=16//6, x_shift=16//3.6, y_magn=1, y_shift=0.0) for x in X])  # waves
+
+	# SMOKA ============
+	X = np.arange(0, 50, 1)  # large: 960
+	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1.2, y_shift=0) for x in X]))  # smoka
 
 	ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])

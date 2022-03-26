@@ -71,7 +71,8 @@ class Chronicler:
 
 	def run(_s):
 		"""Think about how this is gona be iterated"""
-		_s.smoka_init_frames()
+		# _s.smoka_init_frames()
+		pass
 	# aa = _s.ch['ships']['7']
 	# aa = 5
 
@@ -79,6 +80,7 @@ class Chronicler:
 		"""
 		OBS Strictly 1 per smoka (following same indexing as pic names generated later)
 		frame_sss IS WITH REFERENCE TO THE SHIPS frame_ss.
+		Smokas not tied to expls frames, smokrs are
 		TODO: currently it's just some random values here
 		"""
 
@@ -89,12 +91,11 @@ class Chronicler:
 					for i in range(0, P.NUM_SMOKAS):
 						xtra_id_2 = xtra_id + '_' + str(i)
 						rand_frame_start = random.randint(5, 10)
-						rand_frame_stop = rand_frame_start + random.randint(10, 20)
+						rand_frame_stop = 200  #rand_frame_start + random.randint(10, 20)
 						# AGAIN OBS, THIS IS WRT SHIP FRAME_SS, SO IF SHIP SS IS [5, 50] AND SMOKE SS IS [10, 20], THE SMOKE WILL START AT FRAME 15
 						assert(rand_frame_stop < num_frames_ship)
 
 						xtra['frame_sss'][xtra_id_2] = [rand_frame_start, rand_frame_stop]
-
 
 						xtra['scale_sss'][xtra_id_2] = [0.1, 1.0]
 						aa = 5

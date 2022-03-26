@@ -28,7 +28,7 @@ class Sail(AbstractLayer):
 
 		# if ship_info['id'] == '7':
 		# _s.pic = gen_colors(pic)  # WILL BE USED
-		_s.z_shear, _s.t_x_ver, _s.t_x_hor  = _s.gen_col_transforms()
+		_s.z_shear, _s.t_x_ver, _s.t_x_hor  = _s.gen_heights_troughs_transform()
 
 		# _s.alpha_array = _s.gen_alpha()
 		sfg = 6
@@ -145,7 +145,7 @@ class Sail(AbstractLayer):
 
 		return img
 
-	def gen_col_transforms(_s):
+	def gen_heights_troughs_transform(_s):
 		"""
 		WILL BECOME ABSTRACT FOR ALL LAYERS THAT NEED TRIGONOMETRIC COLOR TRANSFORMS
 		cycling and shifting shear
@@ -235,7 +235,7 @@ class Sail(AbstractLayer):
 
 		return z_shear, t_x_ver, t_x_hor
 
-	def apply_transform(_s, firing_frames, iii):
+	def apply_heights_troughs_transform(_s, pic, iii):
 
 		"""
 		This is run on the readonly pic of ship at the internal clock
@@ -266,9 +266,9 @@ class Sail(AbstractLayer):
 		y_alpha = (((y_alpha - mn) / (mx - mn)) * _s.gi['alpha_diff']) + (1 - _s.gi['alpha_diff'])
 
 		ex = 1.0
-		if iii in firing_frames:
-			ex = 0.99  # decrease in green and blue
-		pic = _s.pic.copy()  # REQUIRED
+		# if iii in firing_frames:
+		# 	ex = 0.84  # decrease in green and blue
+		# pic = _s.pic.copy()  # REQUIRED
 		pic[:, :, 0] = pic[:, :, 0] * y_col  # more y=more red, less=more green
 		pic[:, :, 1] = pic[:, :, 1] * ex * y_col  # more y=more green, less=more red
 		pic[:, :, 2] = pic[:, :, 2] * ex * y_col  # Needed to complement red and green

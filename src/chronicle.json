@@ -23,6 +23,26 @@
                 50,
                 60
             ],
+            "d0": [
+                5,
+                6,
+                7,
+                8,
+                14,
+                20,
+                31,
+                32,
+                33,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                50,
+                60
+            ],
+            "d1": "firing frames and smoka_init_frames produced by ch",
             "alpha_and_bright": [],
             "move_vector": [],
             "move": {
@@ -45,35 +65,34 @@
                 "y_mid": 1,
                 "frame_ss": [
                     1,
-                    50
+                    250
                 ],
-                "roll_cycles": 2
+                "roll_cycles": 5
             },
             "splash_zones": [],
             "explosion_offset": [],
             "smoka_id": "",
-            "smoka_offset": [
-                50,
-                -20
+            "smoka_init_frames": [
+                2
             ],
             "brightness_frame_value": [],
             "xtra_init_frames": [],
             "zorder": 5,
-            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl!",
+            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
             "xtras": {
                 "7_s_0": {
                     "offset": [
-                        55,
-                        107
+                        46,
+                        95
                     ],
                     "frame_ss": [
                         1,
-                        20
+                        2
                     ],
                     "cycles": 5,
                     "zorder": 7,
                     "d_offset": 0.7,
-                    "col_diff": 0.1,
+                    "col_diff": 0.5,
                     "sh_cyc": 5,
                     "sh_mm": [
                         0.1,
@@ -89,8 +108,8 @@
                     "weird_multiplier_hor": 5,
                     "sh_ver_incr": 0.02,
                     "sh_hor_incr": 0.02,
-                    "alpha_diff": 0.5,
-                    "d": ""
+                    "alpha_diff": 0.2,
+                    "d": "offset is tl"
                 },
                 "7_s_1": {
                     "offset": [
@@ -99,62 +118,51 @@
                     ],
                     "frame_ss": [
                         1,
-                        30
+                        200
                     ],
-                    "cycles": 5,
+                    "cycles": 25,
                     "zorder": 6,
                     "d_offset": 0.7,
                     "col_diff": 0.01,
-                    "sh_cyc": 5,
+                    "sh_cyc": 3,
                     "sh_mm": [
                         0.5,
-                        2.5
+                        1.5
                     ],
                     "sh_dist": [
                         0.98,
                         0.02
                     ],
                     "num_cyc_ver": 1,
-                    "num_cyc_hor": 2,
-                    "weird_multiplier_ver": 50,
+                    "num_cyc_hor": 5,
+                    "weird_multiplier_ver": 70,
                     "weird_multiplier_hor": 30,
-                    "sh_ver_incr": 0.002,
-                    "sh_hor_incr": 0.01,
-                    "alpha_diff": 0.4,
+                    "sh_ver_incr": 0.003,
+                    "sh_hor_incr": 0.11,
+                    "alpha_diff": 0.71,
                     "d": ""
                 },
                 "7_a_0": {
                     "offset": [
                         65,
-                        149
+                        -20
                     ],
-                    "frame_sss": {
-                        "7_a_0_0": [
-                            7,
-                            19
-                        ],
-                        "7_a_0_1": [
-                            8,
-                            28
-                        ]
-                    },
-                    "cycles": 5,
                     "zorder": 7,
-                    "d_offset": 0.7,
                     "y_mid": 1,
-                    "ld_ss": [],
-                    "scale_sss": {
-                        "7_a_0_0": [
-                            0.1,
-                            1.0
-                        ],
-                        "7_a_0_1": [
-                            0.1,
-                            1.0
-                        ]
-                    },
-                    "d0": "Think about whether col transforms needed or if multiple smokes is enough. All ss ARE GENERATED LATER",
-                    "d1": "frame_ss HAS TO BE WRT ship."
+                    "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
+                    "d1": "zorder should be constant?"
+                },
+                "7_expls": {
+                    "offset": [
+                        70,
+                        -20
+                    ],
+                    "offset_rand": [
+                        30,
+                        5
+                    ],
+                    "y_mid": 1,
+                    "d": "info for all expls. All ships get all expls. "
                 }
             }
         }

@@ -3,6 +3,7 @@ from copy import deepcopy
 
 def gen_extent(gi, pic, padded=False):
     """
+    left right down up
     returns linear motion extent through time
     extent_t is the same thing but shifted to origin at tl (since tri's have origin there).
     extent_t == UNSHIFTED FRAME

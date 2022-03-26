@@ -7,6 +7,7 @@ import P as P
 import random
 
 class Wave(AbstractLayer):
+	"""Some of the sss stuff generated here may overlap with sss """
 
 	def __init__(_s, id, pic):
 		super().__init__()

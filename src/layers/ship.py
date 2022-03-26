@@ -28,12 +28,12 @@ class Ship(AbstractLayer):
         #     _s.z_shear = _s.gen_col_transforms()
 
         if P.PR_MOVE_BLACK == 1:
-
             _s.mov_black()
 
         _s.sails = {}
         _s.smokas = {}
         _s.smokrs = {}
+        _s.expls = {}
 
     def fill_info(_s):
         """
@@ -68,7 +68,7 @@ class Ship(AbstractLayer):
         F_y = 0.24
 
         if P.MAP_SIZE == 'small':
-            F_x = 3.3  # 5.6
+            F_x = 2.3  # 5.6
             F_y = 0.1
 
         cycles_currently = _s.frames_tot / (2 * np.pi)
@@ -80,6 +80,26 @@ class Ship(AbstractLayer):
             mov_black[i, 1] = F_y * np.sin(i / d + random_shift)
 
             _s.tris[i][1, 0] += mov_black[i, 0]
+
+    def find_free_obj(_s, type):
+
+        _di = None
+        if type == 'expl':
+            _di = _s.expls
+        # elif type == 'smokrs':
+        #     _di = _s.smokrs
+        elif type == 'smoka':
+            _di = _s.smokas
+        # elif type == 'spls':
+        #     _di = _s.spls
+        li_ids = list(_di.keys())
+        random.shuffle(li_ids)
+        for key in li_ids:
+            obj = _di[key]
+            if obj.drawn == 0:  # object is not drawn
+                return obj
+
+        return None  # no object found
 
     # def add_sail(_s, sail):
     #     _s.sails[sail.id] = sail

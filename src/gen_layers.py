@@ -6,6 +6,7 @@ from src.layers.ship import Ship
 from src.layers.sail import Sail
 from src.layers.smoke import Smoke
 from src.layers.wave import Wave
+from src.layers.expl import Expl
 
 class GenLayers:
 
@@ -69,20 +70,18 @@ class GenLayers:
             for smoka_id, smoka_pic in self.pics['ships'][ship_id]['smokas'].items():
 
                 smoka = Smoke(smoka_id, smoka_pic, ships[ship_id], ch, type='a')
-
                 ships[ship_id].smokas[smoka.id] = smoka
 
+        return ships
 
-            # _, _, file_names = os.walk(self.PATH_IMAGES + '/ships/' + ship_id).__next__()
-            #
-            # for file_name in file_names:
-            #     name_split = file_name.split('_')
-            #     if len(name_split) > 1 and name_split[1] == 'a' and len(name_split) < 4:
-            #
-            #         smoka = Smoke(file_name[:-4],
-            #                       self.pics['ships'][ship_id]['smokas'][file_name[:-4]],
-            #                       ships[ship_id], type='a')
-            #         ships[ship_id].smokas[smoka.id] = smoka
+    def gen_expls(self, ax, im_ax, ships, ch):
+        """
+        Each ship gets multiple expls
+        """
+        for ship_id in ships:
+            for expl_id, expl_pic in self.pics['ships'][ship_id]['expls'].items():
+                expl = Expl(expl_id, expl_pic, ships[ship_id], ch)
+                ships[ship_id].expls[expl.id] = expl
 
         return ships
 

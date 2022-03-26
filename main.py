@@ -50,6 +50,9 @@ if P.A_SAILS:
 if P.A_SMOKAS:
     ships = g.gen_smokes(ax, im_ax, ships, ch, type='a')
 
+if P.A_EXPLS:  # all expls put in for each ship (convenient and memory cheap)
+    ships = g.gen_expls(ax, im_ax, ships, ch)
+
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
@@ -60,42 +63,76 @@ def init():
 
 
 def animate(i):
+    """
+    Conjecture: Obs expls and halo can't be precomputed
+    """
 
     # if i % 10 == 0:
-    print("i: " + str(i), "  len_im_ax: " + str(len(im_ax)))
+    prints = "i: " + str(i) + "  len_im_ax: " + str(len(im_ax))
+
+    # aa = find_all_ax_at_coord()
 
     for ship_id, ship in ships.items():
 
         ship.set_clock(i)  # sets drawn if clock is within draw range
-
-        # THIS SHOULD BE GENERALIZED FOR ALL AFFINE LAYERS = MOVE TO FUNCTION
         drawBool, index_removed = ship.ani_update_step(ax, im_ax)  # uses clock set above
         if drawBool == 0:
             continue
-        elif drawBool == 2:
+        elif drawBool == 2:  # ship is removed this frame
             decrement_all_index_im_ax(index_removed, ships, waves)
             continue
 
-        # DRAW ================
-        warp_affine(i, ax, im_ax, ship, ch)
+        warp_affine_and_color(i, ax, im_ax, ship, ch)
 
-        # im_ax[ship.index_im_ax].remove()  # BOTH NECESSARY
-        # im_ax.pop(ship.index_im_ax)  # BOTH NECESSARY
-        #
-        # t0 = ship.tri_base
-        # t1 = ship.tris[ship.clock]
-        # # img = g.pics['ships']['7']['ship']
-        # img = ship.pic  # pic with base scale always used.
-        # # if P.A_COLORS:
-        # #     img = ship.apply_col_transform(ch['ships'][ship_id]['firing_frames'], i)
-        #
-        # M = cv2.getAffineTransform(t0, t1)
-        # dst = cv2.warpAffine(img, M, (int(ship.tri_ext['max_ri']), int(ship.tri_ext['max_do'])))
-        # img = np.zeros((ship.mask_do, ship.mask_ri, 4))
-        # img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-        # im_ax.insert(ship.index_im_ax, ax.imshow(img, zorder=ship.ship_info['zorder'], alpha=1))
+        if P.A_EXPLS:
+            if i in ship.gi['firing_frames']:
+                expl = ship.find_free_obj(type='expl')
+                if expl != None:
+                    expl.drawn = 4  # this variable can serve multiple purposes (see below, and in set_clock)
+                    expl.frame_ss[0] = i
+                    expl.frame_ss[1] = i + expl.NUM_FRAMES_EXPL
+                    expl.set_extent_expl()
+                else:
+                    prints += "  no free expl"
 
-        if P.A_SAILS:  # NOT CONVERTED TO LIST YET
+            for expl_id, expl in ship.expls.items():
+
+                if expl.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
+                    expl.set_clock(i)
+                    drawBool, index_removed = expl.ani_update_step(ax, im_ax)
+                    if drawBool == 0:
+                        continue
+                    elif drawBool == 2:
+                        decrement_all_index_im_ax(index_removed, ships, waves)
+                        continue
+
+                    im_ax[expl.index_im_ax].set_extent(expl.extent)
+                    im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with inverse sigmoid
+                    im_ax[expl.index_im_ax].set_zorder(999)  # TEMP
+
+            '''
+            Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
+            ax object (especially when the special red explosions start (fire)).
+            expl only needs to be displayed 1-2 frames, but it still needs to be added and then removed from im_ax.
+            However, it will appear toward the end of im_ax so decrementing im_ax will be cheap. 
+            frame_sss for expls could be pre-computed, but there STILL needs to be a check to see if an expl is 
+            available for drawing (otherwise one has to find the lower bound on number of expls and produce
+            a corresponding number of im_ax's i.e. pictures, which is totally illegit om this implementation
+            since pics are pre-loaded).
+            Thus expls frames are computed dynamically. Instead of frame_ss, if i corresponds to ship firing_frame, 
+            pick free expl instance at random (each ship has 4) to display and coord from expl xtra info. 
+            The expl instance contains a clock variable that checks how many frames the expl has been active for.  
+            This and its coord are then used by smokes, sails, waves to update brightness_contrast.
+            Amount should be inverse sigmoid of the distance to the expl + min-max-scaling. The centroid of 
+            the layer at frame i can be obtained using layer.extent
+            Only certain pixels for the ships should be affected and they are precomputed. 
+            '''
+
+        if P.A_SAILS:
+            '''
+            TODO implement queue system. Not needed if same sail used for all the frames that ship shown.
+            Might be difficult due to movement black.   
+            '''
             for sail_id, sail in ships[ship_id].sails.items():
 
                 sail.set_clock(i)
@@ -106,32 +143,41 @@ def animate(i):
                     decrement_all_index_im_ax(index_removed, ships, waves)
                     continue
 
-                warp_affine(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
+                warp_affine_and_color(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
 
         if P.A_SMOKAS:
 
-            if i == 19:
-                adf = 5 + 3
-                asdf = 5
+            if i in ship.gi['smoka_init_frames']:
+                smoka = ship.find_free_obj(type='smoka')
+                if smoka != None:
+                    smoka.drawn = 4  # this variable can serve multiple purposes (see below, and in set_clock)
+                    smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKA)  # uses AbstractSSS
+                    smoka.gen_dyn_extent_alpha()
+                else:
+                    prints += "  no free smoka"
 
-            for smoka_id, smoka in ships[ship_id].smokas.items():
-                smoka.set_clock(i)
-                drawBool, index_removed = smoka.ani_update_step(ax, im_ax)
-                if drawBool == 0:
-                    continue
-                elif drawBool == 2:
-                    decrement_all_index_im_ax(index_removed, ships, waves)
-                    continue
+            for smoka_id, smoka in ship.smokas.items():
+                if smoka.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
+                    smoka.set_clock(i)
+                    drawBool, index_removed = smoka.ani_update_step(ax, im_ax)
+                    if drawBool == 0:
+                        continue
+                    elif drawBool == 2:
+                        decrement_all_index_im_ax(index_removed, ships, waves)
+                        continue
 
-                warp_affine(i, ax, im_ax, smoka, ch)  # parent obj required for sail
-                aa = 5
 
-    if P.A_WAVES:
+                    warp_affine_and_color(i, ax, im_ax, smoka, ch)  # parent obj required for sail
+
+                    im_ax[smoka.index_im_ax].set_alpha(smoka.alpha[smoka.clock])
+
+
+    if P.A_WAVES:  # no queue needed here since they
         for wave_id, wave in waves.items():
             if i == 15:
                 adf = 5
             # wave.set_ss(i)  # special function for wave to set the current frame_ss and ld_ss (since the same wave will be plotted several times)
-            print(str(wave.frame_ss) + "  " + str(wave.clock))
+            # print(str(wave.frame_ss) + "  " + str(wave.clock))
             wave.set_clock(i)  # sets drawn if clock is within draw range NEEDS frame_ss
             drawBool, index_removed = wave.ani_update_step(ax, im_ax)  # uses clock set above
             if drawBool == 0:
@@ -145,6 +191,9 @@ def animate(i):
             # except:
             #     adf = 5
             im_ax[wave.index_im_ax].set_alpha(wave.alpha[wave.clock])
+
+
+    print(prints)
 
     return im_ax  # if run live, it runs until window is closed
 

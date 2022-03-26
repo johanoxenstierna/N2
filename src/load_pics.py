@@ -9,9 +9,9 @@ def load_pics():
     pics['spls'] = {}
     pics['ships'] = {}
     # pics['xtra'] = {}
-    pics['smokas'] = {}
-    pics['smokrs'] = {}
-    pics['expls'] = {}
+    # pics['smokas'] = {}
+    # pics['smokrs'] = {}
+    # pics['expls'] = {}
     pics['specials'] = {}
 
     if P.MAP_SIZE == 'small':
@@ -50,10 +50,11 @@ def load_pics():
 
     PATH = './images/processed/ships/'
     _, folder_names, _ = os.walk(PATH).__next__()
-    for folder_name in folder_names:
+    for folder_name in folder_names:  # ships
         pics['ships'][folder_name] = {}
         pics['ships'][folder_name]['sails'] = {}
         pics['ships'][folder_name]['smokas'] = {}
+        pics['ships'][folder_name]['expls'] = {}
         _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
         for file_name in file_names:
             name_split = file_name.split('_')
@@ -87,10 +88,18 @@ def load_pics():
     # pics['ships']['ship_1'] = imread('./images_mut/ships/ship_1.png')  # 105, 145
     # pics['explosions']['explosion_0'] = imread('./images_mut/expls/explosion_0.png')
 
-    # PATH = './images_mut/expls/'
-    # _, _, file_names = os.walk(PATH).__next__()
-    # for file_name in file_names:
-    #     pics['expls'][file_name[:-4]] = imread(PATH + file_name)  # without .png
+    # COPIES OF THE SAME EXPLS ARE ADDED TO EACH SHIP
+    PATH = './images/processed/expls/'
+    _, _, file_names = os.walk(PATH).__next__()
+    for file_name in file_names:
+        pic = imread(PATH + file_name)
+        for ship_id, ship in pics['ships'].items():
+            for i in range(P.NUM_EXPLS):
+                # pics['ships'][folder_name]['smokas'][file_name[:-4] + '_' + str(i)] = imread(
+                #     PATH + '/' + folder_name + '/' + file_name)
+                ship['expls'][file_name[:-4] + '_' + str(i)] = pic
+        # pics['expls'][file_name[:-4]] = imread(PATH + file_name)  # without .png
+    aa = 5
     #
     # PATH = './images/processed/xtra/'
     # _, _, file_names = os.walk(PATH).__next__()
