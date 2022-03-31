@@ -44,6 +44,11 @@ def _sigmoid(x, grad_magn_inv=None, x_shift=None, y_magn=None, y_shift=None):
 	return (1 / (math.exp(-x / grad_magn_inv + x_shift) + y_magn)) + y_shift  # finfin
 
 
+def sin_exp_experiment(X):
+	Y = (0.2 * np.sin(X) + 0.05 * np.sin(X) + 0.4 * np.log(X) / np.log(P.FRAMES_TOT)) - 0.1
+	return Y
+
+
 if __name__ == '__main__':
 
 	fig, ax = plt.subplots(figsize=(10, 6))
@@ -55,6 +60,14 @@ if __name__ == '__main__':
 	# SMOKA ============
 	X = np.arange(0, 50, 1)  # large: 960
 	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1.2, y_shift=0) for x in X]))  # smoka
+
+	# FIr:
+	X = np.arange(0, 50, 1)  # large: 960
+	Y = sin_exp_experiment(X)
+	'''
+	Need do create candidate list and check mass and see whether there are too many 
+	fires per moving average unit. 
+	'''
 
 	ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])

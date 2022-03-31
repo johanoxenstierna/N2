@@ -3,6 +3,7 @@ import P as P
 from matplotlib.pyplot import imread
 
 def load_pics():
+    """LOADS BGR"""
 
     pics = {}
     pics['waves'] = {}

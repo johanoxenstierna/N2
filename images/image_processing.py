@@ -18,18 +18,19 @@ THRESHOLD_SHIP_EXPL = 0.99
 
 
 def process_alpha(pic_in, file_name):
-    """BRG!!! """
+    """RGB!!! """
 
+    THRESHOLD_R = 0.98
     THRESHOLD_B = 0.92
     THRESHOLD_G = 0.98
-    THRESHOLD_R = 0.98
 
-    if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:
+
+    if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:  # ships (not as strict).
+        THRESHOLD_R = 0.5
         THRESHOLD_B = 0.5
         THRESHOLD_G = 0.5
-        THRESHOLD_R = 0.5
 
-        asdf = 5
+
     save_status = 1  # 0: don't save, 1: save right now
 
     if pic_in.shape[2] == 3:  # if no alpha layer -> create it
@@ -38,12 +39,13 @@ def process_alpha(pic_in, file_name):
 
     pic = pic_in.copy()
 
+    alpha_r = np.where(pic_in[:, :, 2] > THRESHOLD_R, 0.0, 1)  # where alpha should be 1, and 0 otherwise
     alpha_b = np.where(pic_in[:, :, 0] > THRESHOLD_B, 0.0, 1)  # alpha should be 0 wherever things are too white
     alpha_g = np.where(pic_in[:, :, 1] > THRESHOLD_G, 0.0, 1)  # if it's too bright make it 0, 1 otherwise
-    alpha_r = np.where(pic_in[:, :, 2] > THRESHOLD_R, 0.0, 1)  # where alpha should be 1, and 0 otherwise
+
 
     if file_name[0:4] == 'expl':  # this may be unmaintainable
-        prod = alpha_r
+        prod = alpha_r  # because expl is really white to start with
     else:
         prod = alpha_g * alpha_b * alpha_r  # this sets more frames to 0.0
 
@@ -266,7 +268,7 @@ for folder_name_outer in folder_names_outer:
         for file_name in file_names_inner:
 
             file_name_split = file_name.split('_')
-            if file_name_split[0] == 'expl':
+            if file_name == 'w_0_369_272.png':
                 adf = 5
             # if 'm.png' in file_name_split:
             #     continue  # masks are loaded separately below

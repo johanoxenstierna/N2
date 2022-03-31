@@ -166,7 +166,6 @@ def animate(i):
                         decrement_all_index_im_ax(index_removed, ships, waves)
                         continue
 
-
                     warp_affine_and_color(i, ax, im_ax, smoka, ch)  # parent obj required for sail
 
                     im_ax[smoka.index_im_ax].set_alpha(smoka.alpha[smoka.clock])

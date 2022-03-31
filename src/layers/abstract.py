@@ -17,6 +17,7 @@ class AbstractLayer:
     def __init__(_s):
         _s.drawn = 0  # 0: not drawn, 1: start drawing, 2. continue drawing, 3. end drawing, 4: dynamic flag usage
         _s.clock = 0
+        _s.ab_clock = 0  # alpha_brightness clock
         _s.frames_num = None  # number of frames to animate for
         _s.frame_ss = None
         # _s.frame_ss_start_offset = None
