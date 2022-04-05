@@ -56,6 +56,8 @@ if P.A_EXPLS:  # all expls put in for each ship (convenient and memory cheap)
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
+
+
 aa = 2
 
 def init():
@@ -91,7 +93,7 @@ def animate(i):
                     expl.drawn = 4  # this variable can serve multiple purposes (see below, and in set_clock)
                     expl.frame_ss[0] = i
                     expl.frame_ss[1] = i + expl.NUM_FRAMES_EXPL
-                    expl.set_extent_expl()
+                    expl.get_extent_expl()
                 else:
                     prints += "  no free expl"
 
@@ -106,14 +108,15 @@ def animate(i):
                         decrement_all_index_im_ax(index_removed, ships, waves)
                         continue
 
-                    im_ax[expl.index_im_ax].set_extent(expl.extent)
-                    im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with inverse sigmoid
+                    # im_ax[expl.index_im_ax].set_extent(expl.extent)
+                    im_ax[expl.index_im_ax].set_extent(expl.extent[expl.clock])
+                    im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
                     im_ax[expl.index_im_ax].set_zorder(999)  # TEMP
 
             '''
             Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
             ax object (especially when the special red explosions start (fire)).
-            expl only needs to be displayed 1-2 frames, but it still needs to be added and then removed from im_ax.
+            expl only needs to be displayed 1-5 frames (e.g. tracer), but it still needs to be added and then removed from im_ax.
             However, it will appear toward the end of im_ax so decrementing im_ax will be cheap. 
             frame_sss for expls could be pre-computed, but there STILL needs to be a check to see if an expl is 
             available for drawing (otherwise one has to find the lower bound on number of expls and produce
@@ -172,11 +175,14 @@ def animate(i):
 
 
     if P.A_WAVES:  # no queue needed here since they
+        '''
+        No need to iterate through all ships and their expls for all waves, so instead a ship 
+        is picked at random for each wave and it brightness is computed based on distance to the expl 
+        '''
         for wave_id, wave in waves.items():
             if i == 15:
                 adf = 5
-            # wave.set_ss(i)  # special function for wave to set the current frame_ss and ld_ss (since the same wave will be plotted several times)
-            # print(str(wave.frame_ss) + "  " + str(wave.clock))
+
             wave.set_clock(i)  # sets drawn if clock is within draw range NEEDS frame_ss
             drawBool, index_removed = wave.ani_update_step(ax, im_ax)  # uses clock set above
             if drawBool == 0:
@@ -186,10 +192,16 @@ def animate(i):
                 continue
 
             # DRAW ================
+            ship__ = random.choice(list(ships.values()))
             im_ax[wave.index_im_ax].set_extent(wave.extent[wave.clock])
-            # except:
-            #     adf = 5
             im_ax[wave.index_im_ax].set_alpha(wave.alpha[wave.clock])
+            if i in ship__.gi['firing_frames']:  # alpha might be enough here (changing brightness is tricky without using the warp affine wrapper function)
+                ship_ld = np.asarray([ship__.extent[i][0], ship__.extent[i][2]])
+                wave_ld = np.asarray([wave.extent[wave.clock][0], wave.extent[wave.clock][2]])
+                distance = int(np.linalg.norm(ship_ld - wave_ld))
+                # alpha =
+                im_ax[wave.index_im_ax].set_alpha(wave.alpha_wave_expl[distance])
+
 
 
     print(prints)

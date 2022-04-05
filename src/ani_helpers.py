@@ -19,11 +19,13 @@ def warp_affine_and_color(ii, ax, im_ax, g_obj, ch, parent_obj=None):
 	t0 = g_obj.tri_base
 	t1 = g_obj.tris[g_obj.clock]
 	pic_c = g_obj.pic.copy()  # pic with base scale always used.
-	if P.A_HSV_TRANSFORM:  # and parent_obj != None:
-		change_brightness_contrast(pic_c, ii, g_obj)  # OBS overwrites the static image AND changes pic (copy)
+	if P.A_STATIC_DARKENING:  # and parent_obj != None:
+		static_darkening(pic_c, ii, g_obj)  # OBS ALSO overwrites the static image AND changes pic copy
+	if P.A_FIRING_BRIGHTNESS and g_obj.__class__.__name__ != 'Ship':  # temp?
+		fire_brightness(pic_c, ii, g_obj)
 
 	if P.A_SAIL_HEIGHTS_TROUGHS_TRANSFORM and g_obj.__class__.__name__ == 'Sail':
-		pic = g_obj.apply_heights_troughs_transform(pic_c, ii)
+		g_obj.apply_heights_troughs_transform(pic_c, ii)  # changes the pic copy
 
 	M = cv2.getAffineTransform(t0, t1)
 	dst = cv2.warpAffine(pic_c, M, (int(g_obj.tri_ext['max_ri']), int(g_obj.tri_ext['max_do'])))
@@ -65,7 +67,7 @@ def decrement_all_index_im_ax(index_removed, ships, waves):
 				wave.index_im_ax -= 1
 
 
-def change_brightness_contrast(pic, ii, g_obj):
+def static_darkening(pic, ii, g_obj):
 	"""
 	R   G   B   !   !   !
 	https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
@@ -80,32 +82,13 @@ def change_brightness_contrast(pic, ii, g_obj):
 	if g_obj.__class__.__name__ != 'Sail':  # TEMP
 		return pic
 
-	# HARDCODED UPDATES (ONLY DARKENING) =================
-	if P.A_HARDCODED_DARKENING == 1:
-		ship_ab_at_clock = g_obj.ship.gi['alpha_and_bright'][g_obj.ship.ab_clock]
-		if ii == ship_ab_at_clock[0]:
+	ship_ab_at_clock = g_obj.ship.gi['alpha_and_bright'][g_obj.ship.ab_clock]
+	if ii == ship_ab_at_clock[0]:
 
-			# brightness TODO: will need lots of tuning
-			g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] * ship_ab_at_clock[2]
-			g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
-			g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
-
-	# FIRING UPDATES = ===================
-	if ii in g_obj.ship.gi['firing_frames']:
-		ex = 1.84
-		# if iii in firing_frames:
-		# 	ex = 0.84  # decrease in green and blue
-		# pic = _s.pic.copy()  # REQUIRED
-		pic[:, :, 0] = pic[:, :, 0] * ex  # more y=more red, less=more green
-		pic[:, :, 0][pic[:, :, 0] > 1.0] = 1.0
-		pic[:, :, 1] = pic[:, :, 1] * ex   # more y=more green, less=more red
-		pic[:, :, 1][pic[:, :, 1] > 1.0] = 1.0
-		pic[:, :, 2] = pic[:, :, 2] * ex  # Needed to complement red and green
-		pic[:, :, 2][pic[:, :, 2] > 1.0] = 1.0
-
-
-
-	aa = 5
+		# brightness TODO: will need lots of tuning
+		g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] * ship_ab_at_clock[2]
+		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
+		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
 
 	# HSV (perhaps not needed)
 	# img = ship_pic
@@ -128,6 +111,24 @@ def change_brightness_contrast(pic, ii, g_obj):
 
 	return pic
 
+
+def fire_brightness(pic, ii, g_obj):
+
+	if g_obj.__class__.__name__ not in ['Sail', 'Wave']:  # TEMP
+		return pic
+
+	# FIRING UPDATES = ===================
+	if ii in g_obj.ship.gi['firing_frames']:
+		ex = 5.84
+		# if iii in firing_frames:
+		# 	ex = 0.84  # decrease in green and blue
+		# pic = _s.pic.copy()  # REQUIRED
+		pic[:, :, 0] = pic[:, :, 0] * ex  # more y=more red, less=more green
+		pic[:, :, 0][pic[:, :, 0] > 1.0] = 1.0
+		pic[:, :, 1] = pic[:, :, 1] * ex  # more y=more green, less=more red
+		pic[:, :, 1][pic[:, :, 1] > 1.0] = 1.0
+		pic[:, :, 2] = pic[:, :, 2] * ex  # Needed to complement red and green
+		pic[:, :, 2][pic[:, :, 2] > 1.0] = 1.0
 
 
 def find_all_ax_at_coord():  # probably wont be used

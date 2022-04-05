@@ -3,11 +3,15 @@ import numpy as np
 from src.layers.abstract import AbstractLayer
 from src.gen_extent_triangles import *
 from src.gen_alpha import gen_alpha
+from src.trig_functions import _sigmoid
 import P as P
 import random
 
 class Wave(AbstractLayer):
-	"""Some of the sss stuff generated here may overlap with sss """
+	"""
+	OBS waves dont have info, so its included in the class
+	Some of the sss stuff generated here may overlap with sss
+	"""
 
 	def __init__(_s, id, pic):
 		super().__init__()
@@ -22,6 +26,7 @@ class Wave(AbstractLayer):
 		_s.frame_sss = _s.gen_frame_sss()
 		ld_sss = _s.gen_ld_sss()
 		_s.extent, _s.alpha = _s.gen_extent_alpha_wave(ld_sss)  # left_down_log
+		_s.alpha_wave_expl = _s.gen_alpha_wave_expl()
 
 		# _s.frame_ss = _s.frame_sss[0]
 		_s.frame_ss = [_s.frame_sss[0][0], _s.frame_sss[-1][1]]
@@ -110,3 +115,13 @@ class Wave(AbstractLayer):
 		extent = np.asarray(extent_agg)
 		alpha = np.asarray(alpha_agg)
 		return extent, alpha
+
+	def gen_alpha_wave_expl(_s):
+		"""
+		Since alpha is sufficient to make wave brighter when expl happens, there needs to be a
+		sigmoid to provide the amount of alpha given a certain distance to an expl.
+		"""
+		# alpha = gen_alpha(_gi, fun_plot='normal')
+		X = np.arange(0, 1000, 1)  # large: 960
+		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
+		return Y

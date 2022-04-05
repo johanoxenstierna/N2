@@ -53,21 +53,28 @@ if __name__ == '__main__':
 
 	fig, ax = plt.subplots(figsize=(10, 6))
 
-	# X = np.linspace(0, 1, num=50)
-	# Y = _normal(X)
-	# Y = ([sigmoid(x, grad_magn_inv=16//6, x_shift=16//3.6, y_magn=1, y_shift=0.0) for x in X])  # waves
+
 
 	# SMOKA ============
-	X = np.arange(0, 50, 1)  # large: 960
-	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1.2, y_shift=0) for x in X]))  # smoka
+	# X = np.arange(0, 50, 1)  # large: 960
+	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1.2, y_shift=0) for x in X]))  # smoka
 
-	# FIr:
-	X = np.arange(0, 50, 1)  # large: 960
-	Y = sin_exp_experiment(X)
+	# # FIr:
+	# X = np.arange(0, 50, 1)  # large: 960
+	# Y = sin_exp_experiment(X)
 	'''
 	Need do create candidate list and check mass and see whether there are too many 
 	fires per moving average unit. 
 	'''
+
+	# WAVE alpha ============
+	# X = np.arange(0, 23)
+	# Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])
+	# Y = ([_sigmoid(x, grad_magn_inv=16//6, x_shift=16//3.6, y_magn=1, y_shift=0.0) for x in X])  # waves
+
+	## WAVE expl (X is distance and Y is alpha) ==============
+	X = np.arange(0, 1000, 1)  # large: 960
+	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
 
 	ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])
