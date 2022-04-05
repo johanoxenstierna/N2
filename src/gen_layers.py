@@ -7,6 +7,7 @@ from src.layers.sail import Sail
 from src.layers.smoke import Smoke
 from src.layers.wave import Wave
 from src.layers.expl import Expl
+from src.layers.spl import Spl
 
 class GenLayers:
 
@@ -82,6 +83,15 @@ class GenLayers:
             for expl_id, expl_pic in self.pics['ships'][ship_id]['expls'].items():
                 expl = Expl(expl_id, expl_pic, ships[ship_id], ch)
                 ships[ship_id].expls[expl.id] = expl
+
+        return ships
+
+    def gen_spls(self, ax, im_ax, ships, ch):
+
+        for ship_id in ships:
+            for spl_id, spl_pic in self.pics['ships'][ship_id]['spls'].items():
+                spl = Spl(spl_id, spl_pic, ships[ship_id], ch)
+                ships[ship_id].spls[spl.id] = spl
 
         return ships
 

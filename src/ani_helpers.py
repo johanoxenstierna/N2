@@ -60,6 +60,10 @@ def decrement_all_index_im_ax(index_removed, ships, waves):
 			if expl.index_im_ax != None:
 				if expl.index_im_ax > index_removed:
 					expl.index_im_ax -= 1
+		for spl in ship.spls.values():
+			if spl.index_im_ax != None:
+				if spl.index_im_ax > index_removed:
+					spl.index_im_ax -= 1
 
 	for wave in waves.values():
 		if wave.index_im_ax != None:
@@ -114,12 +118,13 @@ def static_darkening(pic, ii, g_obj):
 
 def fire_brightness(pic, ii, g_obj):
 
-	if g_obj.__class__.__name__ not in ['Sail', 'Wave']:  # TEMP
+	if g_obj.__class__.__name__ not in ['Sail', 'Wave', 'Smoke']:
 		return pic
 
 	# FIRING UPDATES = ===================
 	if ii in g_obj.ship.gi['firing_frames']:
-		ex = 5.84
+		# ex = 5.84
+		ex = np.random.rand() * 2 + 1  # TODO: Perhaps make this more fancy.
 		# if iii in firing_frames:
 		# 	ex = 0.84  # decrease in green and blue
 		# pic = _s.pic.copy()  # REQUIRED

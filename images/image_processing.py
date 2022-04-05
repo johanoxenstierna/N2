@@ -264,7 +264,7 @@ for folder_name_outer in folder_names_outer:
                         process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
                 imsave('./images/processed/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name, pic)
 
-    else:  # WAVES and EXPLS (not nested)
+    else:  # WAVES, EXPLS, SPLS (not nested)
         for file_name in file_names_inner:
 
             file_name_split = file_name.split('_')

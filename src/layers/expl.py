@@ -23,18 +23,13 @@ class Expl(AbstractLayer, AbstractSSS):
 		_s.TRACER_L_R = _s.gi['tracer_l_r']
 		_s.TRACER_PROB = 0.1  # more = more tracer
 
-	def get_extent_expl(_s):
+	def comp_extent_alpha_expl(_s):
 		left = _s.ship.extent[_s.frame_ss[0]][0] + _s.gi['offset'][0] + \
 		       random.randint(-_s.gi['offset_rand'][0], _s.gi['offset_rand'][0])
 		right = left + _s.pic.shape[1]
 		down = _s.ship.extent[_s.frame_ss[0]][2] + _s.gi['offset'][1] + \
 		       random.randint(-_s.gi['offset_rand'][1], _s.gi['offset_rand'][1])
 		up = down - _s.pic.shape[0]
-
-		# _s.extent = np.array([[left, right, down, up], [left, right, down, up], [left, right, down, up]])
-
-		aa = [1, 2]
-		bb = [[1, 2], [1, 2]]
 
 		_s.extent = [[left, right, down, up]] #* _s.NUM_FRAMES_EXPL
 		_s.extent = np.asarray(_s.extent * _s.NUM_FRAMES_EXPL)

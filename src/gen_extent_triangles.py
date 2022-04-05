@@ -87,6 +87,7 @@ def gen_triangles(extent_t, extent, gi, pic):
     padding returned, NOT shape after warpAffine obviously since this is not known at this stage
     tri_base not the same as tris (u f* idiot) A REFERENCE TO ORIG SCALE NEEDED.
     Mask is not part of warp!
+    TODO: check whether this works for
     """
 
     # 1 BUILD TRIANGLES in extent_t domain ==============================
@@ -229,5 +230,16 @@ def shift_triangles(tris, gi, extent_t, tri_ext):
     #         tri[2, 0] += shift_le
 
     return tris
+
+
+def gen_extent_normal():
+    """
+    Only used for spl currently, i.e. for objects that are stationary but grows and shrinks according
+    to a scaling sequence that follows something that looks like a normal distribution
+    It's currently just set up for set_extent (which might work since it's dark where spls happen), but a
+    todo is to merge this into the generic gen_extent function.
+    """
+
+    pass
 
 

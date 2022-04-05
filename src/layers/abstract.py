@@ -23,6 +23,7 @@ class AbstractLayer:
         # _s.frame_ss_start_offset = None
         _s.index_im_ax = None
         _s.pic = None
+        _s.extent = "asdf"
 
     def set_clock(_s, i):
         """

@@ -1,8 +1,10 @@
 """
 warpAffine current solution: The extent of the warp is always by the maximum triangle value.
 WARP AFFINE DOES NOT WORK WITH NEGATIVE VALUES!!!! CANNOT WARP TO NEGATIVE VALUE (PIC WILL JUST DISSAPEAR)
+OBS d e c r e m e n t _ a l l _ i n d e x _ i m _ a x (index_removed, ships, waves)  FOROGT 5 times
 
 gi: general info. OBS is unique to each layer
+spl kept separate from expl cuz spl lasts much longer
 
 im_ax li: 2.9  35 min/vid
 """
@@ -53,6 +55,9 @@ if P.A_SMOKAS:
 if P.A_EXPLS:  # all expls put in for each ship (convenient and memory cheap)
     ships = g.gen_expls(ax, im_ax, ships, ch)
 
+if P.A_SPLS:  # all expls put in for each ship (convenient and memory cheap)
+    ships = g.gen_spls(ax, im_ax, ships, ch)
+
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
@@ -90,16 +95,16 @@ def animate(i):
             if i in ship.gi['firing_frames']:
                 expl = ship.find_free_obj(type='expl')
                 if expl != None:
-                    expl.drawn = 4  # this variable can serve multiple purposes (see below, and in set_clock)
+                    expl.drawn = 1  # this variable is needed to avoid the frame_ss check
                     expl.frame_ss[0] = i
                     expl.frame_ss[1] = i + expl.NUM_FRAMES_EXPL
-                    expl.get_extent_expl()
+                    expl.comp_extent_alpha_expl()
                 else:
                     prints += "  no free expl"
 
             for expl_id, expl in ship.expls.items():
 
-                if expl.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
+                if expl.drawn != 0:  # same 1 from above gatekeeper used here but REMEMBER 4 might be necessary.
                     expl.set_clock(i)
                     drawBool, index_removed = expl.ani_update_step(ax, im_ax)
                     if drawBool == 0:
@@ -111,30 +116,58 @@ def animate(i):
                     # im_ax[expl.index_im_ax].set_extent(expl.extent)
                     im_ax[expl.index_im_ax].set_extent(expl.extent[expl.clock])
                     im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
+                    # Perhaps it won't be needed if 3 frames is not too much for expl (when tracer not used).
                     im_ax[expl.index_im_ax].set_zorder(999)  # TEMP
 
-            '''
-            Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
-            ax object (especially when the special red explosions start (fire)).
-            expl only needs to be displayed 1-5 frames (e.g. tracer), but it still needs to be added and then removed from im_ax.
-            However, it will appear toward the end of im_ax so decrementing im_ax will be cheap. 
-            frame_sss for expls could be pre-computed, but there STILL needs to be a check to see if an expl is 
-            available for drawing (otherwise one has to find the lower bound on number of expls and produce
-            a corresponding number of im_ax's i.e. pictures, which is totally illegit om this implementation
-            since pics are pre-loaded).
-            Thus expls frames are computed dynamically. Instead of frame_ss, if i corresponds to ship firing_frame, 
-            pick free expl instance at random (each ship has 4) to display and coord from expl xtra info. 
-            The expl instance contains a clock variable that checks how many frames the expl has been active for.  
-            This and its coord are then used by smokes, sails, waves to update brightness_contrast.
-            Amount should be inverse sigmoid of the distance to the expl + min-max-scaling. The centroid of 
-            the layer at frame i can be obtained using layer.extent
-            Only certain pixels for the ships should be affected and they are precomputed. 
-            '''
+        '''
+        Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
+        ax object (especially when the special red explosions start (fire)).
+        expl only needs to be displayed 1-5 frames (e.g. tracer), but it still needs to be added and then removed from im_ax.
+        However, it will appear toward the end of im_ax so decrementing im_ax will be cheap. 
+        frame_sss for expls could be pre-computed, but there STILL needs to be a check to see if an expl is 
+        available for drawing (otherwise one has to find the lower bound on number of expls and produce
+        a corresponding number of im_ax's i.e. pictures, which is totally illegit om this implementation
+        since pics are pre-loaded).
+        Thus expls frames are computed dynamically. Instead of frame_ss, if i corresponds to ship firing_frame, 
+        pick free expl instance at random (each ship has 4) to display and coord from expl xtra info. 
+        The expl instance contains a clock variable that checks how many frames the expl has been active for.  
+        This and its coord are then used by smokes, sails, waves to update brightness_contrast.
+        Amount should be inverse sigmoid of the distance to the expl + min-max-scaling. The centroid of 
+        the layer at frame i can be obtained using layer.extent
+        Only certain pixels for the ships should be affected and they are precomputed. 
+        '''
+
+        if P.A_SPLS:
+            if i in ship.gi['firing_frames']:  # add rand
+                spl = ship.find_free_obj(type='spl')
+                if spl != None:
+                    spl.drawn = 4  # this variable is needed to avoid the frame_ss check
+                    spl.frame_ss[0] = i
+                    spl.frame_ss[1] = i + spl.NUM_FRAMES_SPL
+                    spl.comp_extent_alpha_spl()
+                else:
+                    prints += "  no free spl"
+
+            for spl_id, spl in ship.spls.items():
+
+                if spl.drawn != 0:  # same 1 from above gatekeeper used here but REMEMBER 4 might be necessary.
+                    spl.set_clock(i)
+                    drawBool, index_removed = spl.ani_update_step(ax, im_ax)
+                    if drawBool == 0:
+                        continue
+                    elif drawBool == 2:
+                        decrement_all_index_im_ax(index_removed, ships, waves)
+                        continue
+
+                    im_ax[spl.index_im_ax].set_extent(spl.extent[spl.clock])
+                    im_ax[spl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
+                    im_ax[spl.index_im_ax].set_zorder(999)  # TEMP
+
 
         if P.A_SAILS:
             '''
             TODO implement queue system. Not needed if same sail used for all the frames that ship shown.
-            Might be difficult due to movement black.   
+            Might be difficult due to movement black though.   
             '''
             for sail_id, sail in ships[ship_id].sails.items():
 
@@ -177,7 +210,7 @@ def animate(i):
     if P.A_WAVES:  # no queue needed here since they
         '''
         No need to iterate through all ships and their expls for all waves, so instead a ship 
-        is picked at random for each wave and it brightness is computed based on distance to the expl 
+        is picked at random for each wave and its brightness is computed based on distance to the expl 
         '''
         for wave_id, wave in waves.items():
             if i == 15:
@@ -199,7 +232,6 @@ def animate(i):
                 ship_ld = np.asarray([ship__.extent[i][0], ship__.extent[i][2]])
                 wave_ld = np.asarray([wave.extent[wave.clock][0], wave.extent[wave.clock][2]])
                 distance = int(np.linalg.norm(ship_ld - wave_ld))
-                # alpha =
                 im_ax[wave.index_im_ax].set_alpha(wave.alpha_wave_expl[distance])
 
 

@@ -19,7 +19,7 @@
   "splash_zones": [],
   "explosion_offset": [],
   "smoka_id": "",
-  "smoka_init_frames": [2],
+  "smoka_init_frames": [2, 5, 10, 15],
   "brightness_frame_value": [],
   "xtra_init_frames": [],
   "zorder": 5,
@@ -43,6 +43,7 @@
       "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
       "d1": "zorder should be constant?"},
     "7_expls": {"offset": [70, -20], "offset_rand": [30, 5], "y_mid": 1, "tracer_l_r": "left",
-      "d": "info for all expls. All ships get all expls. "}
-  }
+      "d": "info for all expls. All ships get all expls. "},
+    "7_spls": {"offset": [170, -20], "offset_rand": [30, 5], "y_mid": 1}
+    }
 }

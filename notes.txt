@@ -1,6 +1,8 @@
 t:
-76
+88
 
 log:
 42: wind transforms achieved.
 68: waves fixed
+84: expls tracers
+88: spls

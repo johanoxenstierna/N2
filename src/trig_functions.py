@@ -3,6 +3,7 @@
 
 from scipy.stats import chi2
 from scipy.stats import norm
+from scipy.stats import gamma
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.lines as lines
@@ -72,9 +73,21 @@ if __name__ == '__main__':
 	# Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])
 	# Y = ([_sigmoid(x, grad_magn_inv=16//6, x_shift=16//3.6, y_magn=1, y_shift=0.0) for x in X])  # waves
 
-	## WAVE expl (X is distance and Y is alpha) ==============
-	X = np.arange(0, 1000, 1)  # large: 960
-	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
+	# ## WAVE expl (X is distance and Y is alpha) ==============
+	# X = np.arange(0, 1000, 1)  # large: 960
+	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
+
+	# SPL extent =============
+	X = np.arange(0, 50)
+	# Y = _normal(X, mean=len(X) // 3, var=len(X) // 4, y_range=[0, 0.999])
+	a = 1.99
+	x = np.linspace(gamma.ppf(0.01, a),
+	                gamma.ppf(0.99, a), 50)
+	X = np.linspace(0, 16)
+	Y = gamma.pdf(X, 2)
+	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	# Y = chi2.pdf(X / 2, 4)
+
 
 	ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])

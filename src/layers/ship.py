@@ -34,6 +34,7 @@ class Ship(AbstractLayer):
         _s.smokas = {}
         _s.smokrs = {}
         _s.expls = {}
+        _s.spls = {}
 
     def fill_info(_s):
         """
@@ -90,8 +91,8 @@ class Ship(AbstractLayer):
         #     _di = _s.smokrs
         elif type == 'smoka':
             _di = _s.smokas
-        # elif type == 'spls':
-        #     _di = _s.spls
+        elif type == 'spl':
+            _di = _s.spls
         li_ids = list(_di.keys())
         random.shuffle(li_ids)
         for key in li_ids:

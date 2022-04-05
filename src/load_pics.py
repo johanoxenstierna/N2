@@ -7,7 +7,7 @@ def load_pics():
 
     pics = {}
     pics['waves'] = {}
-    pics['spls'] = {}
+    # pics['spls'] = {}
     pics['ships'] = {}
     # pics['xtra'] = {}
     # pics['smokas'] = {}
@@ -56,6 +56,7 @@ def load_pics():
         pics['ships'][folder_name]['sails'] = {}
         pics['ships'][folder_name]['smokas'] = {}
         pics['ships'][folder_name]['expls'] = {}
+        pics['ships'][folder_name]['spls'] = {}
         _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
         for file_name in file_names:
             name_split = file_name.split('_')
@@ -96,10 +97,16 @@ def load_pics():
         pic = imread(PATH + file_name)
         for ship_id, ship in pics['ships'].items():
             for i in range(P.NUM_EXPLS):
-                # pics['ships'][folder_name]['smokas'][file_name[:-4] + '_' + str(i)] = imread(
-                #     PATH + '/' + folder_name + '/' + file_name)
                 ship['expls'][file_name[:-4] + '_' + str(i)] = pic
-        # pics['expls'][file_name[:-4]] = imread(PATH + file_name)  # without .png
+
+    # COPIES OF THE SAME SPL ARE ADDED TO EACH SHIP
+    PATH = './images/processed/spls/'
+    _, _, file_names = os.walk(PATH).__next__()
+    for file_name in file_names:
+        pic = imread(PATH + file_name)
+        for ship_id, ship in pics['ships'].items():
+            for i in range(P.NUM_EXPLS):
+                ship['spls'][file_name[:-4] + '_' + str(i)] = pic
     aa = 5
     #
     # PATH = './images/processed/xtra/'

@@ -85,7 +85,10 @@
             "explosion_offset": [],
             "smoka_id": "",
             "smoka_init_frames": [
-                2
+                2,
+                5,
+                10,
+                15
             ],
             "brightness_frame_value": [],
             "xtra_init_frames": [],
@@ -176,6 +179,17 @@
                     "y_mid": 1,
                     "tracer_l_r": "left",
                     "d": "info for all expls. All ships get all expls. "
+                },
+                "7_spls": {
+                    "offset": [
+                        170,
+                        -20
+                    ],
+                    "offset_rand": [
+                        30,
+                        5
+                    ],
+                    "y_mid": 1
                 }
             }
         }
