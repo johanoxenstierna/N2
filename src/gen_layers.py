@@ -61,7 +61,7 @@ class GenLayers:
                     ships[ship_id].sails[sail.id] = sail
         return ships
 
-    def gen_smokes(self, ax, im_ax, ships, ch, type='both'):
+    def gen_smokas(self, ax, im_ax, ships, ch):
         """
         OBS difference to waves is that here one object is created
         ch needed to trigger when smoke to launch
@@ -72,6 +72,21 @@ class GenLayers:
 
                 smoka = Smoke(smoka_id, smoka_pic, ships[ship_id], ch, type='a')
                 ships[ship_id].smokas[smoka.id] = smoka
+
+
+
+        return ships
+
+    def gen_smokrs(self, ax, im_ax, ships, ch, type='both'):
+        """
+        OBS difference to waves is that here one object is created
+        ch needed to trigger when smoke to launch
+        """
+        for ship_id in ships:  # ships is a key-val dict
+
+            for smokr_id, smokr_pic in self.pics['ships'][ship_id]['smokrs'].items():
+                smokr = Smoke(smokr_id, smokr_pic, ships[ship_id], ch, type='r')
+                ships[ship_id].smokrs[smokr.id] = smokr
 
         return ships
 

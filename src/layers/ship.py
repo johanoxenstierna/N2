@@ -19,7 +19,7 @@ class Ship(AbstractLayer):
         _s.fill_info()
         _s.frame_ss = ship_info['move']['frame_ss']
         _s.frames_tot = _s.gi['move']['frame_ss'][1] - _s.gi['move']['frame_ss'][0]
-        _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, padded=False)  # left_down_log
+        _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic)  # left_down_log
         _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
             gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
         assert(len(_s.extent) == len(_s.tris))
@@ -87,8 +87,8 @@ class Ship(AbstractLayer):
         _di = None
         if type == 'expl':
             _di = _s.expls
-        # elif type == 'smokrs':
-        #     _di = _s.smokrs
+        elif type == 'smokr':
+            _di = _s.smokrs
         elif type == 'smoka':
             _di = _s.smokas
         elif type == 'spl':

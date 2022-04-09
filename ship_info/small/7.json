@@ -10,9 +10,10 @@
   "move_vector": [],
   "move": {"d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
     "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
-    "ld_ss": [[100, 270], [100, 270]],
+    "ld_ss": [[100, 270], [120, 270]],
     "scale_ss": [1.0, 1.0],
     "y_mid": 1,
+    "d2": "Not sure y_mid needed since you specify ld_ss, so higher down value means object will appear to grow downward",
     "frame_ss": [1, 250],
     "roll_cycles": 5
   },
@@ -20,6 +21,7 @@
   "explosion_offset": [],
   "smoka_id": "",
   "smoka_init_frames": [2, 5, 10, 15],
+  "smokr_lr": "left",
   "brightness_frame_value": [],
   "xtra_init_frames": [],
   "zorder": 5,
@@ -39,11 +41,16 @@
       "sh_ver_incr": 0.003, "sh_hor_incr": 0.11,
       "alpha_diff": 0.71,
       "d": ""},
-    "7_a_0": {"offset": [65, -20] ,"zorder": 7, "y_mid": 1,
+    "7_a_0": {"ld_offset_ss": [[65, -20], [-80, 50]],"ld_offset_rand_ss": [[10, 5], [5, 20]],
+      "scale_ss": [0.1, 1.0], "zorder": 7, "y_mid": 1,
       "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
-      "d1": "zorder should be constant?"},
-    "7_expls": {"offset": [70, -20], "offset_rand": [30, 5], "y_mid": 1, "tracer_l_r": "left",
-      "d": "info for all expls. All ships get all expls. "},
-    "7_spls": {"offset": [170, -20], "offset_rand": [30, 5], "y_mid": 1}
+      "d1": "zorder should be constant? OBS each smoka here is manually defined. OBS rand values are positive here! (turned neg later)"},
+    "7_smokrs": {"ld_offset_ss": [[65, -20], [0, 0]],"ld_offset_rand_ss": [[10, 5], [5, 20]],
+      "scale_ss": "abstractSS","zorder": 7, "y_mid": 1},
+    "7_expls": {"ld_offset_ss": [[70, -20], [70, -20]], "ld_offset_rand_ss": [[30, 5], [null, null]],
+      "y_mid": 1, "tracer_l_r": "left",
+      "scale_ss": "abstractSS" ,"d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"},
+    "7_spls": {"ld_offset_ss": [[70, -20], [70, -20]], "ld_offset_rand_ss": [[30, 5], [10, 5]], "y_mid": 1,
+    "scale_ss": "abstractSS"}
     }
 }

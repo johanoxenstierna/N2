@@ -24,11 +24,12 @@ class Expl(AbstractLayer, AbstractSSS):
 		_s.TRACER_PROB = 0.1  # more = more tracer
 
 	def comp_extent_alpha_expl(_s):
-		left = _s.ship.extent[_s.frame_ss[0]][0] + _s.gi['offset'][0] + \
-		       random.randint(-_s.gi['offset_rand'][0], _s.gi['offset_rand'][0])
+		"""Has to be unique for expl since it changes pattern through frames"""
+		left = _s.ship.extent[_s.frame_ss[0]][0] + _s.gi['ld_offset_ss'][0][0] + \
+		       random.randint(-_s.gi['ld_offset_rand_ss'][0][0], _s.gi['ld_offset_rand_ss'][0][0])
 		right = left + _s.pic.shape[1]
-		down = _s.ship.extent[_s.frame_ss[0]][2] + _s.gi['offset'][1] + \
-		       random.randint(-_s.gi['offset_rand'][1], _s.gi['offset_rand'][1])
+		down = _s.ship.extent[_s.frame_ss[0]][2] + _s.gi['ld_offset_ss'][0][1] + \
+		       random.randint(-_s.gi['ld_offset_rand_ss'][0][1], _s.gi['ld_offset_rand_ss'][0][1])
 		up = down - _s.pic.shape[0]
 
 		_s.extent = [[left, right, down, up]] #* _s.NUM_FRAMES_EXPL

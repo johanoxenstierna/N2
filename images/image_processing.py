@@ -190,6 +190,7 @@ def process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS):
 
     '''
     This creates several masks and each mask moves closer to the centroid of the pic
+    and each mask r
     '''
     for i in range(NUM_TOTAL_CONTOURS):
         mask_output0 = np.zeros(pic[:, :, 3].shape)
@@ -209,7 +210,7 @@ def process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS):
     mask_output = sum(mask_outputs)
     min_max_range = [0.2, 1.0]
     if file_name_split[1] == 'a':
-        min_max_range = [0.1, 1.0]
+        min_max_range = [0.2, 1.0]
     mask_output = min_max_normalization(mask_output, min_max_range)
     mask_output = cv2.GaussianBlur(mask_output, (7, 7), sigmaX=5, sigmaY=5)
     pic[:, :, 3] = pic[:, :, 3] * mask_output  # the multiplication makes sure that anything that should be zero is
@@ -264,7 +265,7 @@ for folder_name_outer in folder_names_outer:
                         process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
                 imsave('./images/processed/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name, pic)
 
-    else:  # WAVES, EXPLS, SPLS (not nested)
+    else:  # WAVES, EXPLS, SPLS, SMOKRS (not nested)
         for file_name in file_names_inner:
 
             file_name_split = file_name.split('_')

@@ -1,39 +1,54 @@
 import numpy as np
 from copy import deepcopy
 
-def gen_extent(gi, pic, padded=False):
+def gen_extent(gi, pic, scale_vector=(), lds_vec=()):
     """
     left right down up
     returns linear motion extent through time
     extent_t is the same thing but shifted to origin at tl (since tri's have origin there).
     extent_t == UNSHIFTED FRAME
+    OBS this only has capability to grow objects to the right, so left smokrs need modification to look good.
     """
 
     frame_num = gi['frame_ss'][1] - gi['frame_ss'][0]
     # y_mid = gi['y_mid']
 
-    # LEFT BOTTOM POSITION THROUGH TIME: for now only allowed for growing objects (smokes) ================
-    if gi['y_mid'] < 1.0:  # the object is not scaled completely from bottom up
-        assert(gi['ld_ss'][1][1] == None)
-
-        #How Much Would Height Increase If Y_mid Was 1.0: hmw.  How much actual up: hmau. How much actual down: hmad
-        height_at_beg = gi['scale_ss'][0] * pic.shape[0]
-        height_at_end = gi['scale_ss'][1] * pic.shape[0]
-        hmw = height_at_end - height_at_beg  # ONLY WORKS WITH GROWING SCALE
-        hmau = gi['y_mid'] * hmw
-        hmad = (1 - gi['y_mid']) * hmw
-        down_stop = gi['ld_ss'][0][1] + hmad
-        gi['ld_ss'][1][1] = down_stop
-        lds_log = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)
-        aa = 6
-    else:
-        lds_log = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)  # left downs through time
-
+    # # LEFT BOTTOM POSITION THROUGH TIME: for now only allowed for growing objects (smokes) ================
+    # if gi['y_mid'] < 1.0:  # the object is not scaled completely from bottom up
+    #     assert(gi['ld_ss'][1][1] == None)  # since down stop value is unknown
+    #     '''Doesnt make sense when I can just move the object down (and left) using ld_ss
+    #     Send in lds_vec instead
+    #     '''
+    #
+    #     # #How Much Would Height Increase If Y_mid Was 1.0: hmw.  How much actual up: hmau. How much actual down: hmad
+    #     # height_at_beg = gi['scale_ss'][0] * pic.shape[0]
+    #     # height_at_end = gi['scale_ss'][1] * pic.shape[0]
+    #     # hmw = height_at_end - height_at_beg  # ONLY WORKS WITH GROWING SCALE
+    #     # hmau = gi['y_mid'] * hmw
+    #     # hmad = (1 - gi['y_mid']) * hmw
+    #     # down_stop = gi['ld_ss'][0][1] + hmad
+    #     # gi['ld_ss'][1][1] = down_stop
+    #     # lds_vec = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)
+    #     # aa = 6
+    # else:
+    #
+    # lds_vec = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)  # left downs through time
     extent = np.zeros((frame_num, 4))  # left, right, bottom, top borders
     extent_t = np.zeros((frame_num, 4))  # left, right, bottom, top borders
 
     # SCALING =============
-    scale_vector = np.linspace(gi['scale_ss'][0], gi['scale_ss'][1], frame_num)
+    if len(scale_vector) > 0:
+        scale_vector = scale_vector
+    else:
+        assert(gi['scale_ss'] != "abstractSS")
+        scale_vector = np.linspace(gi['scale_ss'][0], gi['scale_ss'][1], frame_num)
+
+    if len(lds_vec) > 0:
+        lds_vec = lds_vec
+    else:
+        lds_vec = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)  # left downs through time
+
+
     width = pic.shape[1]
     height = pic.shape[0]
 
@@ -42,12 +57,12 @@ def gen_extent(gi, pic, padded=False):
         width_m = width * scale_vector[i]
         height_m = height * scale_vector[i]
 
-        extent[i] = [lds_log[i, 0],  # left
-                     lds_log[i, 0] + width_m,  # right
-                     # lds_log[i, 1] + (1 - y_mid) * height_m,  # down
-                     lds_log[i, 1] + 0,  # down
-                     # lds_log[i, 1] - y_mid * height_m  # up
-                     lds_log[i, 1] - height_m  # up
+        extent[i] = [lds_vec[i, 0],  # left
+                     lds_vec[i, 0] + width_m,  # right
+                     # lds_vec[i, 1] + (1 - y_mid) * height_m,  # down
+                     lds_vec[i, 1] + 0,  # down
+                     # lds_vec[i, 1] - y_mid * height_m  # up
+                     lds_vec[i, 1] - height_m  # up
                      ]
 
         extent_t[i] = [extent[i, 0] - extent[0, 0],  # left
@@ -64,21 +79,21 @@ def gen_extent(gi, pic, padded=False):
 
     # DEPR because only tris shifted.
     # # UNSHIFT WHEN EXTENT FRAME IS LARGER THAN WHAT IS PERMITTED BY LDS_LOG
-    # diff_do = extent[0, 2] - lds_log[0, 1]  # if the first tri wants to go further down than what lds_log permits
+    # diff_do = extent[0, 2] - lds_vec[0, 1]  # if the first tri wants to go further down than what lds_vec permits
     # if diff_do > 0:  # This means y_mid is less than 1
     #     # extent[:, 2] -= diff_do
     #     # extent[:, 3] -= diff_do
     #     extent_t[:, 2] -= diff_do
     #     extent_t[:, 3] -= diff_do
     #
-    # diff_le = extent[0, 0] - lds_log[0, 0]  # if the first tri wants to go further  than what lds_log permits
+    # diff_le = extent[0, 0] - lds_vec[0, 0]  # if the first tri wants to go further  than what lds_vec permits
     # if diff_le > 0:  # This means y_mid is less than 1
     #     # extent[:, 2] -= diff_le
     #     # extent[:, 3] -= diff_le
     #     extent_t[:, 2] -= diff_le
     #     extent_t[:, 3] -= diff_le
 
-    return extent, extent_t, lds_log, scale_vector
+    return extent, extent_t, lds_vec, scale_vector
 
 
 def gen_triangles(extent_t, extent, gi, pic):

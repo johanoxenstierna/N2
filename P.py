@@ -11,10 +11,11 @@ FRAMES_TOT = FRAMES_STOP - FRAMES_START
 A_AFFINE_TRANSFORM = 1
 A_SAILS = 0
 A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 0
-A_SMOKAS = 0
+A_SMOKAS = 1
+A_SMOKRS = 1
 A_WAVES = 0
-A_EXPLS = 1
-A_SPLS = 1
+A_EXPLS = 0
+A_SPLS = 0
 # A_HSV_TRANSFORM = 1  # REMOVED  replaced with below
 A_STATIC_DARKENING = 1
 A_FIRING_BRIGHTNESS = 0
@@ -22,7 +23,8 @@ A_FIRING_BRIGHTNESS = 0
 PR_MOVE_BLACK = 0  # what to pre-compute
 
 NUM_WAVES = 7  # NUM per pic!!!
-NUM_SMOKAS = 5
+NUM_SMOKAS = 1
+NUM_SMOKRS = 1
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
 NUM_SPLS = 1  # capability for >1 there but might not be needed
 

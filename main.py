@@ -50,7 +50,10 @@ if P.A_SAILS:
     ships = g.gen_sails(ax, im_ax, ships)
 
 if P.A_SMOKAS:
-    ships = g.gen_smokes(ax, im_ax, ships, ch, type='a')
+    ships = g.gen_smokas(ax, im_ax, ships, ch)
+
+if P.A_SMOKRS:
+    ships = g.gen_smokrs(ax, im_ax, ships, ch)
 
 if P.A_EXPLS:  # all expls put in for each ship (convenient and memory cheap)
     ships = g.gen_expls(ax, im_ax, ships, ch)
@@ -142,14 +145,17 @@ def animate(i):
                 spl = ship.find_free_obj(type='spl')
                 if spl != None:
                     spl.drawn = 4  # this variable is needed to avoid the frame_ss check
-                    spl.frame_ss[0] = i
-                    spl.frame_ss[1] = i + spl.NUM_FRAMES_SPL
-                    spl.comp_extent_alpha_spl()
+
+                    spl.init_dyn_obj(i, spl.NUM_FRAMES_SPL)
+                    spl.gen_dyn_extent_alpha()
+
                 else:
                     prints += "  no free spl"
 
             for spl_id, spl in ship.spls.items():
-
+                '''NEED WARP_AFFINE SINCE COLOR OF SPL SHOULD CHANGE BASED ON WHETHER ITS OVER SHIP OR NOT
+                ALSO, spl will be part of the fire so need to look good. 
+                '''
                 if spl.drawn != 0:  # same 1 from above gatekeeper used here but REMEMBER 4 might be necessary.
                     spl.set_clock(i)
                     drawBool, index_removed = spl.ani_update_step(ax, im_ax)
@@ -163,6 +169,28 @@ def animate(i):
                     im_ax[spl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
                     im_ax[spl.index_im_ax].set_zorder(999)  # TEMP
 
+        if P.A_SMOKRS:
+            if i in ship.gi['firing_frames']:  # add rand
+                smokr = ship.find_free_obj(type='smokr')
+                if smokr != None:
+                    smokr.drawn = 4  # switch to 1 later
+                    smokr.init_dyn_obj(i, smokr.NUM_FRAMES_SMOKE)
+                    smokr.gen_dyn_extent_alpha()
+
+            for smokr_id, smokr in ship.smokrs.items():
+                if smokr.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
+                    smokr.set_clock(i)
+                    drawBool, index_removed = smokr.ani_update_step(ax, im_ax)
+                    if drawBool == 0:
+                        continue
+                    elif drawBool == 2:
+                        decrement_all_index_im_ax(index_removed, ships, waves)
+                        continue
+                    # im_ax[smokr.index_im_ax].set_extent(smokr.extent[smokr.clock])
+                    warp_affine_and_color(i, ax, im_ax, smokr, ch)  # parent obj required for sail
+
+                    im_ax[smokr.index_im_ax].set_alpha(smokr.alpha[smokr.clock])
+                    im_ax[smokr.index_im_ax].set_zorder(999)
 
         if P.A_SAILS:
             '''
@@ -186,8 +214,8 @@ def animate(i):
             if i in ship.gi['smoka_init_frames']:
                 smoka = ship.find_free_obj(type='smoka')
                 if smoka != None:
-                    smoka.drawn = 4  # this variable can serve multiple purposes (see below, and in set_clock)
-                    smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKA)  # uses AbstractSSS
+                    smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
+                    smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS
                     smoka.gen_dyn_extent_alpha()
                 else:
                     prints += "  no free smoka"
@@ -234,8 +262,6 @@ def animate(i):
                 distance = int(np.linalg.norm(ship_ld - wave_ld))
                 im_ax[wave.index_im_ax].set_alpha(wave.alpha_wave_expl[distance])
 
-
-
     print(prints)
 
     return im_ax  # if run live, it runs until window is closed
@@ -248,7 +274,7 @@ print("len of vid: " + str(sec_vid) + " s" + "    " + str(min_vid) + " min")
 
 start_t = time.time()
 ani = animation.FuncAnimation(fig, animate, frames=range(P.FRAMES_START, P.FRAMES_STOP),
-                              blit=True, interval=1, init_func=init,
+                              blit=True, interval=100, init_func=init,
                               repeat=False)  # interval only affects live ani. blitting seems to make it crash
 
 if WRITE == 0:

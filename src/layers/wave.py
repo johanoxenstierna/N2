@@ -2,7 +2,7 @@ import numpy as np
 
 from src.layers.abstract import AbstractLayer
 from src.gen_extent_triangles import *
-from src.gen_alpha import gen_alpha
+from src.gen_trig_fun import gen_alpha
 from src.trig_functions import _sigmoid
 import P as P
 import random

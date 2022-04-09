@@ -3,6 +3,7 @@ import numpy as np
 import random
 from copy import deepcopy
 from src.gen_extent_triangles import *
+from src.gen_trig_fun import gen_scale
 
 import P
 
@@ -23,6 +24,7 @@ class AbstractLayer:
         # _s.frame_ss_start_offset = None
         _s.index_im_ax = None
         _s.pic = None
+        _s.pic_c = None  # copy of pic (might be useful if set_extent to be used with pic of certain color).
         _s.extent = "asdf"
 
     def set_clock(_s, i):
@@ -77,8 +79,9 @@ class AbstractLayer:
 class AbstractSSS:
     """
     class for all objects that have ship as parent and need to repeat using the queing system
-    (except for waves currently).
-    Hence functions in this class will be called several times in the animation loop.
+    (except for waves currently). AND ONLY for children that do not follow ship movements (Expl, Smoke, Spl).
+    Does not work for sail due to movement black.
+    Functions in this class will be called several times in the animation loop.
     This class takes over all id etc from the child class since theyre needed to sort out gi
     """
 
@@ -91,45 +94,62 @@ class AbstractSSS:
 
 
     def init_dyn_obj(_s, ii, NUM_FRAMES):
-        _s.frame_ss[0] = ii
-        _s.frame_ss[1] = ii + NUM_FRAMES
-        assert(_s.frame_ss[1] < P.FRAMES_STOP)
-        ld_ss = _s.get_ld_ss()  # not used by expl
+        _s.gi['frame_ss'] = [ii, ii + NUM_FRAMES]  # OVERWRITES
+        _s.frame_ss = _s.gi['frame_ss']
+        frame_num = _s.gi['frame_ss'][1] - _s.gi['frame_ss'][0]  # same as in gen_extent
+        assert(_s.gi['frame_ss'][1] < P.FRAMES_STOP)
+        # ld_ss = _s.get_ld_ss()  # not used by expl
+        _s.gi['ld_ss'] = _s.get_ld_ss()
+        if _s.gi['scale_ss'] == "abstractSS":
+            _s.gen_scale_vector(frame_num)  # includes gen_ss (if there is ss its already in info)
+        # else:
+        #     _s.gi['scale_vector'] = np.linspace(_s.gi['scale_ss'][0], _s.gi['scale_ss'])
 
-        _s.scale_ss = [0.1, 1.0]
+        # _s.scale_ss = gets generated when
 
-        _s.gi['frame_ss'] = _s.frame_ss
-        _s.gi['ld_ss'] = ld_ss
-        _s.gi['scale_ss'] = _s.scale_ss
+
+        # _s.gi['scale_ss'] = _s.scale_ss
 
     # def gen_dyn_extent(_s):
     #
     #
 
     def get_ld_ss(_s):
-        """TODO Needs generalization. Probably needs splitting"""
-        extent_ship_at_start = _s.ship.extent[_s.frame_ss[0]]
-        extent_ship_at_stop = _s.ship.extent[_s.frame_ss[1]]
+        """
+
+        """
+        extent_ship_at_start = _s.ship.extent[_s.gi['frame_ss'][0]]
+        # extent_ship_at_stop = _s.ship.extent[_s.frame_ss[1]]  # WTF!
 
         # FIRST SET IT TO BE SAME LD AS SHIP AT FRAME
         ld_ss = [[extent_ship_at_start[0], extent_ship_at_start[2]],
-                 [extent_ship_at_stop[0], extent_ship_at_stop[2]]]
+                 [extent_ship_at_start[0], extent_ship_at_start[2]]]
 
-        # ADD SMOKA OFFSET
-        ld_ss[0][0] += _s.gi['offset'][0]  # this is ld!
-        ld_ss[0][1] += _s.gi['offset'][1]
-        # ld_ss[1][0] += _s.ship.gi['smoka_offset'][0]
-        # ld_ss[1][1] += _s.ship.gi['smoka_offset'][1]
+        # ADD OFFSET
+        ld_ss[0][0] += _s.gi['ld_offset_ss'][0][0]  # this is ld!
+        ld_ss[0][1] += _s.gi['ld_offset_ss'][0][1]
+        ld_ss[1][0] += _s.gi['ld_offset_ss'][1][0]
+        ld_ss[1][1] += _s.gi['ld_offset_ss'][1][1]  # if offset is same at beginning and end == will not move
 
         # ADD RAND
-        ld_ss[0][0] += random.randint(-30, 30)  # left start
-        ld_ss[0][1] += random.randint(-10, 5)  # down  start
-        ld_ss[1][0] = ld_ss[0][0] + random.randint(-150, -100)  # left stop
-        ld_ss[1][1] = ld_ss[0][1] + random.randint(-30, -10)  # down stop
+        left_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][0], _s.gi['ld_offset_rand_ss'][0][0])
+        down_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][1], _s.gi['ld_offset_rand_ss'][0][1])
+        ld_ss[0][0] += left_rand_start
+        ld_ss[0][1] += down_rand_start
+        ld_ss[1][0] += left_rand_start  # same rand for both (which means proportion of pic will be same
+        ld_ss[1][1] += down_rand_start
+
+        if _s.__class__.__name__ == 'Smoke':  # STOPPING VALUE CHANGES
+
+            ld_ss[1][0] += random.randint(-_s.gi['ld_offset_rand_ss'][1][0], _s.gi['ld_offset_rand_ss'][1][0])  # stop left
+            ld_ss[1][1] += random.randint(-_s.gi['ld_offset_rand_ss'][1][1], _s.gi['ld_offset_rand_ss'][1][1])  # stop down
+            # ld_ss[1] = [None, None]
+            aa = 6
 
         return ld_ss
 
-
+    def gen_dyn_extent_alpha(_s):  # overwritten by children
+        pass
 
 
 

@@ -1,5 +1,7 @@
+import numpy as np
+
 from src.gen_extent_triangles import *
-from src.gen_alpha import gen_alpha
+from src.gen_trig_fun import gen_alpha, gen_scale
 from copy import deepcopy
 from src.layers.abstract import AbstractLayer, AbstractSSS
 import random
@@ -10,13 +12,24 @@ class Smoke(AbstractLayer, AbstractSSS):
 	def __init__(_s, id, pic, ship, ch, type):
 		AbstractLayer.__init__(_s)
 
+
 		_s.id = id
+
 		id_split = _s.id.split('_')  # the last index (number of same pictures) needs removing for gi
 		id_gi = id_split[0] + '_' + id_split[1] + '_' + id_split[2]
-		_s.gi = deepcopy(ship.gi['xtras'][id_gi])  # OBS CERTAIN THINGS HERE MUST BE THERE FOR ALL
+
+		if type == 'a':
+			_s.gi = deepcopy(ship.gi['xtras'][id_gi])  # OBS CERTAIN THINGS HERE MUST BE THERE FOR ALL
+		elif type == 'r':
+			_s.gi = deepcopy(ship.gi['xtras'][ship.id + '_smokrs'])
 
 		AbstractSSS.__init__(_s, ship, id, pic)
-		_s.NUM_FRAMES_SMOKA = 50
+		if type == 'a':
+			_s.NUM_FRAMES_SMOKE = 150
+		elif type == 'r':
+			_s.NUM_FRAMES_SMOKE = 50
+
+		_s.type = type
 
 		'''
 		FIXED MAJOR REFACTOR NEEDED. NOT PLAUSIBLE TO PREGEN EVERYTHING FOR SMOKRS (AND EXPLS) and maybe even smokas
@@ -40,14 +53,39 @@ class Smoke(AbstractLayer, AbstractSSS):
 		# _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 		# 	gen_triangles(_s.extent_t, _s.extent, _s.gi, pic)
 
+	def gen_scale_vector(_s, frames_num):
+		"""OBS ONLY USED BY SMOKR"""
+		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale(frames_num, fun_plot='smokr', ld_ss=_s.gi['ld_ss'])
+		# _s.gi['lds_vec'] = gen_scale(frames_num, fun_plot='smokr')
+		# _s.gi['lds_vec'] = _s.gen_lds_vector()
+		# _s.gi['scale_vector'] = np.linspace(0, 1, frames_num)
+
 	def gen_dyn_extent_alpha(_s):
 		"""Needs to be here cuz finish_smoke_info is"""
-		_s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.ship)
+		if _s.type == 'a':  # WILL NEVER GO HERE CUZ SCALE_SS IS NOT ABSTRACT_SS
+			_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
+		elif _s.type == 'r':
+			_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
+			# _s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
+
+		# _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'])
 		_s.finish_smoke_info()
 		_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 			gen_triangles(_s.extent_t, _s.extent, _s.gi, _s.pic)
 		_s.alpha = gen_alpha(_s.gi, fun_plot='smoka')
 		aa = 5
+
+	# def gen_lds_vector(_s):  MOVED INTO SAME FUNCTION AS scale_vector
+	# 	"""Generated to move by same amount as specified in just generated scale vector"""
+	#
+	# 	# lds_vec = np.zeros(())
+	#
+	# 	X = np.linspace(_s.gi['ld_ss'][0][0], _s.gi['ld_ss'][1][0], len(_s.gi['scale_vector']))  # movement left
+	#
+	#
+	# 	return np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)
+
+
 
 	def finish_smoke_info(_s):
 		"""
@@ -55,6 +93,9 @@ class Smoke(AbstractLayer, AbstractSSS):
 		Just takes max from extent[:, 1]
 		"""
 		_s.gi['max_ri'] = np.max(_s.extent[:, 1])
+
+	# def gen_scale_ss(_s):
+	# 	gen_scale(_s.gi, fun_plot='normal')
 
 	# def get_ld_ss(_s, ii):
 	#

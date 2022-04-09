@@ -2,8 +2,7 @@
 
 
 from scipy.stats import chi2
-from scipy.stats import norm
-from scipy.stats import gamma
+from scipy.stats import norm, gamma
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.lines as lines
@@ -18,6 +17,18 @@ def _normal(X, mean, var, y_range):
 	# Y = norm.pdf(X, loc=len(X)//2, scale=10)
 	Y = norm.pdf(X, loc=mean, scale=var)
 	Y = min_max_normalization(Y, y_range)
+	return Y
+
+
+def _gamma(X, mean):
+	Y = gamma.pdf(X, mean)
+	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	return Y
+
+
+def _log(X):
+	Y = np.log(X)
+	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 	return Y
 
 
@@ -54,11 +65,11 @@ if __name__ == '__main__':
 
 	fig, ax = plt.subplots(figsize=(10, 6))
 
-
-
 	# SMOKA ============
-	# X = np.arange(0, 50, 1)  # large: 960
-	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1.2, y_shift=0) for x in X]))  # smoka
+	X = np.arange(0, 1000, 1)  # large: 960
+	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
+	# X = X + 1
+	# Y = _log(X)
 
 	# # FIr:
 	# X = np.arange(0, 50, 1)  # large: 960
@@ -77,15 +88,19 @@ if __name__ == '__main__':
 	# X = np.arange(0, 1000, 1)  # large: 960
 	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
 
-	# SPL extent =============
-	X = np.arange(0, 50)
-	# Y = _normal(X, mean=len(X) // 3, var=len(X) // 4, y_range=[0, 0.999])
-	a = 1.99
-	x = np.linspace(gamma.ppf(0.01, a),
-	                gamma.ppf(0.99, a), 50)
-	X = np.linspace(0, 16)
-	Y = gamma.pdf(X, 2)
-	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	# # SPL extent =============
+	# X = np.arange(0, 50)
+	# # Y = _normal(X, mean=len(X) // 3, var=len(X) // 4, y_range=[0, 0.999])
+	# a = 1.99
+	# x = np.linspace(gamma.ppf(0.01, a),
+	#                 gamma.ppf(0.99, a), 50)
+	# X = np.linspace(0, 16)
+	# Y = gamma.pdf(X, 2)
+	# Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+
+
+
+
 	# Y = chi2.pdf(X / 2, 4)
 
 

@@ -49,12 +49,14 @@ def load_pics():
     # for file_name in file_names:
     #     pics['specials'][file_name[:-4]] = imread(PATH + file_name)  # without .png
 
+    # UNIQUE PICTURES FOR A CERTAIN SHIP
     PATH = './images/processed/ships/'
     _, folder_names, _ = os.walk(PATH).__next__()
     for folder_name in folder_names:  # ships
         pics['ships'][folder_name] = {}
         pics['ships'][folder_name]['sails'] = {}
         pics['ships'][folder_name]['smokas'] = {}
+        pics['ships'][folder_name]['smokrs'] = {}
         pics['ships'][folder_name]['expls'] = {}
         pics['ships'][folder_name]['spls'] = {}
         _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
@@ -66,6 +68,7 @@ def load_pics():
                 # aa = imread(PATH + '/' + folder_name + '/' + file_name)
                 pics['ships'][folder_name]['sails'][file_name[:-4]] = imread(PATH + '/' + folder_name + '/' + file_name)
             elif len(name_split) > 1 and len(name_split) < 4 and name_split[1] == 'a' and P.A_SMOKAS:
+                # UNIQUE PER SHIP
                 for i in range(P.NUM_SMOKAS):
                     # aa = imread(PATH + '/' + folder_name + '/' + file_name)
                     pics['ships'][folder_name]['smokas'][file_name[:-4] + '_' + str(i)] = imread(PATH + '/' + folder_name + '/' + file_name)
@@ -107,6 +110,16 @@ def load_pics():
         for ship_id, ship in pics['ships'].items():
             for i in range(P.NUM_EXPLS):
                 ship['spls'][file_name[:-4] + '_' + str(i)] = pic
+
+    # COPIES OF THE SAME SMOKR ARE ADDED TO EACH SHIP
+    PATH = './images/processed/smokrs/'
+    _, _, file_names = os.walk(PATH).__next__()
+    for file_name in file_names:
+        pic = imread(PATH + file_name)
+        for ship_id, ship in pics['ships'].items():
+            for i in range(P.NUM_EXPLS):
+                ship['smokrs'][file_name[:-4] + '_' + str(i)] = pic
+
     aa = 5
     #
     # PATH = './images/processed/xtra/'
