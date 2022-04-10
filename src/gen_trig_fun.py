@@ -19,7 +19,15 @@ def gen_alpha(gi, fun_plot, plot=False):
 
 def gen_scale(NUM_FRAMES, fun_plot, plot=False, ld_ss=None):
 	if fun_plot == 'spl':
-		scale = _normal(X, mean=len(X)//2, var=len(X)//4, y_range=[0, 0.15])  # spl
+		X = np.arange(1, NUM_FRAMES + 1)
+		scale = _gamma(X, len(X) // 3)
+		lds_vec = np.zeros((scale.shape[0], 2))
+		mov_x_tot = ld_ss[1][0] - ld_ss[0][0]
+		mov_y_tot = ld_ss[1][1] - ld_ss[0][1]
+		for i in range(0, len(scale)):
+			lds_vec[i, 0] = ld_ss[0][0] + mov_x_tot * scale[i]  # left
+			lds_vec[i, 1] = ld_ss[0][1] + mov_y_tot * scale[i]  # left
+		return scale, lds_vec
 	elif fun_plot == 'smoka':
 		X = np.arange(1, NUM_FRAMES + 1)
 		scale = _log(X)

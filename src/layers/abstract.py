@@ -61,7 +61,7 @@ class AbstractLayer:
         elif _s.drawn == 1: # start and continue
             _s.index_im_ax = len(im_ax)
             # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
-            im_ax.append(ax.imshow(_s.pic, zorder=1, alpha=1))
+            im_ax.append(ax.imshow(_s.pic, zorder=_s.zorder, alpha=1))
             return 1, None
         elif _s.drawn == 2:  # continue drawing
             return 1, None
@@ -102,17 +102,6 @@ class AbstractSSS:
         _s.gi['ld_ss'] = _s.get_ld_ss()
         if _s.gi['scale_ss'] == "abstractSS":
             _s.gen_scale_vector(frame_num)  # includes gen_ss (if there is ss its already in info)
-        # else:
-        #     _s.gi['scale_vector'] = np.linspace(_s.gi['scale_ss'][0], _s.gi['scale_ss'])
-
-        # _s.scale_ss = gets generated when
-
-
-        # _s.gi['scale_ss'] = _s.scale_ss
-
-    # def gen_dyn_extent(_s):
-    #
-    #
 
     def get_ld_ss(_s):
         """

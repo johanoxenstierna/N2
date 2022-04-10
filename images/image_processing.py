@@ -275,6 +275,9 @@ for folder_name_outer in folder_names_outer:
             #     continue  # masks are loaded separately below
             pic_in = imread('./images/raw/' + folder_name_outer + '/' + file_name)
             pic, save_status = process_alpha(pic_in, file_name)
+            if file_name_split[0] in ['smokr', 'spl']:
+                process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
+
             # if len(file_name_split) < 3:
             #     continue
             # mask_name_to_search = file_name_split[0] + '_' + file_name_split[1] + '_' + file_name_split[2][

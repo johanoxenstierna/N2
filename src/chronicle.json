@@ -94,7 +94,7 @@
             "smokr_lr": "left",
             "brightness_frame_value": [],
             "xtra_init_frames": [],
-            "zorder": 5,
+            "zorder": 70,
             "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
             "xtras": {
                 "7_s_0": {
@@ -243,22 +243,22 @@
                 "7_spls": {
                     "ld_offset_ss": [
                         [
-                            70,
+                            270,
                             -20
                         ],
                         [
-                            70,
+                            265,
                             -20
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
-                            30,
-                            5
+                            50,
+                            20
                         ],
                         [
-                            10,
-                            5
+                            0,
+                            0
                         ]
                     ],
                     "y_mid": 1,

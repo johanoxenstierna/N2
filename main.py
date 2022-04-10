@@ -92,8 +92,7 @@ def animate(i):
             decrement_all_index_im_ax(index_removed, ships, waves)
             continue
 
-        warp_affine_and_color(i, ax, im_ax, ship, ch)
-
+        # SHIP WARPED BELOW EXPL
         if P.A_EXPLS:
             if i in ship.gi['firing_frames']:
                 expl = ship.find_free_obj(type='expl')
@@ -121,6 +120,9 @@ def animate(i):
                     im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
                     # Perhaps it won't be needed if 3 frames is not too much for expl (when tracer not used).
                     im_ax[expl.index_im_ax].set_zorder(999)  # TEMP
+
+            # SHIP WARP
+            warp_affine_and_color(i, ax, im_ax, ship, ch)
 
         '''
         Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
@@ -233,6 +235,7 @@ def animate(i):
                     warp_affine_and_color(i, ax, im_ax, smoka, ch)  # parent obj required for sail
 
                     im_ax[smoka.index_im_ax].set_alpha(smoka.alpha[smoka.clock])
+                    im_ax[smoka.index_im_ax].set_zorder(smoka.zorder)
 
 
     if P.A_WAVES:  # no queue needed here since they

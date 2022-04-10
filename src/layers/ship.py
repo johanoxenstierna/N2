@@ -36,6 +36,8 @@ class Ship(AbstractLayer):
         _s.expls = {}
         _s.spls = {}
 
+        _s.zorder = _s.gi['zorder']
+
     def fill_info(_s):
         """
         Some values in ship_info are not gonna be there,

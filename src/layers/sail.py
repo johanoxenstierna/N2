@@ -29,6 +29,7 @@ class Sail(AbstractLayer):
 		# if ship_info['id'] == '7':
 		# _s.pic = gen_colors(pic)  # WILL BE USED
 		_s.z_shear, _s.t_x_ver, _s.t_x_hor  = _s.gen_heights_troughs_transform()
+		_s.zorder = _s.ship.gi['zorder'] - 1
 
 		# _s.alpha_array = _s.gen_alpha()
 		sfg = 6

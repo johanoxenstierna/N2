@@ -30,6 +30,8 @@ class Smoke(AbstractLayer, AbstractSSS):
 			_s.NUM_FRAMES_SMOKE = 50
 
 		_s.type = type
+		_s.zorder = ship.gi['zorder'] + 5
+		aa = 5
 
 		'''
 		FIXED MAJOR REFACTOR NEEDED. NOT PLAUSIBLE TO PREGEN EVERYTHING FOR SMOKRS (AND EXPLS) and maybe even smokas

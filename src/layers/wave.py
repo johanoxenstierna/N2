@@ -31,8 +31,9 @@ class Wave(AbstractLayer):
 		# _s.frame_ss = _s.frame_sss[0]
 		_s.frame_ss = [_s.frame_sss[0][0], _s.frame_sss[-1][1]]
 		# _s.ld_ss = _s.ld_sss[0]
+		_s.zorder = 2
 
-	    # _s.alpha = gen_alpha(_s.gi, fun_plot='normal')
+		# _s.alpha = gen_alpha(_s.gi, fun_plot='normal')
 
 	def gen_frame_sss(_s):
 		"""
@@ -102,7 +103,7 @@ class Wave(AbstractLayer):
 			       "y_mid": 1.0,
 			       "scale_ss": [1.0, 1.0]
 			       }
-			extent, extent_t, lds_log, scale_vector = gen_extent(_gi, _s.pic, padded=False)  # left_down_log
+			extent, extent_t, lds_log, scale_vector = gen_extent(_gi, _s.pic)  # left_down_log
 			extent_agg += [[0, 1, 1, 0]]  # better too long than too short since clock only risks going out of bounds otherwise
 			extent_agg += list(extent)
 

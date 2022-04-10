@@ -21,17 +21,6 @@ class Spl(AbstractLayer, AbstractSSS):
 		_s.NUM_FRAMES_SPL = 50
 		_s.zorder = None
 
-
-	def gen_dyn_extent_alpha(_s):
-		"""Needs to be here cuz finish_smoke_info is"""
-		_s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'])
-
-		# _s.finish_spl_info()
-		# _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
-		# 	gen_triangles(_s.extent_t, _s.extent, _s.gi, _s.pic)
-		_s.alpha = gen_alpha(_s.gi, fun_plot='spl')
-		aa = 5
-
 	def finish_spl_info(_s):
 		"""
 		This will be same as sail except that its much simpler cuz extent_black not used
@@ -39,9 +28,18 @@ class Spl(AbstractLayer, AbstractSSS):
 		"""
 		_s.gi['max_ri'] = np.max(_s.extent[:, 1])
 
-	def gen_scale(_s, frames_num):
-		scale_vector = gen_scale(_s.NUM_FRAMES_SPL, fun_plot='smoka')
-		return scale_vector
+	def gen_scale_vector(_s, frames_num):
+		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale(_s.NUM_FRAMES_SPL, fun_plot='spl', ld_ss=_s.gi['ld_ss'])
+
+	def gen_dyn_extent_alpha(_s):
+		"""Needs to be here cuz finish_smoke_info is"""
+		_s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
+
+		# _s.finish_spl_info()
+		# _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
+		# 	gen_triangles(_s.extent_t, _s.extent, _s.gi, _s.pic)
+		_s.alpha = gen_alpha(_s.gi, fun_plot='spl')
+		aa = 5
 
 	def comp_extent_alpha_z_spl(_s, ships):
 		left = _s.ship.extent[_s.frame_ss[0]][0] + _s.gi['offset'][0] + \

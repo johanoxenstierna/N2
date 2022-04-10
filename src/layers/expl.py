@@ -22,6 +22,7 @@ class Expl(AbstractLayer, AbstractSSS):
 		_s.NUM_FRAMES_EXPL = 3
 		_s.TRACER_L_R = _s.gi['tracer_l_r']
 		_s.TRACER_PROB = 0.1  # more = more tracer
+		_s.zorder = ship.gi['zorder'] + 1
 
 	def comp_extent_alpha_expl(_s):
 		"""Has to be unique for expl since it changes pattern through frames"""

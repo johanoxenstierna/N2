@@ -2,7 +2,7 @@
 
 
 from scipy.stats import chi2
-from scipy.stats import norm, gamma
+from scipy.stats import norm, gamma, multivariate_normal
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.lines as lines
@@ -66,8 +66,8 @@ if __name__ == '__main__':
 	fig, ax = plt.subplots(figsize=(10, 6))
 
 	# SMOKA ============
-	X = np.arange(0, 1000, 1)  # large: 960
-	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
+	# X = np.arange(0, 1000, 1)  # large: 960
+	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
 	# X = X + 1
 	# Y = _log(X)
 
@@ -98,13 +98,20 @@ if __name__ == '__main__':
 	# Y = gamma.pdf(X, 2)
 	# Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 
+	#EXPL on ship
+	# fig = plt.figure(figsize=(10, 6))
+	# ax = fig.add_subplot(1, 1, 1, projection='3d')
+	# X0, X1 = np.meshgrid(np.arange(0, 50, 1), np.arange(0, 50, 1))
+	# X = np.dstack((X0, X1))
+	# Y = multivariate_normal.pdf(X, mean=(20, 20), cov=[[15, 0], [0, 15]])  # only for rand?
+	# Y = min_max_normalization(Y, y_range=[0, 1])
+	# breakpoint()
 
-
-
+	# Y = np.random.multivariate_normal((20, 20), [[1, 0], [0, 1]], size=(40, 40))
 	# Y = chi2.pdf(X / 2, 4)
 
-
-	ax.plot(X, Y, '-')
+	# ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])
 	# plt.ylim([-2.5, 2.5])
+
 	plt.show()

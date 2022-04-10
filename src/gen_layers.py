@@ -22,8 +22,6 @@ class GenLayers:
         self.ch = ch
 
     def gen_backgr(self, ax, im_ax):
-        # im_ax['backgr'] = ax.imshow(self.pics['backgr'], zorder=1, alpha=1)
-        # im_ax['backgr'] = ax.imshow(self.pics['backgr'], zorder=1, alpha=1)
         im_ax.append(ax.imshow(self.pics['backgr'], zorder=1, alpha=1))
         if P.MAP_SIZE == 'small':
             ax.axis([0, 572, 0, 352])
@@ -72,8 +70,6 @@ class GenLayers:
 
                 smoka = Smoke(smoka_id, smoka_pic, ships[ship_id], ch, type='a')
                 ships[ship_id].smokas[smoka.id] = smoka
-
-
 
         return ships
 
