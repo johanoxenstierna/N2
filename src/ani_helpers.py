@@ -34,7 +34,7 @@ def warp_affine_and_color(ii, ax, im_ax, g_obj, ch, parent_obj=None):
 	dst = cv2.warpAffine(pic_c, M, (int(g_obj.tri_ext['max_ri']), int(g_obj.tri_ext['max_do'])))
 	img = np.zeros((g_obj.mask_do, g_obj.mask_ri, 4))
 	img[img.shape[0] - dst.shape[0]:, img.shape[1] - dst.shape[1]:, :] = dst
-	im_ax.insert(g_obj.index_im_ax, ax.imshow(img, zorder=g_obj.gi['zorder'], alpha=1))
+	im_ax.insert(g_obj.index_im_ax, ax.imshow(img, zorder=g_obj.zorder, alpha=1))
 
 
 def decrement_all_index_im_ax(index_removed, ships, waves):
@@ -79,23 +79,35 @@ def static_darkening(pic, ii, g_obj):
 	R   G   B   !   !   !
 	https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
 
-	Might get super expensive to do this for ships at each frame. So instead set
+	Might get super expensive to do this for ships at each frame. FIXED: doing it statically at certain frames
 	expl_at_coords: coordinates where there are active expls this frame (the expl "event" continues more frames
 	than the expl is shown).
 
 	Not applied for expls
 
 	"""
-	if g_obj.__class__.__name__ != 'Sail':  # TEMP
+	if g_obj.__class__.__name__ not in ['Sail', 'Smoke', 'Ship']:  # TEMP
 		return pic
 
-	ship_ab_at_clock = g_obj.ship.gi['alpha_and_bright'][g_obj.ship.ab_clock]
+	if g_obj.__class__.__name__ == 'Smoke':
+		if g_obj.hardcoded == True:
+			return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
+
+	if g_obj.__class__.__name__ == 'Ship':
+		gi = g_obj.gi
+		ab_clock = g_obj.ab_clock
+	else:
+		gi = g_obj.ship.gi
+		ab_clock = g_obj.ship.ab_clock
+
+	ship_ab_at_clock = gi['alpha_and_bright'][ab_clock]
 	if ii == ship_ab_at_clock[0]:
 
-		# brightness TODO: will need lots of tuning
-		g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] * ship_ab_at_clock[2]
+		# brightness TODO: will need lots of tuning (add more elements to info list)
+		g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] #* ship_ab_at_clock[2]
 		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
+
 
 	# HSV (perhaps not needed)
 	# img = ship_pic
@@ -120,6 +132,7 @@ def static_darkening(pic, ii, g_obj):
 
 
 def fire_brightness(pic, ii, g_obj):
+	"""Instant lightning up of ship objects when firing"""
 
 	type = 'constant'
 	gi = None

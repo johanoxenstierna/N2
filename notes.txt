@@ -1,8 +1,15 @@
 t:
-88
+97
 
 log:
 42: wind transforms achieved.
 68: waves fixed
 84: expls tracers
 88: spls
+97: hardcoded smokas
+
+
+post scriptum
+-key structural elements of project. Module just used for plotting.
+-describe blitting implementation.
+-nested functions bad: want to be able to collapse everything to see all functions. if too many functions = module too large

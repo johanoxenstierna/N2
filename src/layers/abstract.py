@@ -3,7 +3,7 @@ import numpy as np
 import random
 from copy import deepcopy
 from src.gen_extent_triangles import *
-from src.gen_trig_fun import gen_scale
+from src.gen_trig_fun import gen_scale_lds
 
 import P
 

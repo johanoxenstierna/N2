@@ -20,14 +20,19 @@ def _normal(X, mean, var, y_range):
 	return Y
 
 
-def _gamma(X, mean):
+def _gamma(X, mean, y_range):
 	Y = gamma.pdf(X, mean)
-	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	Y = min_max_normalization(Y, y_range=y_range)
 	return Y
 
 
 def _log(X):
 	Y = np.log(X)
+	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	return Y
+
+def _log_and_linear(X):  # hardcoded for now since only used for smoka
+	Y = 0.99 * np.log(X) + 0.01 * X
 	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 	return Y
 
@@ -57,7 +62,26 @@ def _sigmoid(x, grad_magn_inv=None, x_shift=None, y_magn=None, y_shift=None):
 
 
 def sin_exp_experiment(X):
-	Y = (0.2 * np.sin(X) + 0.05 * np.sin(X) + 0.4 * np.log(X) / np.log(P.FRAMES_TOT)) - 0.1
+	"""Extension of cph. Firing frames is a combination of a number of normal distributions with specified nums and
+	means in firing_info. """
+
+	cycles_currently = P.FRAMES_TOT / (2 * np.pi)
+	# d = cycles_currently / P.EXPL_CYCLES  # divisor_to_achieve_cycles
+	d = cycles_currently / P.EXPL_CYCLES  # divisor_to_achieve_cycles
+
+	f_0 = 0.2  # firing prob coefficients
+	f_1 = 0.05
+	f_2 = 0.4
+
+	left_shift = random.randint(int(-P.FRAMES_TOT), 0)
+	Y = (f_0 * np.sin((X + left_shift) / d) +  # fast cycles
+	     f_1 * np.sin((X + left_shift - 0) / (3 * d)) +  # slow cycles
+	     f_2 * np.log((X + 10) / d) / np.log(P.FRAMES_TOT)) - 0.1  # prob of firing
+	# Y = np.clip(Y, 0.0, 0.8)
+
+	# Y = (2 * np.sin(X) + 0.5 * np.sin(X) + 0.4 * np.log(X) / np.log(len(X))) - 0.1
+
+
 	return Y
 
 
@@ -65,15 +89,32 @@ if __name__ == '__main__':
 
 	fig, ax = plt.subplots(figsize=(10, 6))
 
-	# SMOKA ============
+	# SMOKE ============
 	# X = np.arange(0, 1000, 1)  # large: 960
-	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
+	# # Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
 	# X = X + 1
-	# Y = _log(X)
+	# # Y = _log(X) #  SMOKR
+	# Y = _log_and_linear(X) #  SMOKA
 
 	# # FIr:
-	# X = np.arange(0, 50, 1)  # large: 960
-	# Y = sin_exp_experiment(X)
+	X = np.arange(0, 240, 1)  # large: 960
+	tot_num = 110
+	Y0 = _normal(X, mean=40, var=30, y_range=[0, 1])
+	num0 = 20
+	Y1 = _normal(X, mean=170, var=30, y_range=[0, 1])
+	num1 = 40
+
+	YS = [Y0, Y1]
+
+
+	Y = (num0 / tot_num) * YS[0] + (num1 / tot_num) * YS[1]
+
+	Y = Y / np.sum(Y)
+
+	aa = np.random.choice(range(len(Y)), size=50, p=Y)
+	aa.sort()
+
+	aa = 5
 	'''
 	Need do create candidate list and check mass and see whether there are too many 
 	fires per moving average unit. 
@@ -94,8 +135,8 @@ if __name__ == '__main__':
 	# a = 1.99
 	# x = np.linspace(gamma.ppf(0.01, a),
 	#                 gamma.ppf(0.99, a), 50)
-	# X = np.linspace(0, 16)
-	# Y = gamma.pdf(X, 2)
+	# X = np.arange(0, 50)
+	# Y = _gamma(X, 2, y_range=[0, 1])
 	# Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 
 	#EXPL on ship
@@ -110,7 +151,7 @@ if __name__ == '__main__':
 	# Y = np.random.multivariate_normal((20, 20), [[1, 0], [0, 1]], size=(40, 40))
 	# Y = chi2.pdf(X / 2, 4)
 
-	# ax.plot(X, Y, '-')
+	ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])
 	# plt.ylim([-2.5, 2.5])
 

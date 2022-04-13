@@ -1,6 +1,8 @@
 import json
 import uuid
 import random
+import numpy as np
+from src.trig_functions import _normal
 
 import P as P
 
@@ -42,13 +44,8 @@ class Chronicler:
 		_s.ch['ships'] = {}
 		_s.ch['bc'] = []
 
-		if P.MAP_SIZE == 'small':
-			spl_zone_centroids = [[], [300, 100], [350, 100], [350, 150], [350, 100], [350, 100], [100, 130], [100, 50]]
-		else:
-			spl_zone_centroids = [[], [848, 477], [687, 464], [468, 548], [660, 584], [300, 497], [973, 468], [1100, 476]]
 		_s.ch['backgr'] = {"brightness_frame_value": [[20, -0.01], [50, 0.01], [999999, 0.0]],
-		                   "clock": 0,
-		                   "spl_zone_centroids": spl_zone_centroids}
+		                   "clock": 0}
 
 		# with open('./utils/bc_template.json', 'r') as f:
 		# _s.bc_template = json.load(f)
@@ -70,38 +67,47 @@ class Chronicler:
 			kk = 8
 
 	def run(_s):
-		"""Think about how this is gona be iterated"""
-		# _s.smoka_init_frames()
-		pass
-	# aa = _s.ch['ships']['7']
-	# aa = 5
+		"""Think about how this is gona be iterated. Per ship or per iteration"""
 
-	def smoka_init_frames(_s):
+		for ship_id, ship in _s.ch['ships'].items():
+			_s.firing_init_frames(ship)
+			_s.smoka_init_frames(ship)  # use firing means
+		pass
+
+	def firing_init_frames(_s, ship):
+
+		X = np.arange(0, P.FRAMES_TOT)  # large: 960
+		YS = []  # combination of normal distribution centered at pre-specified locations
+		num_tot = np.sum([x for x in ship['firing_info']['nums']])
+
+		for i in range(len(ship['firing_info']['nums'])):
+			num = ship['firing_info']['nums'][i]
+			mean = ship['firing_info']['means'][i]
+			var = ship['firing_info']['var']
+
+			Y = _normal(X, mean=mean, var=var, y_range=[0, 1])
+
+			YS.append((num / num_tot) * Y)
+
+		Y = np.sum(YS, axis=0)  # sum along rows (element wise)
+		Y = Y / np.sum(Y)  # this makes it sum to 1.
+
+		frames = np.random.choice(range(len(Y)), size=num_tot, p=Y)
+		frames.sort()
+		# aa = list(map(int, frames))
+
+		ship['firing_frames'] = list(map(int, frames))
+
+	def smoka_init_frames(_s, ship):
 		"""
+		ship IS the gi at this point (just the JSON)
 		OBS Strictly 1 per smoka (following same indexing as pic names generated later)
 		frame_sss IS WITH REFERENCE TO THE SHIPS frame_ss.
 		Smokas not tied to expls frames, smokrs are
-		TODO: currently it's just some random values here
 		"""
 
-		for ship_id, ship in _s.ch['ships'].items():
-			num_frames_ship = ship['move']['frame_ss'][1] - ship['move']['frame_ss'][0]
-			for xtra_id, xtra in ship['xtras'].items():
-				if xtra_id.split('_')[1] == 'a':
-					for i in range(0, P.NUM_SMOKAS):
-						xtra_id_2 = xtra_id + '_' + str(i)
-						rand_frame_start = random.randint(5, 10)
-						rand_frame_stop = 200  #rand_frame_start + random.randint(10, 20)
-						# AGAIN OBS, THIS IS WRT SHIP FRAME_SS, SO IF SHIP SS IS [5, 50] AND SMOKE SS IS [10, 20], THE SMOKE WILL START AT FRAME 15
-						assert(rand_frame_stop < num_frames_ship)
+		aa = 5
 
-						xtra['frame_sss'][xtra_id_2] = [rand_frame_start, rand_frame_stop]
-
-						xtra['scale_sss'][xtra_id_2] = [0.1, 1.0]
-						aa = 5
-
-			fdf = 5
-		adf = 5
 
 	def check_arrays_not_empty(_s):
 

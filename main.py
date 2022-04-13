@@ -64,7 +64,7 @@ if P.A_SPLS:  # all expls put in for each ship (convenient and memory cheap)
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
-
+NEXT THING IS TO DRAW BUNCH OF PICS
 
 aa = 2
 
@@ -143,12 +143,16 @@ def animate(i):
         '''
 
         if P.A_SPLS:
+            '''If warp_affine NOT gonna be used each spl needs a copy pic which is a brighter version, to be shown
+             when spl is on top of ship. 
+            '''
             if i in ship.gi['firing_frames']:  # add rand
                 spl = ship.find_free_obj(type='spl')
                 if spl != None:
-                    spl.drawn = 4  # this variable is needed to avoid the frame_ss check
+                    spl.drawn = 1  # this variable is needed to avoid the frame_ss check
 
                     spl.init_dyn_obj(i, spl.NUM_FRAMES_SPL)
+                    spl.comp_zorder(ships, i)
                     spl.gen_dyn_extent_alpha()
 
                 else:
@@ -169,7 +173,7 @@ def animate(i):
 
                     im_ax[spl.index_im_ax].set_extent(spl.extent[spl.clock])
                     im_ax[spl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
-                    im_ax[spl.index_im_ax].set_zorder(999)  # TEMP
+                    # im_ax[spl.index_im_ax].set_zorder(999)  # SHOULD NOT BE NEEDED SINCE ITS DONE IN ANI_UPDATE_STEP
 
         if P.A_SMOKRS:
             if i in ship.gi['firing_frames']:  # add rand
@@ -215,12 +219,22 @@ def animate(i):
 
             if i in ship.gi['smoka_init_frames']:
                 smoka = ship.find_free_obj(type='smoka')
-                if smoka != None:
+                if smoka != None and smoka.id not in ship.gi['smokas_hardcoded']['ids']:
                     smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
                     smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS
                     smoka.gen_dyn_extent_alpha()
                 else:
                     prints += "  no free smoka"
+
+            elif i in ship.gi['smokas_hardcoded']['frames_start']:
+                index = ship.gi['smokas_hardcoded']['frames_start'].index(i)
+                smoka_id = ship.gi['smokas_hardcoded']['ids'][index]
+                smoka = ship.smokas[smoka_id]
+                smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
+                # smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # SHOULD NOT BE NEEDED
+                smoka.gen_dyn_extent_alpha()
+                # smoka = ship.smokas[ship]
+                aa = 5
 
             for smoka_id, smoka in ship.smokas.items():
                 if smoka.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
@@ -235,7 +249,10 @@ def animate(i):
                     warp_affine_and_color(i, ax, im_ax, smoka, ch)  # parent obj required for sail
 
                     im_ax[smoka.index_im_ax].set_alpha(smoka.alpha[smoka.clock])
-                    im_ax[smoka.index_im_ax].set_zorder(smoka.zorder)
+                    # im_ax[smoka.index_im_ax].set_zorder(smoka.zorder)  # SET IN ANI_UPDATE_STEP
+
+        if i == ship.gi['alpha_and_bright'][ship.ab_clock][0] and ship.ab_clock < len(ship.gi['alpha_and_bright']) - 1:
+            ship.ab_clock += 1
 
 
     if P.A_WAVES:  # no queue needed here since they

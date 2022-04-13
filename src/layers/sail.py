@@ -20,9 +20,9 @@ class Sail(AbstractLayer):
 		_s.gi = ship.gi['xtras'][id]
 
 		_s.frame_ss = [ship.frame_ss[0] + _s.gi['frame_ss'][0], ship.frame_ss[0] + _s.gi['frame_ss'][1]]
-		tl = _s.gen_tl(ship)
-		_s.finish_sail_info(tl)
-		_s.extent, _s.extent_t, _s.scale_vector = _s.gen_extent_black(pic, ship, tl)
+		lt = _s.gen_lt(ship)
+		_s.finish_sail_info(lt)
+		_s.extent, _s.extent_t, _s.scale_vector = _s.gen_extent_black(pic, ship, lt)
 		_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 			gen_triangles(_s.extent_t, _s.extent, _s.gi, pic)
 
@@ -34,7 +34,7 @@ class Sail(AbstractLayer):
 		# _s.alpha_array = _s.gen_alpha()
 		sfg = 6
 
-	def finish_sail_info(_s, tl):
+	def finish_sail_info(_s, lt):
 		"""
 		max_ri is needed by warp_affine to limit the warp space
 		"""
@@ -43,8 +43,8 @@ class Sail(AbstractLayer):
 		_s.gi['scale_ss'] = _s.ship.gi['move']['scale_ss']
 
 		# Convert from tl to ld since this is what the
-		ld_start = [tl[0][0], int(tl[0][1] + _s.pic.shape[0] * _s.ship.scale_vector[0])]  # left start stop
-		ld_stop = [tl[-1][0], int(tl[-1][1] + _s.pic.shape[0] * _s.ship.scale_vector[-1])]
+		ld_start = [lt[0][0], int(lt[0][1] + _s.pic.shape[0] * _s.ship.scale_vector[0])]  # left start stop
+		ld_stop = [lt[-1][0], int(lt[-1][1] + _s.pic.shape[0] * _s.ship.scale_vector[-1])]
 
 		_s.gi['ld_ss'] = [ld_start, ld_stop]
 
@@ -56,7 +56,7 @@ class Sail(AbstractLayer):
 
 		adf = 5
 
-	def gen_tl(_s, ship):
+	def gen_lt(_s, ship):
 		"""
 		Since the offset is given for extent, but mov_black is for triangles,
 		a tl is needed in tri space.
@@ -70,24 +70,24 @@ class Sail(AbstractLayer):
 
 		# DECREASE_OFFSET = 0.7  # USED SINCE OFFSET IS FOR TOP TRI POINT (perhaps gona be unique for ship)
 		assert(len(ship.tris) >= _s.gi['frame_ss'][1])
-		tl = np.zeros((_s.gi['frame_ss'][1] - _s.gi['frame_ss'][0], 2))
+		lt = np.zeros((_s.gi['frame_ss'][1] - _s.gi['frame_ss'][0], 2))
 
 		offset = [_s.gi['offset'][0] * ship.scale_vector[0], _s.gi['offset'][1] * ship.scale_vector[1]]
 		offset[0] += ship.extent[0, 0]
 		offset[1] += ship.extent[0, 3]
 		tri_ship_mid_x_base = np.mean([x[1][0] for x in ship.tris])
 
-		for i in range(len(tl)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
+		for i in range(len(lt)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
 			tri_ship_mid_x_at_frame = ship.tris[_s.gi['frame_ss'][0] + i][1, 0]
 			mov_x = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
 
 			mov_y = ship.tris[_s.gi['frame_ss'][0] + i][1, 1] - ship.tris[_s.gi['frame_ss'][0]][1, 1]
-			tl[i, 0] = offset[0] + mov_x * _s.gi['d_offset']
-			tl[i, 1] = offset[1] + mov_y
+			lt[i, 0] = offset[0] + mov_x * _s.gi['d_offset']
+			lt[i, 1] = offset[1] + mov_y
 
-		return tl
+		return lt
 
-	def gen_extent_black(_s, pic, ship, tl):
+	def gen_extent_black(_s, pic, ship, lt):
 		"""
 		This function is unique to sails i.e. kept inside this class since they must follow the roll movement.
 		TODO
@@ -96,20 +96,20 @@ class Sail(AbstractLayer):
 		width = pic.shape[1]
 		height = pic.shape[0]
 
-		scale_vector = np.linspace(_s.gi['scale_ss'][0], _s.gi['scale_ss'][1], len(tl))
+		scale_vector = np.linspace(_s.gi['scale_ss'][0], _s.gi['scale_ss'][1], len(lt))
 
-		extent = np.zeros((len(tl), 4))
-		extent_t = np.zeros((len(tl), 4))
+		extent = np.zeros((len(lt), 4))
+		extent_t = np.zeros((len(lt), 4))
 
-		for i in range(len(tl)):
+		for i in range(len(lt)):
 
 			width_m = width * scale_vector[i]
 			height_m = height * scale_vector[i]
 
-			extent[i, 0] = tl[i, 0]
-			extent[i, 1] = tl[i, 0] + width_m
-			extent[i, 2] = tl[i, 1] + height_m
-			extent[i, 3] = tl[i, 1]
+			extent[i, 0] = lt[i, 0]
+			extent[i, 1] = lt[i, 0] + width_m
+			extent[i, 2] = lt[i, 1] + height_m
+			extent[i, 3] = lt[i, 1]
 
 			extent_t[i] = [extent[i, 0] - extent[0, 0],  # left
 			               extent[i, 1] - extent[0, 0],  # right

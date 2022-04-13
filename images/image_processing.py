@@ -24,12 +24,15 @@ def process_alpha(pic_in, file_name):
     THRESHOLD_B = 0.92
     THRESHOLD_G = 0.98
 
-
-    if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:  # ships (not as strict).
+    if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:  # ships (MORE STRICT??? perhaps because gimp has added white pixels).
         THRESHOLD_R = 0.5
         THRESHOLD_B = 0.5
         THRESHOLD_G = 0.5
 
+    if file_name.split('.')[0] in ['7_a_1']:  # EXCEPTIONS (less strict)
+        THRESHOLD_R = 0.99
+        THRESHOLD_B = 0.99
+        THRESHOLD_G = 0.99
 
     save_status = 1  # 0: don't save, 1: save right now
 
@@ -239,7 +242,9 @@ for folder_name_outer in folder_names_outer:
     _, folder_names_inner, file_names_inner = os.walk('./images/raw/' + folder_name_outer).__next__()
 
     file_names = file_names_inner
-    if len(folder_names_inner) > 0:  # SHIPS (they are nested) overwrites file names SAILS
+
+    # SHIPS (they are nested) overwrites file names SAILS (see images/raw to understand) =======================================
+    if len(folder_names_inner) > 0:
         for folder_name_inner in folder_names_inner:
             _, _, file_names = os.walk('./images/raw/' + folder_name_outer + '/' + folder_name_inner).__next__()
 
@@ -252,7 +257,7 @@ for folder_name_outer in folder_names_outer:
 
                 if len(file_name_split) > 3:
                     continue
-                if file_name == '7_s_1.png':
+                if file_name == '7_a_1.png':
                     aa = 5
                 pic_in = imread('./images/raw/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name)
                 pic, save_status = process_alpha(pic_in, file_name)
@@ -265,7 +270,8 @@ for folder_name_outer in folder_names_outer:
                         process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
                 imsave('./images/processed/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name, pic)
 
-    else:  # WAVES, EXPLS, SPLS, SMOKRS (not nested)
+    # WAVES, EXPLS, SPLS, SMOKRS (not nested) ============================
+    else:
         for file_name in file_names_inner:
 
             file_name_split = file_name.split('_')

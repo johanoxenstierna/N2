@@ -17,8 +17,8 @@ A_WAVES = 1
 A_EXPLS = 1
 A_SPLS = 1
 # A_HSV_TRANSFORM = 1  # REMOVED  replaced with below
-A_STATIC_DARKENING = 0
-A_FIRING_BRIGHTNESS = 1  # requires EXPLS
+A_STATIC_DARKENING = 1
+A_FIRING_BRIGHTNESS = 0  # requires EXPLS
 
 PR_MOVE_BLACK = 0  # what to pre-compute
 
@@ -28,14 +28,13 @@ NUM_SMOKRS = 1
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
 NUM_SPLS = 1  # capability for >1 there but might not be needed
 
-
 WAVES_STEPS_P_CYCLE = 90  #
 SAIL_STEPS_P_CYCLE = 360  # 120 # (6 sec)
 SAIL_CYCLES = 3
 WS_STEPS = 40  # 2s  wave front of ship
 SPLASH_STEPS_P_CYCLE = 150
 # SPL_FRAME_OFFSET = 25  # not good design-wise
-EXPL_CYCLES = 8  # how often broadsides happen
+EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
 SHIPS_TO_SHOW = ['7']
 

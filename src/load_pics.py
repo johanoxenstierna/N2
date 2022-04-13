@@ -2,8 +2,9 @@ import os
 import P as P
 from matplotlib.pyplot import imread
 
-def load_pics():
-    """LOADS BGR"""
+def load_pics(ch):
+    """LOADS BGR
+    ch needed to see if smoka_hardcoded is used """
 
     pics = {}
     pics['waves'] = {}
@@ -23,27 +24,6 @@ def load_pics():
 
 
 
-    # PATH = './images_mut/spls/'
-    # _, _, file_names = os.walk(PATH).__next__()
-    # for i in range(PARAMS.NUM_SPLS):
-    #     for file_name in file_names:
-    #         pics['spls'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
-    #
-
-    # PATH = './images_mut/smokas/'
-    # _, _, file_names = os.walk(PATH).__next__()
-    # for i in range(P.NUM_SMOKAS):
-    #     for file_name in file_names:
-    #         pics['smokas'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
-
-
-    # PATH = './images_mut/smokrs/'
-    # _, _, file_names = os.walk(PATH).__next__()
-    # for i in range(PARAMS.NUM_SMOKRS):
-    #     for file_name in file_names:
-    #         pics['smokrs'][file_name[:-4] + '_' + str(i)] = imread(PATH + file_name)  # without .png
-    #
-
     # PATH = './images_mut/specials/'
     # _, _, file_names = os.walk(PATH).__next__()
     # for file_name in file_names:
@@ -53,6 +33,9 @@ def load_pics():
     PATH = './images/processed/ships/'
     _, folder_names, _ = os.walk(PATH).__next__()
     for folder_name in folder_names:  # ships
+        if folder_name not in ch['ships']:
+            continue
+
         pics['ships'][folder_name] = {}
         pics['ships'][folder_name]['sails'] = {}
         pics['ships'][folder_name]['smokas'] = {}
@@ -61,6 +44,7 @@ def load_pics():
         pics['ships'][folder_name]['spls'] = {}
         _, _, file_names = os.walk(PATH + '/' + folder_name).__next__()
         for file_name in file_names:
+
             name_split = file_name.split('_')
             if len(name_split) < 2:
                 pics['ships'][folder_name]['ship'] = imread(PATH + '/' + folder_name + '/' + file_name)  # without .png
@@ -68,10 +52,17 @@ def load_pics():
                 # aa = imread(PATH + '/' + folder_name + '/' + file_name)
                 pics['ships'][folder_name]['sails'][file_name[:-4]] = imread(PATH + '/' + folder_name + '/' + file_name)
             elif len(name_split) > 1 and len(name_split) < 4 and name_split[1] == 'a' and P.A_SMOKAS:
-                # UNIQUE PER SHIP
-                for i in range(P.NUM_SMOKAS):
-                    # aa = imread(PATH + '/' + folder_name + '/' + file_name)
-                    pics['ships'][folder_name]['smokas'][file_name[:-4] + '_' + str(i)] = imread(PATH + '/' + folder_name + '/' + file_name)
+
+                # Only 1 copy of hardcoded smokas used
+                aa = ch['ships'][folder_name]['smokas_hardcoded']['ids']
+                if file_name[:-4] in ch['ships'][folder_name]['smokas_hardcoded']['ids']:
+                    pics['ships'][folder_name]['smokas'][file_name[:-4]] = \
+                        imread(PATH + '/' + folder_name + '/' + file_name)
+                else:  # several copies
+                    for i in range(P.NUM_SMOKAS):
+                        # aa = imread(PATH + '/' + folder_name + '/' + file_name)
+                        pics['ships'][folder_name]['smokas'][file_name[:-4] + '_' + str(i)] = \
+                            imread(PATH + '/' + folder_name + '/' + file_name)
 
     PATH = './images/processed/waves/'
     _, _, file_names = os.walk(PATH).__next__()

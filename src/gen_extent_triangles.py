@@ -5,7 +5,7 @@ def gen_extent(gi, pic, scale_vector=(), lds_vec=()):
     """
     left right down up
     returns linear motion extent through time
-    extent_t is the same thing but shifted to origin at tl (since tri's have origin there).
+    extent_t is the same thing but shifted to origin at lt (since tri's have origin there).
     extent_t == UNSHIFTED FRAME
     OBS this only has capability to grow objects to the right, so left smokrs need modification to look good.
     """

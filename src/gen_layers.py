@@ -17,7 +17,7 @@ class GenLayers:
     """
 
     def __init__(self, ch):
-        self.pics = load_pics()
+        self.pics = load_pics(ch)
         self.PATH_IMAGES = './images/processed/'
         self.ch = ch
 

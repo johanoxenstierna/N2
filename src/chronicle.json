@@ -5,24 +5,130 @@
             "id": "7",
             "tl": [],
             "firing_frames": [
-                5,
-                6,
-                7,
-                8,
-                14,
-                20,
-                31,
+                3,
+                11,
+                21,
+                26,
+                29,
                 32,
                 33,
-                40,
-                41,
-                42,
+                33,
+                34,
+                37,
+                43,
                 43,
                 44,
                 45,
+                48,
                 50,
-                60
+                53,
+                54,
+                56,
+                57,
+                61,
+                62,
+                63,
+                64,
+                66,
+                67,
+                67,
+                68,
+                69,
+                72,
+                74,
+                74,
+                76,
+                76,
+                77,
+                78,
+                83,
+                83,
+                83,
+                84,
+                84,
+                84,
+                85,
+                86,
+                87,
+                88,
+                88,
+                89,
+                89,
+                90,
+                90,
+                91,
+                91,
+                91,
+                93,
+                93,
+                94,
+                95,
+                97,
+                97,
+                98,
+                98,
+                100,
+                101,
+                104,
+                107,
+                108,
+                108,
+                113,
+                118,
+                118,
+                120,
+                121,
+                122,
+                123,
+                127,
+                132,
+                136,
+                137,
+                139,
+                142,
+                149,
+                150,
+                153,
+                157,
+                160,
+                162,
+                162,
+                163,
+                167,
+                167,
+                168,
+                168,
+                170,
+                172,
+                175,
+                176,
+                177,
+                182,
+                184,
+                188,
+                189,
+                189,
+                193,
+                195,
+                197,
+                198,
+                200,
+                203,
+                208
             ],
+            "firing_info": {
+                "nums": [
+                    40,
+                    40,
+                    30
+                ],
+                "means": [
+                    50,
+                    100,
+                    180
+                ],
+                "var": 20
+            },
             "d0": [
                 5,
                 6,
@@ -43,16 +149,34 @@
                 60
             ],
             "d1": "firing frames and smoka_init_frames produced by ch",
+            "smoka_init_frames": [
+                2,
+                5,
+                10,
+                15
+            ],
+            "smokas_hardcoded": {
+                "frames_start": [
+                    6
+                ],
+                "frames_stop": [
+                    100
+                ],
+                "ids": [
+                    "7_a_1"
+                ]
+            },
+            "smokr_lr": "leftNot used it seems MIGHT BE NEEDED?",
             "alpha_and_bright": [
                 [
-                    4,
+                    10,
                     1.0,
-                    0.5
+                    0.9
                 ],
                 [
-                    40,
+                    25,
                     1.0,
-                    0.2
+                    0.8
                 ]
             ],
             "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
@@ -74,26 +198,14 @@
                     1.0,
                     1.0
                 ],
-                "y_mid": 1,
-                "d2": "Not sure y_mid needed since you specify ld_ss, so higher down value means object will appear to grow downward",
+                "d2": "y_mid removed",
                 "frame_ss": [
-                    1,
+                    3,
                     250
                 ],
                 "roll_cycles": 5
             },
-            "splash_zones": [],
-            "explosion_offset": [],
-            "smoka_id": "",
-            "smoka_init_frames": [
-                2,
-                5,
-                10,
-                15
-            ],
-            "smokr_lr": "left",
             "brightness_frame_value": [],
-            "xtra_init_frames": [],
             "zorder": 70,
             "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
             "xtras": {
@@ -180,14 +292,25 @@
                             20
                         ]
                     ],
+                    "scale_ss": "abstractSS",
+                    "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
+                    "d1": "each smoka here is manually defined. OBS rand values are positive here! (turned neg later)"
+                },
+                "7_a_1": {
                     "scale_ss": [
                         0.1,
                         1.0
                     ],
-                    "zorder": 7,
-                    "y_mid": 1,
-                    "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
-                    "d1": "zorder should be constant? OBS each smoka here is manually defined. OBS rand values are positive here! (turned neg later)"
+                    "ld_ss": [
+                        [
+                            200,
+                            200
+                        ],
+                        [
+                            100,
+                            100
+                        ]
+                    ]
                 },
                 "7_smokrs": {
                     "ld_offset_ss": [
@@ -210,9 +333,7 @@
                             20
                         ]
                     ],
-                    "scale_ss": "abstractSS",
-                    "zorder": 7,
-                    "y_mid": 1
+                    "scale_ss": "abstractSS"
                 },
                 "7_expls": {
                     "ld_offset_ss": [
@@ -235,7 +356,6 @@
                             null
                         ]
                     ],
-                    "y_mid": 1,
                     "tracer_l_r": "left",
                     "scale_ss": "abstractSS",
                     "d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"
@@ -243,25 +363,24 @@
                 "7_spls": {
                     "ld_offset_ss": [
                         [
-                            270,
-                            -20
+                            80,
+                            -15
                         ],
                         [
-                            265,
-                            -20
+                            80,
+                            -15
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
-                            50,
-                            20
+                            0,
+                            0
                         ],
                         [
                             0,
                             0
                         ]
                     ],
-                    "y_mid": 1,
                     "scale_ss": "abstractSS"
                 }
             }
@@ -302,37 +421,6 @@
                 0.0
             ]
         ],
-        "clock": 0,
-        "spl_zone_centroids": [
-            [],
-            [
-                300,
-                100
-            ],
-            [
-                350,
-                100
-            ],
-            [
-                350,
-                150
-            ],
-            [
-                350,
-                100
-            ],
-            [
-                350,
-                100
-            ],
-            [
-                100,
-                130
-            ],
-            [
-                100,
-                50
-            ]
-        ]
+        "clock": 0
     }
 }
