@@ -61,6 +61,7 @@ class AbstractLayer:
         elif _s.drawn == 1: # start and continue
             _s.index_im_ax = len(im_ax)
             # im_ax[_s.ship_info['id']] = ax.imshow(_s.pic, zorder=1, alpha=1)
+
             im_ax.append(ax.imshow(_s.pic, zorder=_s.zorder, alpha=1))
             return 1, None
         elif _s.drawn == 2:  # continue drawing
@@ -90,39 +91,43 @@ class AbstractSSS:
         _s.ship = ship
         _s.frame_ss = [None, None]
         _s.id = id
-        _s.pic = pic
-
+        # _s.pic = pic  # shouldnt be needed here
 
     def init_dyn_obj(_s, ii, NUM_FRAMES):
+        """OBS USED BY Smokes and Spl, which are children to ship. Generates frame_ss, scale_ss"""
         _s.gi['frame_ss'] = [ii, ii + NUM_FRAMES]  # OVERWRITES
-        _s.frame_ss = _s.gi['frame_ss']
+        _s.frame_ss = _s.gi['frame_ss']  # THIS IS GLOBAL i (hence useless for e.g. ship.extent)
         frame_num = _s.gi['frame_ss'][1] - _s.gi['frame_ss'][0]  # same as in gen_extent
         assert(_s.gi['frame_ss'][1] < P.FRAMES_STOP)
-        # ld_ss = _s.get_ld_ss()  # not used by expl
-        _s.gi['ld_ss'] = _s.get_ld_ss()
+        ssas = _s.ship.scale_vector[_s.ship.clock]  # scale_ship_at_start
+        _s.gi['ld_ss'] = _s.get_ld_ss(ssas)
         if _s.gi['scale_ss'] == "abstractSS":
-            _s.gen_scale_vector(frame_num)  # includes gen_ss (if there is ss its already in info)
+            _s.gen_scale_vector(frame_num, ssas)  # includes gen_ss (if there is ss its already in info)
 
-    def get_ld_ss(_s):
+    def get_ld_ss(_s, ssas):
         """
-
+        scale_ship_at_start
+        ONLY CALLED ONE TIME WHEN OBJECT IS TO BE INITED (HENCE SHIP.CLOCK CAN BE USED)
+        BE CAREFUL WITH WHAT FRAME IS BEING SPECIFIED. FRAME_SS IS WRT GLOBAL i, BUT ship.extent is WRT ship.clock
         """
-        extent_ship_at_start = _s.ship.extent[_s.gi['frame_ss'][0]]
-        # extent_ship_at_stop = _s.ship.extent[_s.frame_ss[1]]  # WTF!
+        # extent_ship_at_start = _s.ship.extent[_s.gi['frame_ss'][0]]  # probably wrong
+        extent_ship_at_init = _s.ship.extent[_s.ship.clock]  # MUCH BETTER
+        # extent_ship_at_stop = _s.ship.extent[_s.gi['frame_ss'][1]]
 
-        # FIRST SET IT TO BE SAME LD AS SHIP AT FRAME
-        ld_ss = [[extent_ship_at_start[0], extent_ship_at_start[2]],
-                 [extent_ship_at_start[0], extent_ship_at_start[2]]]
+
+        # FIRST SET IT TO BE SAME LD AS SHIP AT FRAME (DOES NOT MAKE SENSE TO USE SHIP STOP HERE SINCE THESE OBJ ARE NOT MOVING WITH SHIP
+        ld_ss = [[extent_ship_at_init[0], extent_ship_at_init[2]],
+                 [extent_ship_at_init[0], extent_ship_at_init[2]]]
 
         # ADD OFFSET
-        ld_ss[0][0] += _s.gi['ld_offset_ss'][0][0]  # this is ld!
-        ld_ss[0][1] += _s.gi['ld_offset_ss'][0][1]
-        ld_ss[1][0] += _s.gi['ld_offset_ss'][1][0]
-        ld_ss[1][1] += _s.gi['ld_offset_ss'][1][1]  # if offset is same at beginning and end == will not move
+        ld_ss[0][0] += _s.gi['ld_offset_ss'][0][0] * ssas  # this is ld!
+        ld_ss[0][1] += _s.gi['ld_offset_ss'][0][1] * ssas
+        ld_ss[1][0] += _s.gi['ld_offset_ss'][1][0] * ssas
+        ld_ss[1][1] += _s.gi['ld_offset_ss'][1][1] * ssas  # if offset is same at beginning and end == will not move
 
         # ADD RAND
-        left_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][0], _s.gi['ld_offset_rand_ss'][0][0])
-        down_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][1], _s.gi['ld_offset_rand_ss'][0][1])
+        left_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][0], _s.gi['ld_offset_rand_ss'][0][0]) * ssas
+        down_rand_start = random.randint(-_s.gi['ld_offset_rand_ss'][0][1], _s.gi['ld_offset_rand_ss'][0][1]) * ssas
         ld_ss[0][0] += left_rand_start
         ld_ss[0][1] += down_rand_start
         ld_ss[1][0] += left_rand_start  # same rand for both (which means proportion of pic will be same
@@ -130,8 +135,8 @@ class AbstractSSS:
 
         if _s.__class__.__name__ == 'Smoke':  # STOPPING VALUE CHANGES
 
-            ld_ss[1][0] += random.randint(-_s.gi['ld_offset_rand_ss'][1][0], _s.gi['ld_offset_rand_ss'][1][0])  # stop left
-            ld_ss[1][1] += random.randint(-_s.gi['ld_offset_rand_ss'][1][1], _s.gi['ld_offset_rand_ss'][1][1])  # stop down
+            ld_ss[1][0] += random.randint(-_s.gi['ld_offset_rand_ss'][1][0], _s.gi['ld_offset_rand_ss'][1][0]) * ssas  # stop left
+            ld_ss[1][1] += random.randint(-_s.gi['ld_offset_rand_ss'][1][1], _s.gi['ld_offset_rand_ss'][1][1]) * ssas  # stop down
             # ld_ss[1] = [None, None]
             aa = 6
 
@@ -139,6 +144,13 @@ class AbstractSSS:
 
     def gen_dyn_extent_alpha(_s):  # overwritten by children
         pass
+
+    def check_frame_max(_s, ii, NUM_FRAMES):  # defined in specific functions
+
+        exceeds_frame_max = False
+        if ii + NUM_FRAMES >= P.FRAMES_STOP - 20:
+            exceeds_frame_max = True
+        return exceeds_frame_max
 
 
 

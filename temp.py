@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(figsize=(12, 8))
 
-A = np.random.random((3, 6))
-ex = 1.3
-A = A * ex
-A[A > 1.0] = 1.0
+
+aa = np.linspace(0, 40)
+
+bb = 5 * aa[5]
 
 
 plt.show()

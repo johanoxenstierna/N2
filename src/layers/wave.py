@@ -18,13 +18,15 @@ class Wave(AbstractLayer):
 		_s.id = id
 		_s.pic = pic
 
-		_s.NUM_FRAMES_AVG = 20  # 40
-		_s.NUM_FRAMES_RAND_MAX = 10  # 30
-		_s.NUM_REPEATS_OF_SAME_WAVE = 3
-		_s.DEST_RAND_MIN_MAX = [[-30, -10], [-10, -2]]
+		_s.NUM_FRAMES_AVG = 120  # 40
+		_s.NUM_FRAMES_RAND_MAX = 30  # 30  # this is rand PER REPEAT
+		_s.NUM_REPEATS_OF_SAME_WAVE = 4  # this times AVG * RAND must be less than frames
+		# num_frames_avg * num_repeats_of_same_wave should give
+		_s.DEST_RAND_MIN_MAX = [[-80, -0], [-20, 0]]  # first is X, second is Y
 
 		_s.frame_sss = _s.gen_frame_sss()
 		ld_sss = _s.gen_ld_sss()
+		ld_sss = _s.gen_zigzag_sss(ld_sss)
 		_s.extent, _s.alpha = _s.gen_extent_alpha_wave(ld_sss)  # left_down_log
 		_s.alpha_wave_expl = _s.gen_alpha_wave_expl()
 
@@ -40,7 +42,7 @@ class Wave(AbstractLayer):
 		Generates several frame_ss
 		"""
 		frame_sss = []
-		frame_start = random.randint(3, 30)
+		frame_start = random.randint(3, _s.NUM_FRAMES_AVG)
 		# NUM_REPEATS_OF_SAME_WAVE = 2
 
 		for i in range(_s.NUM_REPEATS_OF_SAME_WAVE):
@@ -66,21 +68,34 @@ class Wave(AbstractLayer):
 	# 			_s.ld_ss = _s.ld_sss[i]
 
 	def gen_ld_sss(_s):
-		"""lower downs start stop"""
+		"""left downs start stop for each wave. So each class instance gets an ld_sss linked list which says where
+		it starts and stops. This is then used to aggregate extent
+		"""
 		id_split = _s.id.split('_')
-		origin_xy = [int(id_split[2]), int(id_split[3])]
-		dest_xy = [origin_xy[0] + random.randint(_s.DEST_RAND_MIN_MAX[0][0], _s.DEST_RAND_MIN_MAX[0][1]),
-		           origin_xy[1] + random.randint(_s.DEST_RAND_MIN_MAX[1][0], _s.DEST_RAND_MIN_MAX[1][1])]
+
+		x_rand0 = random.randint(_s.DEST_RAND_MIN_MAX[0][0], _s.DEST_RAND_MIN_MAX[0][1])
+		y_rand0 = random.randint(_s.DEST_RAND_MIN_MAX[1][0], _s.DEST_RAND_MIN_MAX[1][1])
+		origin_xy = [int(id_split[2]) + x_rand0, int(id_split[3]) + y_rand0]
+		dest_xy = [origin_xy[0] + x_rand0, origin_xy[1] + y_rand0]
 
 		ld_sss = []
-		for i in range(len(_s.frame_sss)):  # makes sure each sss outputs different trajectory
-			rand_hor = random.randint(-20, 20)
-			rand_ver = random.randint(-20, 20)
-			ld_ss = [[origin_xy[0] + rand_hor, origin_xy[1] + rand_ver],
-			         [dest_xy[0] + rand_hor, dest_xy[1] + rand_ver]]
+		for i in range(len(_s.frame_sss)):  # PER WAVE TRAJECTORY  makes sure each sss outputs different trajectory
+			x_rand1 = random.randint(-20, 20)  # both orig and dest
+			y_rand1 = random.randint(-10, 0)  # both orig and dest
+			ld_ss = [[origin_xy[0] + x_rand1, origin_xy[1] + y_rand1],
+			         [dest_xy[0], dest_xy[1]]]
 			ld_sss.append(ld_ss)
 		assert(len(ld_sss) == len(_s.frame_sss))
 		return ld_sss
+
+	def gen_zigzag_sss(_s, ld_sss):
+		"""For each ld_sss, generate normal distribution """
+		ld_zz_sss = []
+		for i in range(len(ld_sss)):  # PER WAVE zig zag
+			pass
+
+		return ld_sss
+
 
 	def gen_extent_alpha_wave(_s, ld_sss):
 		"""
@@ -97,17 +112,18 @@ class Wave(AbstractLayer):
 		alpha_agg = []
 
 		# BUILD gi what is needed to call gen_extent
+
 		for i in range(len(_s.frame_sss)):
 			_gi = {"frame_ss": _s.frame_sss[i],
 			       "ld_ss": ld_sss[i],
-			       "y_mid": 1.0,
-			       "scale_ss": [1.0, 1.0]
+			       "scale_ss": [1.0, 0.5]
 			       }
+
 			extent, extent_t, lds_log, scale_vector = gen_extent(_gi, _s.pic)  # left_down_log
 			extent_agg += [[0, 1, 1, 0]]  # better too long than too short since clock only risks going out of bounds otherwise
 			extent_agg += list(extent)
 
-			alpha = gen_alpha(_gi, fun_plot='normal')
+			alpha = gen_alpha(_gi, fun_plot='normal', y_range=[0, 0.1])  # 0.,05
 			alpha_agg += [0.0]
 			alpha_agg += list(alpha)
 			aa = 5
@@ -124,5 +140,6 @@ class Wave(AbstractLayer):
 		"""
 		# alpha = gen_alpha(_gi, fun_plot='normal')
 		X = np.arange(0, 1000, 1)  # large: 960
-		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
+		# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=18, y_shift=0) for x in X]))
+		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=40, y_shift=0) for x in X]))
 		return Y

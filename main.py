@@ -11,6 +11,8 @@ im_ax li: 2.9  35 min/vid
 
 # geometric image transformations.
 
+
+
 import numpy as np
 import random
 random.seed(7)  # ONLY HERE
@@ -64,8 +66,6 @@ if P.A_SPLS:  # all expls put in for each ship (convenient and memory cheap)
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
 
-NEXT THING IS TO DRAW BUNCH OF PICS
-
 aa = 2
 
 def init():
@@ -92,7 +92,9 @@ def animate(i):
             decrement_all_index_im_ax(index_removed, ships, waves)
             continue
 
-        # SHIP WARPED BELOW EXPL
+        # SHIP WARPED BELOW EXPL (EXPLAIN WHY FFS) (BECAUSE EXPL SHOULD AFFECT IT?)
+        warp_affine_and_color(i, ax, im_ax, ship, ch)
+
         if P.A_EXPLS:
             if i in ship.gi['firing_frames']:
                 expl = ship.find_free_obj(type='expl')
@@ -119,10 +121,10 @@ def animate(i):
                     im_ax[expl.index_im_ax].set_extent(expl.extent[expl.clock])
                     im_ax[expl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
                     # Perhaps it won't be needed if 3 frames is not too much for expl (when tracer not used).
-                    im_ax[expl.index_im_ax].set_zorder(999)  # TEMP
+                    im_ax[expl.index_im_ax].set_zorder(expl.zorder)  # TEMP
 
-            # SHIP WARP
-            warp_affine_and_color(i, ax, im_ax, ship, ch)
+        # SHIP WARP
+
 
         '''
         Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
@@ -179,9 +181,14 @@ def animate(i):
             if i in ship.gi['firing_frames']:  # add rand
                 smokr = ship.find_free_obj(type='smokr')
                 if smokr != None:
+                    if smokr.check_frame_max(i, smokr.NUM_FRAMES_SMOKE) == True:
+                        prints += "  smokr beyond frame max"
+                        continue
                     smokr.drawn = 4  # switch to 1 later
                     smokr.init_dyn_obj(i, smokr.NUM_FRAMES_SMOKE)
                     smokr.gen_dyn_extent_alpha()
+                else:
+                    prints += "  no free smokr"
 
             for smokr_id, smokr in ship.smokrs.items():
                 if smokr.drawn != 0:  # the 4 from above is needed only the very first iteration it becomes visible
@@ -196,7 +203,7 @@ def animate(i):
                     warp_affine_and_color(i, ax, im_ax, smokr, ch)  # parent obj required for sail
 
                     im_ax[smokr.index_im_ax].set_alpha(smokr.alpha[smokr.clock])
-                    im_ax[smokr.index_im_ax].set_zorder(999)
+                    im_ax[smokr.index_im_ax].set_zorder(smokr.zorder)
 
         if P.A_SAILS:
             '''
@@ -214,12 +221,16 @@ def animate(i):
                     continue
 
                 warp_affine_and_color(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
+                im_ax[sail.index_im_ax].set_zorder(sail.zorder)  # TEMP?
 
         if P.A_SMOKAS:
 
             if i in ship.gi['smoka_init_frames']:
                 smoka = ship.find_free_obj(type='smoka')
+
                 if smoka != None and smoka.id not in ship.gi['smokas_hardcoded']['ids']:
+                    if smoka.check_frame_max(i, smoka.NUM_FRAMES_SMOKE) == True:
+                        continue
                     smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
                     smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS
                     smoka.gen_dyn_extent_alpha()
@@ -254,7 +265,6 @@ def animate(i):
         if i == ship.gi['alpha_and_bright'][ship.ab_clock][0] and ship.ab_clock < len(ship.gi['alpha_and_bright']) - 1:
             ship.ab_clock += 1
 
-
     if P.A_WAVES:  # no queue needed here since they
         '''
         No need to iterate through all ships and their expls for all waves, so instead a ship 
@@ -276,7 +286,7 @@ def animate(i):
             ship__ = random.choice(list(ships.values()))
             im_ax[wave.index_im_ax].set_extent(wave.extent[wave.clock])
             im_ax[wave.index_im_ax].set_alpha(wave.alpha[wave.clock])
-            if i in ship__.gi['firing_frames']:  # alpha might be enough here (changing brightness is tricky without using the warp affine wrapper function)
+            if i in ship__.gi['firing_frames'] and P.A_FIRING_BRIGHTNESS:  # alpha might be enough here (changing brightness is tricky without using the warp affine wrapper function)
                 ship_ld = np.asarray([ship__.extent[i][0], ship__.extent[i][2]])
                 wave_ld = np.asarray([wave.extent[wave.clock][0], wave.extent[wave.clock][2]])
                 distance = int(np.linalg.norm(ship_ld - wave_ld))
@@ -294,7 +304,7 @@ print("len of vid: " + str(sec_vid) + " s" + "    " + str(min_vid) + " min")
 
 start_t = time.time()
 ani = animation.FuncAnimation(fig, animate, frames=range(P.FRAMES_START, P.FRAMES_STOP),
-                              blit=True, interval=100, init_func=init,
+                              blit=True, interval=1, init_func=init,
                               repeat=False)  # interval only affects live ani. blitting seems to make it crash
 
 if WRITE == 0:

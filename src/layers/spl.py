@@ -19,6 +19,7 @@ class Spl(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		_s.NUM_FRAMES_SPL = 50
+		_s.pic = pic
 		_s.zorder = None  # defaults to waves zorder + 1  (i.e. 2 + 1 = 3)
 
 	def finish_spl_info(_s):
@@ -28,7 +29,7 @@ class Spl(AbstractLayer, AbstractSSS):
 		"""
 		_s.gi['max_ri'] = np.max(_s.extent[:, 1])
 
-	def gen_scale_vector(_s, frames_num):
+	def gen_scale_vector(_s, frames_num, ssas):
 		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot='spl', ld_ss=_s.gi['ld_ss'])
 
 	def gen_dyn_extent_alpha(_s):

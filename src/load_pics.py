@@ -46,7 +46,7 @@ def load_pics(ch):
         for file_name in file_names:
 
             name_split = file_name.split('_')
-            if len(name_split) < 2:
+            if len(name_split) < 2:  # SHIP LOADED HERE
                 pics['ships'][folder_name]['ship'] = imread(PATH + '/' + folder_name + '/' + file_name)  # without .png
             elif len(name_split) > 1 and name_split[1] == 's' and P.A_SAILS:
                 # aa = imread(PATH + '/' + folder_name + '/' + file_name)
@@ -108,7 +108,7 @@ def load_pics(ch):
     for file_name in file_names:
         pic = imread(PATH + file_name)
         for ship_id, ship in pics['ships'].items():
-            for i in range(P.NUM_EXPLS):
+            for i in range(P.NUM_SMOKRS):
                 ship['smokrs'][file_name[:-4] + '_' + str(i)] = pic
 
     aa = 5

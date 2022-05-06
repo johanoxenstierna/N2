@@ -60,7 +60,9 @@ class Sail(AbstractLayer):
 		"""
 		Since the offset is given for extent, but mov_black is for triangles,
 		a tl is needed in tri space.
-		d_offset: Since mov_black concerns the highest tri point but the sail starts somewhere below, this
+		lts: left tops wrt global pic.
+		d_offset: LOOK HERE: ITS HOW HIGH RATIO THAT SAIL SITS FROM BOTTOM
+		Since mov_black concerns the highest tri point but the sail starts somewhere below, this
 		is manually set to reduce the amount of mov_black for sail.
 
 		tri_ship_mid_base: This is the mid-point (x) from which mov_x is computed. Since the sail starts at some
@@ -70,22 +72,31 @@ class Sail(AbstractLayer):
 
 		# DECREASE_OFFSET = 0.7  # USED SINCE OFFSET IS FOR TOP TRI POINT (perhaps gona be unique for ship)
 		assert(len(ship.tris) >= _s.gi['frame_ss'][1])
-		lt = np.zeros((_s.gi['frame_ss'][1] - _s.gi['frame_ss'][0], 2))
+		lts = np.zeros((_s.gi['frame_ss'][1] - _s.gi['frame_ss'][0], 2))
 
-		offset = [_s.gi['offset'][0] * ship.scale_vector[0], _s.gi['offset'][1] * ship.scale_vector[1]]
-		offset[0] += ship.extent[0, 0]
-		offset[1] += ship.extent[0, 3]
+		# PROB DEPR: OFFSET OBVIOUSLY NEEDS ADJUSTMENT W FRAMES
+		# offset = [_s.gi['offset'][0] * ship.scale_vector[0], _s.gi['offset'][1] * ship.scale_vector[1]]
+		# offset[0] += ship.extent[0, 0]
+		# offset[1] += ship.extent[0, 3]
+
 		tri_ship_mid_x_base = np.mean([x[1][0] for x in ship.tris])
 
-		for i in range(len(lt)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
-			tri_ship_mid_x_at_frame = ship.tris[_s.gi['frame_ss'][0] + i][1, 0]
-			mov_x = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
+		for i in range(len(lts)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
 
-			mov_y = ship.tris[_s.gi['frame_ss'][0] + i][1, 1] - ship.tris[_s.gi['frame_ss'][0]][1, 1]
-			lt[i, 0] = offset[0] + mov_x * _s.gi['d_offset']
-			lt[i, 1] = offset[1] + mov_y
+			tri_ship_mid_x_at_frame = ship.tris[_s.gi['frame_ss'][0] + i][1, 0]  # OBS this is second tri SO NEEDS D_OFFSET
+			mov_x_mid = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
+			lt = [ship.extent[i, 0], ship.extent[i, 3]]  # start with ship lt
+			lt[0] += _s.gi['offset'][0] * ship.scale_vector[i]  # offset wrt ship scale at frame
+			lt[0] += mov_x_mid * ship.scale_vector[i] * _s.gi['d_offset']  # offset wrt mov black
+			lt[1] += _s.gi['offset'][1] * ship.scale_vector[i]
 
-		return lt
+			# DEPR DONT SEE WHY MOV_Y_TOP IS NEEDED
+			# mov_y_top = ship.tris[_s.gi['frame_ss'][0] + i][1, 1] - ship.tris[_s.gi['frame_ss'][0]][1, 1]  # assuming linear motion of course
+
+			lts[i, 0] = lt[0]
+			lts[i, 1] = lt[1]
+
+		return lts  # left tops
 
 	def gen_extent_black(_s, pic, ship, lt):
 		"""
@@ -155,8 +166,8 @@ class Sail(AbstractLayer):
 		One special thing about e.g. sails is that they take the scaling vector from ship its parent.
 
 		PARAMS:
-		sh_cyc: shear_cycles
-		sh_mm: shear min/max
+		sh_cyc: shear_cycles  (NO REAL IMPACT SINCE CYCLES NOT REALLY USED)
+		sh_mm: shear min/max GIVES INTENSITY
 		sh_dist: shear distribution between shifting and cycling
 		num_cyc_ver: ver here is what looks like horizontal lines (transform for each col)
 		num_cyc_hor: hor here is what looks like vertical lines (transform for each row)
@@ -178,10 +189,10 @@ class Sail(AbstractLayer):
 		# increase_in_shear_ver = 0.08
 		# increase_in_shear_hor = 0.03
 
-		# SHIFTING
+		# SHIFTING  # lines going in one direction
 		z_shear_shifting = np.linspace(_s.gi['sh_mm'][0], _s.gi['sh_mm'][1], _s.ship.frames_tot)
 
-		# CYCLING
+		# CYCLING  # lines going back and forth
 		z_shear_cycling_x = np.linspace(0, _s.gi['sh_cyc'] * 2 * np.pi, _s.ship.frames_tot)
 		z_shear_cycling_rand_x = np.zeros((_s.ship.frames_tot))
 

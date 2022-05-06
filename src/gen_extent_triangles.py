@@ -1,16 +1,34 @@
 import numpy as np
 from copy import deepcopy
+# from src.trig_functions import _normal
 
-def gen_extent(gi, pic, scale_vector=(), lds_vec=()):
+
+def gen_zig_zag(num_frames, cycles, max_delta_width):
+    """Provided as a width delta ratio"""
+
+    x = np.arange(start=0, stop=num_frames)
+
+    cycles_currently = num_frames / (2 * np.pi)
+    denominator = cycles_currently / cycles
+
+    zigzag = np.sin(x / denominator) * max_delta_width / 2 + (1 - max_delta_width / 2)  # shrink then shift
+    # the div / 2 is there bcs its both pos and neg (alternatively shift it to pos first for better understandability)
+    # mi, ma = np.min(zigzag), np.max(zigzag)
+
+    return zigzag
+
+
+def gen_extent(gi, pic, scale_vector=(), lds_vec=(), zigzag=()):
     """
     left right down up
     returns linear motion extent through time
+    if linear motion not desired then provide above arguments.
     extent_t is the same thing but shifted to origin at lt (since tri's have origin there).
     extent_t == UNSHIFTED FRAME
     OBS this only has capability to grow objects to the right, so left smokrs need modification to look good.
     """
 
-    frame_num = gi['frame_ss'][1] - gi['frame_ss'][0]
+    frame_num = gi['frame_ss'][1] - gi['frame_ss'][0]  # ALWAYS
     # y_mid = gi['y_mid']
 
     # # LEFT BOTTOM POSITION THROUGH TIME: for now only allowed for growing objects (smokes) ================
@@ -48,13 +66,15 @@ def gen_extent(gi, pic, scale_vector=(), lds_vec=()):
     else:
         lds_vec = np.linspace(gi['ld_ss'][0], gi['ld_ss'][1], frame_num)  # left downs through time
 
-
     width = pic.shape[1]
     height = pic.shape[0]
 
     for i in range(frame_num):  # could be inside above loop whatever
+        if len(zigzag) < 1:
+            width_m = width * scale_vector[i]
+        else:
+            width_m = width * scale_vector[i] * zigzag[i]
 
-        width_m = width * scale_vector[i]
         height_m = height * scale_vector[i]
 
         extent[i] = [lds_vec[i, 0],  # left
@@ -69,8 +89,6 @@ def gen_extent(gi, pic, scale_vector=(), lds_vec=()):
                        extent[i, 1] - extent[0, 0],  # right
                        extent[i, 2] - extent[0, 3],  # down
                        extent[i, 3] - extent[0, 3]]  # up
-
-        aa = 6
 
     assert(np.isclose(a=extent_t[0, 0], b=0.0))
     assert(np.isclose(a=extent_t[0, 3], b=0.0))

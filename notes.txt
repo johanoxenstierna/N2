@@ -1,5 +1,5 @@
 t:
-97
+136
 
 log:
 42: wind transforms achieved.
@@ -9,7 +9,34 @@ log:
 97: hardcoded smokas
 
 
-post scriptum
--key structural elements of project. Module just used for plotting.
--describe blitting implementation.
--nested functions bad: want to be able to collapse everything to see all functions. if too many functions = module too large
+post scriptum ==========================================
+-key structural elements of project.
+    -Module just used for plotting.
+    -parameters module
+->
+-importance of fast debugging and how to set up an environment where test cycle is minimized (seconds per test)
+    -importance of random seeds and where to set them.
+    -describe blitting implementation.
+-inheritance and its strengths/weaknesses
+-Good documentation is a tell-tale sign of being an experienced dev (it shows the dev likes to explain things,
+has patience etc): show example long docstrings
+    -also don't delete old docstrings which describe issues which were fixed. Just collapse them away and store them,
+    trust me, there are times when you will find yourself reading them.
+-nested functions bad: want to be able to collapse everything to see all functions. if too many functions = sign that module too large
+-the WRITE function at the top
+-How to keep up hobby project momentum:
+When it comes to the momentum in the project, Nowadays in my hobby projects,
+I always strife for a sense of moving forward at a really slow but steady pace.
+I do this because there is no reason to stress, like, a hobby project is never going to have a deadline,
+ and that adding code quickly incurs more Tech/maintanence debt:
+ As a beginner one builds large project without much sense of where one is going, so what tends to happen then is that
+ project reaches a critical point in terms of complexity where one can "get lost".
+ This can e.g. be seen when one runs into a bug: How long time on average does it take to fix the bug,
+ and is there a workflow in place to fix the bug? How frustrated does one get when faced with an annoying bug?
+ Something that comes more and more with experience is that one learns to avoid getting stuck in a negative experience.
+ And the way to do that is by things like implementing unit tests, documentation and being ok with things moving slow.
+ It may be boring but it is things like these that really make the difference in big projects.
+ The ideal for me is that it should always feel easy to write code. In my current projects I spend orders of magnitude
+ more time than before, on building an infrastructure that prevents me to ever "get lost" or get frustrated.
+ For strategy gamers all I just said can be translated to early/mid/late game and macro vs micro.
+ Devs are different but the thing I have improved on a lot with experience is mid-late game and macro.

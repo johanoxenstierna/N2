@@ -1,5 +1,9 @@
 # TODO: Stray white pixels over areas where some movement is desired. (?)
-"""OBS the default """
+
+'''OBS the default
+Ships, Sails  not done anymore
+'''
+
 
 import os
 import numpy as np
@@ -12,27 +16,27 @@ from src.trig_functions import *
 from sklearn.preprocessing import StandardScaler
 
 THRESHOLD_SHIP_EXPL = 0.99
+ONLY_DO_FOLDER = ''
+ONLY_DO_FILE = ''
+EXCEPTIONS = ['4_a_0']
+SMOKHS = ['4_a_0']
+
 # THRESHOLD_B = 0.999  # 0.98
 # THRESHOLD_G = 0.999  # 0.98
 # THRESHOLD_R = 0.9999  # 0.92
 
 
-def process_alpha(pic_in, file_name):
+def process_alpha(pic_in, file_name, threshold_rgb):
     """RGB!!! """
 
-    THRESHOLD_R = 0.98
-    THRESHOLD_B = 0.92
-    THRESHOLD_G = 0.98
+    # THRESHOLD_R = 0.98
+    # THRESHOLD_B = 0.92
+    # THRESHOLD_G = 0.98
 
-    if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:  # ships (MORE STRICT??? perhaps because gimp has added white pixels).
-        THRESHOLD_R = 0.5
-        THRESHOLD_B = 0.5
-        THRESHOLD_G = 0.5
-
-    if file_name.split('.')[0] in ['7_a_1']:  # EXCEPTIONS (less strict)
-        THRESHOLD_R = 0.99
-        THRESHOLD_B = 0.99
-        THRESHOLD_G = 0.99
+    # if file_name.split('.')[0] in ['0', '1', '2', '3', '4', '5', '6', '7', '0',]:  # NOT DONE ANYMORE ships (MORE STRICT??? perhaps because gimp has added white pixels).
+    #     THRESHOLD_R = 0.5
+    #     THRESHOLD_B = 0.5
+    #     THRESHOLD_G = 0.5
 
     save_status = 1  # 0: don't save, 1: save right now
 
@@ -42,17 +46,29 @@ def process_alpha(pic_in, file_name):
 
     pic = pic_in.copy()
 
-    alpha_r = np.where(pic_in[:, :, 2] > THRESHOLD_R, 0.0, 1)  # where alpha should be 1, and 0 otherwise
-    alpha_b = np.where(pic_in[:, :, 0] > THRESHOLD_B, 0.0, 1)  # alpha should be 0 wherever things are too white
-    alpha_g = np.where(pic_in[:, :, 1] > THRESHOLD_G, 0.0, 1)  # if it's too bright make it 0, 1 otherwise
+    prod = None
+
+    # if file_name.split('.')[0] in EXCEPTIONS:  # EXCEPTIONS (less strict)
+    #     THRESHOLD_R = 0.999999
+    #     THRESHOLD_B = 0.999999
+    #     THRESHOLD_G = 0.999999
+
+    # else:
+
+    alpha_r = np.where(pic_in[:, :, 0] > threshold_rgb[0], 0.0, 1)  # where alpha should be 0, and 1 otherwise
+    alpha_b = np.where(pic_in[:, :, 1] > threshold_rgb[1], 0.0, 1)  # alpha should be 0 wherever things are too white
+    alpha_g = np.where(pic_in[:, :, 2] > threshold_rgb[2], 0.0, 1)  # if it's too bright make it 0, 1 otherwise
 
 
     if file_name[0:4] == 'expl':  # this may be unmaintainable
         prod = alpha_r  # because expl is really white to start with
+    elif file_name.split('.')[0] in EXCEPTIONS:
+        prod = alpha_g * alpha_b * alpha_r
     else:
         prod = alpha_g * alpha_b * alpha_r  # this sets more frames to 0.0
 
-    pic[:, :, 3] = np.multiply(prod, np.ones_like(pic_in[:, :, 2]))  # alpha set to 0 in correct places
+    pic[:, :, 3] = np.multiply(prod, np.ones_like(pic_in[:, :, 0]))  # alpha set to 0 in correct places
+    # The red channel is used here because ones_like is an autozise return (same as "zeros")
 
     # # Since background is white and black is desired, convert (OBS blue layer doesn't work for expls see below)
     for i in range(0, 3):
@@ -211,10 +227,12 @@ def process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS):
     # mask_output0 = min_max_normalization(mask_output0, [0.0, 1.0])
 
     mask_output = sum(mask_outputs)
-    min_max_range = [0.2, 1.0]
+    min_max_range_blur = [0.2, 1.0]
     if file_name_split[1] == 'a':
         min_max_range = [0.2, 1.0]
-    mask_output = min_max_normalization(mask_output, min_max_range)
+    if file_name in EXCEPTIONS:
+        min_max_range_blur = [0.99, 1]
+    mask_output = min_max_normalization(mask_output, min_max_range_blur)
     mask_output = cv2.GaussianBlur(mask_output, (7, 7), sigmaX=5, sigmaY=5)
     pic[:, :, 3] = pic[:, :, 3] * mask_output  # the multiplication makes sure that anything that should be zero is
 
@@ -233,17 +251,18 @@ def process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS):
 # os.remove(<file name>)
 # image_names = os.listdir('images_orig')
 _, folder_names_outer, _ = os.walk('./images/raw').__next__()
+# threshold_rgb = [0.98, 0.92, 0.98]  # specify before call
 
 for folder_name_outer in folder_names_outer:
 
-    if folder_name_outer == 'waves':
-        adf = 5
+    if len(ONLY_DO_FOLDER) > 0 and folder_name_outer != ONLY_DO_FOLDER:
+        continue
 
     _, folder_names_inner, file_names_inner = os.walk('./images/raw/' + folder_name_outer).__next__()
 
     file_names = file_names_inner
 
-    # SHIPS (they are nested) overwrites file names SAILS (see images/raw to understand) =======================================
+    # SHIPS AND CHILDREN (nested) overwrites file names SAILS (see images/raw to understand) =======================================
     if len(folder_names_inner) > 0:
         for folder_name_inner in folder_names_inner:
             _, _, file_names = os.walk('./images/raw/' + folder_name_outer + '/' + folder_name_inner).__next__()
@@ -253,20 +272,33 @@ for folder_name_outer in folder_names_outer:
 
             for file_name in file_names:
 
+                if file_name[:-4] in SMOKHS:
+                    continue
+
+                if len(ONLY_DO_FILE) > 0 and file_name != ONLY_DO_FILE:
+                    continue
+
                 file_name_split = file_name.split('_')
 
-                if len(file_name_split) > 3:
+                if len(file_name_split) > 3 or len(file_name_split) < 3:  # ships NOT DONE
                     continue
+
+                if file_name_split[1] == 's':  # sails NOT DONE
+                    continue
+
+                # SAILS DONE BUT ONLY DO
+
                 if file_name == '7_a_1.png':
                     aa = 5
                 pic_in = imread('./images/raw/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name)
-                pic, save_status = process_alpha(pic_in, file_name)
+                threshold_rgb = [0.98, 0.92, 0.98]
+                pic, save_status = process_alpha(pic_in, file_name, threshold_rgb)
 
                 # if file_name == '7_s_1.png':   # TEMP
                 if len(file_name_split) > 2:  # the alpha masking is only applied for smokes and sails and waves
                     if file_name_split[1] == 's':   # TEMP
                         process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=5)
-                    elif file_name_split[1] == 'a':
+                    elif file_name_split[1] == 'a' and file_name[:-4] not in EXCEPTIONS:
                         process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
                 imsave('./images/processed/' + folder_name_outer + '/' + folder_name_inner + '/' + file_name, pic)
 
@@ -277,10 +309,18 @@ for folder_name_outer in folder_names_outer:
             file_name_split = file_name.split('_')
             if file_name == 'w_0_369_272.png':
                 adf = 5
-            # if 'm.png' in file_name_split:
-            #     continue  # masks are loaded separately below
+
+            if file_name_split[0] == 'expl':  # expls not done!
+                continue
+
+            if len(ONLY_DO_FILE) > 0 and file_name != ONLY_DO_FILE:
+                continue
+
             pic_in = imread('./images/raw/' + folder_name_outer + '/' + file_name)
-            pic, save_status = process_alpha(pic_in, file_name)
+            threshold_rgb = [0.98, 0.92, 0.98]
+            if file_name in EXCEPTIONS or file_name_split[0] == 'expl':
+                threshold_rgb = [0.99999, 0.99, 0.99]
+            pic, save_status = process_alpha(pic_in, file_name, threshold_rgb)
             if file_name_split[0] in ['smokr', 'spl']:
                 process_mask(pic, file_name, file_name_split, NUM_GEN_CONTOURS=1)
 

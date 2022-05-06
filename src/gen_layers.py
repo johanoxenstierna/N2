@@ -51,7 +51,8 @@ class GenLayers:
 
             for file_name in file_names:
                 name_split = file_name.split('_')
-                if len(name_split) > 1 and name_split[1] == 's' and len(name_split) < 4:
+                if len(name_split) > 1 and name_split[1] == 's' and len(name_split) < 4 and \
+                        file_name[:-4] in ships[ship_id].gi['xtras']:
                     sail = Sail(file_name[:-4],
                                 self.pics['ships'][ship_id]['sails'][file_name[:-4]],
                                 ships[ship_id])

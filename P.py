@@ -1,30 +1,32 @@
 MAP_SIZE = 'small'  # 488, 185
-# MAP_SIZE = 'big'  # 1280 720  # also check ship info (copy-paste)
+MAP_SIZE = 'big'  # 1280 720  # also check ship info (copy-paste)
 FRAMES_START = 0
-FRAMES_STOP = 250  # frames info: 1200/min 12000 for 10 min.   Takes ~30 min to gen 1000 frames
+FRAMES_STOP = 250  # frames info: 1200/min 12000 for 10 min.   Takes ~30 min to gen 1000 frames  7200
 if MAP_SIZE == 'small':
     FRAMES_START = 0
     FRAMES_STOP = 250
 FRAMES_TOT = FRAMES_STOP - FRAMES_START
+# num_secs = 7200 / 20  # num mins: 360 / 60
 
 # A (what to animate) ========
-A_AFFINE_TRANSFORM = 1
+A_AFFINE_TRANSFORM = 1  # compulsary probably at least for ships
 A_SAILS = 1
 A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 1
-A_SMOKAS = 1
+A_SMOKAS = 0
 A_SMOKRS = 1
-A_WAVES = 1
+A_WAVES = 0
 A_EXPLS = 1
-A_SPLS = 1
+A_SPLS = 0
 # A_HSV_TRANSFORM = 1  # REMOVED  replaced with below
-A_STATIC_DARKENING = 1
-A_FIRING_BRIGHTNESS = 0  # requires EXPLS
+A_STATIC_ALPHA_DARKENING = 1
+A_FIRING_BRIGHTNESS = 1  # does not requires EXPLS (for now!)
 
-PR_MOVE_BLACK = 0  # what to pre-compute
+PR_MOVE_BLACK = 1  # what to pre-compute
+PR_ZIGZAG = 1
 
-NUM_WAVES = 7  # NUM per pic!!!
-NUM_SMOKAS = 1
-NUM_SMOKRS = 1
+NUM_WAVES = 5  # NUM per pic!!!
+NUM_SMOKAS = 5
+NUM_SMOKRS = 2
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
 NUM_SPLS = 1  # capability for >1 there but might not be needed
 
@@ -36,22 +38,9 @@ SPLASH_STEPS_P_CYCLE = 150
 # SPL_FRAME_OFFSET = 25  # not good design-wise
 EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
-SHIPS_TO_SHOW = ['7']
+SHIPS_TO_SHOW = ['1', '2']
+SMOKRS_LEFT = ['3']  # this is checked TOGETHER with smokr info in ship_info
+SMOKRS_RIGHT = ['2']
 
-EXPLOSION_WIDTH = 8
-EXPLOSION_HEIGHT = 3
-
-# SMOKES ======
-
-# NUM_SMOKRS = 20  # 20 NUM per type.
-# SMOKE_R_F_FRAMES = 720  # 540
-# SMOKA_FRAMES = 5  # 480  # moved to smoke class
-# NUM_SPLS = 20 #20  # num per type.
-
-
-# DEFAULT ZORDERS =====
-Z_SMOKR = 5
-Z_SMOKA = 4
-Z_SHIP = 6
-Z_XTRA = 7
-Z_EXPL = 8
+# EXPLOSION_WIDTH = 8
+# EXPLOSION_HEIGHT = 3

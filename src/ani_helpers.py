@@ -22,10 +22,14 @@ def warp_affine_and_color(ii, ax, im_ax, g_obj, ch, parent_obj=None):
 	t0 = g_obj.tri_base
 	t1 = g_obj.tris[g_obj.clock]
 	pic_c = g_obj.pic.copy()  # pic with base scale always used.
-	if P.A_STATIC_DARKENING:  # and parent_obj != None:
-		static_darkening(pic_c, ii, g_obj)  # OBS ALSO overwrites the static image AND changes pic copy
+	if P.A_STATIC_ALPHA_DARKENING:  # and parent_obj != None:
+		static_alpha_darkening(pic_c, ii, g_obj)  # OBS ALSO overwrites the static image AND changes pic copy
 	if P.A_FIRING_BRIGHTNESS:
-		fire_brightness(pic_c, ii, g_obj)
+		if g_obj.__class__.__name__ == 'Smoke':
+			if g_obj.hardcoded != True:  # for now?
+				fire_brightness(pic_c, ii, g_obj)
+		else:
+			fire_brightness(pic_c, ii, g_obj)
 
 	if P.A_SAIL_HEIGHTS_TROUGHS_TRANSFORM and g_obj.__class__.__name__ == 'Sail':
 		g_obj.apply_heights_troughs_transform(pic_c, ii)  # changes the pic copy
@@ -74,10 +78,14 @@ def decrement_all_index_im_ax(index_removed, ships, waves):
 				wave.index_im_ax -= 1
 
 
-def static_darkening(pic, ii, g_obj):
+def static_alpha_darkening(pic, ii, g_obj):
 	"""
 	R   G   B   !   !   !
 	https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+
+	Works by overwriting the image in memory. If alpha set to 0 in beginning it cannot be restored!
+	The specified amount is always in relation to latest written image!
+	The sails are done manually.
 
 	Might get super expensive to do this for ships at each frame. FIXED: doing it statically at certain frames
 	expl_at_coords: coordinates where there are active expls this frame (the expl "event" continues more frames
@@ -107,6 +115,7 @@ def static_darkening(pic, ii, g_obj):
 		g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] #* ship_ab_at_clock[2]
 		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
+		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1]
 
 
 	# HSV (perhaps not needed)
@@ -152,7 +161,7 @@ def fire_brightness(pic, ii, g_obj):
 	# BRIGHTNESS =
 	if type == 'constant':  # same shift applied to whole pic
 		# ex = 5.84
-		ex = np.random.rand() * 2 + 1  # TODO: Perhaps make this more fancy.
+		ex = 0.1 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.
 		# if iii in firing_frames:
 		# 	ex = 0.84  # decrease in green and blue
 		# pic = _s.pic.copy()  # REQUIRED
@@ -176,7 +185,7 @@ def fire_brightness(pic, ii, g_obj):
 		left_top[1] = pic.shape[0] + ld[1]
 
 		# Y = multivariate_normal.pdf(X, mean=(72, 213), cov=[[50, 0], [0, 50]])
-		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[350, 0], [0, 350]])
+		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[350, 0], [0, 650]])
 		Y = min_max_normalization(Y, y_range=[0, 0.3])  # this is amount added to current
 
 		# aa = pic[:, :, 0] * Y

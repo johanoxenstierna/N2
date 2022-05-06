@@ -87,15 +87,24 @@ class Chronicler:
 
 			Y = _normal(X, mean=mean, var=var, y_range=[0, 1])
 
+			# TODO weigh y_range with num (so that bigger broadsides will be shown)
+
 			YS.append((num / num_tot) * Y)
 
 		Y = np.sum(YS, axis=0)  # sum along rows (element wise)
 		Y = Y / np.sum(Y)  # this makes it sum to 1.
 
-		frames = np.random.choice(range(len(Y)), size=num_tot, p=Y)
-		frames.sort()
+		# THIS IS INSTEAD CHECKED BY THE SMOKES THEMSELVES
+		# flag_no_frames_too_late = True
+		# while flag_no_frames_too_late:
+		# 	frames = np.random.choice(range(len(Y)), size=num_tot, p=Y)
+		# 	for frame in frames:
+		# 		aa = 5
+		# frames.sort()
 		# aa = list(map(int, frames))
 
+		frames = np.random.choice(range(len(Y)), size=num_tot, p=Y)
+		frames.sort()
 		ship['firing_frames'] = list(map(int, frames))
 
 	def smoka_init_frames(_s, ship):

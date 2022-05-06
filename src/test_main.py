@@ -32,8 +32,7 @@ class Test:
 			_s.tc[str(i)]['max_ri'] = _s.tc[str(i)]['ld_ss'][index_with_most_ld_x][0] + \
 			                          pic.shape[1] * _s.tc[str(i)]['scale_ss'][index_with_most_ld_x]
 
-			_s.extent, _s.extent_t, _s.lds_log, _s.scale_vector = gen_extent(_s.tc[str(i)], pic,
-			                                                                 padded=False)  # left_down_log
+			_s.extent, _s.extent_t, _s.lds_log, _s.scale_vector = gen_extent(_s.tc[str(i)], pic)  # left_down_log
 			_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 				gen_triangles(_s.extent_t, _s.extent, _s.tc[str(i)], pic)
 

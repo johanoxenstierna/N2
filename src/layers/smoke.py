@@ -1,5 +1,6 @@
 import numpy as np
 
+import P
 from src.gen_extent_triangles import *
 from src.gen_trig_fun import gen_alpha, gen_scale_lds
 from copy import deepcopy
@@ -22,11 +23,20 @@ class Smoke(AbstractLayer, AbstractSSS):
 		elif type == 'r':
 			_s.gi = deepcopy(ship.gi['xtras'][ship.id + '_smokrs'])
 
+		_s.pic = pic
+		if id_split[1] in P.SMOKRS_RIGHT and _s.gi['left_right'] == 'left':  # is right but is supposed to be left
+			_s.pic = np.flip(pic, axis=1)
+		elif id_split[1] in P.SMOKRS_LEFT and _s.gi['left_right'] == 'right':  # is left but is supposed to be right
+			_s.pic = np.flip(pic, axis=1)
+
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 150
+			_s.NUM_FRAMES_SMOKE = 450,
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 50
+			_s.NUM_FRAMES_SMOKE = 100#250  # 400 should do it
+
+		if _s.NUM_FRAMES_SMOKE > P.FRAMES_TOT * 2/3:
+			print("WARNING WON'T BE ABLE TO SHOW SMOKE")
 
 		_s.hardcoded = False
 		if _s.id in ship.gi['smokas_hardcoded']['ids']:  # this essentially acts as replacement for init_dyn_object
@@ -39,37 +49,58 @@ class Smoke(AbstractLayer, AbstractSSS):
 			_s.frame_ss = _s.gi['frame_ss']
 
 		_s.type = type
-		_s.zorder = ship.gi['zorder'] + 5
+		_s.zorder = None
+		if _s.type == 'r':
+			_s.zorder = ship.gi['zorder'] + random.randint(-1, 6)  # TODO some smokrs should be behind ship
+		elif _s.type == 'a':
+			if _s.hardcoded == True:
+				_s.zorder = 3  # part of background
+			else:
+				_s.zorder = ship.gi['zorder'] + random.randint(-1, 6)
+
+		# TODO use gi for a
+
 		aa = 5
 
 		'''
-		FIXED MAJOR REFACTOR NEEDED. NOT PLAUSIBLE TO PREGEN EVERYTHING FOR SMOKRS (AND EXPLS) and maybe even smokas
+		FIXED. MAJOR REFACTOR NEEDED. NOT PLAUSIBLE TO PREGEN EVERYTHING FOR SMOKRS (AND EXPLS) and maybe even smokas
 		Instead each ship gets a token amount of smokrs and expls and maintains the queue system. TODO
 		OLD: Hence separate out the below into a function and only pregen it for smokas (if possible). 
 		New: Smokas are gonna use same queing system as smokrs, sails and expls
 		'''
 
-	def gen_scale_vector(_s, frames_num):
-		"""OBS ONLY USED BY SMOKR. THE MOVEMENT OF SMOKR IS COMPLETELY GOVERNED BY its ld_offset_ss in info"""
-		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot=_s.type, ld_ss=_s.gi['ld_ss'])
+	def gen_scale_vector(_s, frames_num, ssas):
+		"""OBS ONLY USED BY SMOKR. THE MOVEMENT OF SMOKR IS COMPLETELY GOVERNED BY its ld_offset_ss in info
+		scale_ship_at_start
+		"""
+		if _s.type == 'r':
+			max_scale = ssas
+		elif _s.type == 'a':
+			max_scale = 5
+
+		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot=_s.type, ld_ss=_s.gi['ld_ss'], max_scale=max_scale)
 
 	def gen_dyn_extent_alpha(_s):
 		"""Needs to be here cuz finish_smoke_info is"""
-		# if _s.type == 'a':
-		if _s.hardcoded == False:
+		if _s.type == 'a':
+			if _s.hardcoded:
+				_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
+				fun_plot = 'smokh'
+			else:
+				_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
+				fun_plot = 'smoka'
+
+
+		else:
 			_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
-		# elif _s.type == 'r':
-		# 	_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
-		else:  #
-			_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
+			fun_plot = 'smoka'
 
 		# _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'])
 		_s.finish_smoke_info()
 		_s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 			gen_triangles(_s.extent_t, _s.extent, _s.gi, _s.pic)
-		_s.alpha = gen_alpha(_s.gi, fun_plot='smoka')
+		_s.alpha = gen_alpha(_s.gi, fun_plot=fun_plot)
 		aa = 5
-
 
 	def finish_smoke_info(_s):
 		"""
