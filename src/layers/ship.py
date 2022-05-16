@@ -19,7 +19,9 @@ class Ship(AbstractLayer):
         _s.fill_info()
         _s.frame_ss = ship_info['move']['frame_ss']
         _s.frames_tot = _s.gi['move']['frame_ss'][1] - _s.gi['move']['frame_ss'][0]
-        zigzag = gen_zig_zag(_s.frames_tot, cycles=2, max_delta_width=0.06)
+        zigzag = ()
+        if P.PR_ZIGZAG:
+            zigzag = gen_zig_zag(_s.frames_tot, cycles=2, max_delta_width=0.06)
         _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, zigzag=zigzag)  # left_down_log
         _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
             gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
@@ -65,13 +67,13 @@ class Ship(AbstractLayer):
         
         mov_black = np.zeros(shape=(_s.frames_tot, 2))
 
-        CYCLES = _s.gi['move']['roll_cycles']
-        F_x = 15.6
-        F_y = 0.24
+        CYCLES = _s.gi['move']['black']['cycles']
+        F_x = _s.gi['move']['black']['fxy'][0]
+        F_y = _s.gi['move']['black']['fxy'][1]
 
         if P.MAP_SIZE == 'small':
-            F_x = 22.3  # 5.6
-            F_y = 0.1
+            F_x = _s.gi['move']['black']['fxy'][0]
+            F_y = _s.gi['move']['black']['fxy'][1]
 
         cycles_currently = _s.frames_tot / (2 * np.pi)
         d = cycles_currently / CYCLES
@@ -96,7 +98,7 @@ class Ship(AbstractLayer):
         elif type == 'spl':
             _di = _s.spls
         li_ids = list(_di.keys())
-        random.shuffle(li_ids)
+        random.shuffle(li_ids)  # TODO: REPLACE WITH INDEX FOR SMOKA
         for key in li_ids:
             obj = _di[key]
             if obj.drawn == 0:  # object is not drawn

@@ -230,6 +230,7 @@ def animate(i):
 
                 if smoka != None and smoka.id not in ship.gi['smokas_hardcoded']['ids']:
                     if smoka.check_frame_max(i, smoka.NUM_FRAMES_SMOKE) == True:
+                        prints += "  cant add smoka"
                         continue
                     smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
                     smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS

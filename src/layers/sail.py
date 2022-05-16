@@ -1,4 +1,6 @@
 import numpy as np
+
+import P
 from src.layers.abstract import AbstractLayer
 from src.gen_extent_triangles import *
 from src.gen_colors import gen_colors
@@ -59,15 +61,15 @@ class Sail(AbstractLayer):
 	def gen_lt(_s, ship):
 		"""
 		Since the offset is given for extent, but mov_black is for triangles,
-		a tl is needed in tri space.
+		a lt is needed in tri space.
 		lts: left tops wrt global pic.
-		d_offset: LOOK HERE: ITS HOW HIGH RATIO THAT SAIL SITS FROM BOTTOM
+		d_offset: OBS OBS OBS IS THE THING TO TUNE. LOOK HERE: ITS HOW HIGH RATIO THAT SAIL SITS FROM BOTTOM
 		Since mov_black concerns the highest tri point but the sail starts somewhere below, this
 		is manually set to reduce the amount of mov_black for sail.
 
 		tri_ship_mid_base: This is the mid-point (x) from which mov_x is computed. Since the sail starts at some
 		random frame and doesn't know the base point from the ships frame of reference, mid_base is here computed
-		as the mean of all ship tri mid point x coords.
+		as the mean of all ship tri mid point x coords. IS NOT GONNA BE EXACT
 		"""
 
 		# DECREASE_OFFSET = 0.7  # USED SINCE OFFSET IS FOR TOP TRI POINT (perhaps gona be unique for ship)
@@ -79,14 +81,17 @@ class Sail(AbstractLayer):
 		# offset[0] += ship.extent[0, 0]
 		# offset[1] += ship.extent[0, 3]
 
-		tri_ship_mid_x_base = np.mean([x[1][0] for x in ship.tris])
+		tri_ship_mid_x_base = np.mean([x[1][0] for x in ship.tris])  # OBS THIS MAY BE IMPRECICE
 
 		for i in range(len(lts)):  # OBS CURRENTLY IT IS ASSUMED ALL THE MOVEMENT IS FOR TOP TRI POINT
 
 			tri_ship_mid_x_at_frame = ship.tris[_s.gi['frame_ss'][0] + i][1, 0]  # OBS this is second tri SO NEEDS D_OFFSET
-			mov_x_mid = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
+			if P.PR_MOVE_BLACK:
+				mov_x_mid = tri_ship_mid_x_at_frame - tri_ship_mid_x_base
+			else:
+				mov_x_mid = 0  # MAJOR BUG DISCOVERED HERE. SAIL WAS MOVING FASTER THAN SHIP
 			lt = [ship.extent[i, 0], ship.extent[i, 3]]  # start with ship lt
-			lt[0] += _s.gi['offset'][0] * ship.scale_vector[i]  # offset wrt ship scale at frame
+			lt[0] += _s.gi['offset'][0] * ship.scale_vector[i]  # offset wrt ship scale at frame LT
 			lt[0] += mov_x_mid * ship.scale_vector[i] * _s.gi['d_offset']  # offset wrt mov black
 			lt[1] += _s.gi['offset'][1] * ship.scale_vector[i]
 

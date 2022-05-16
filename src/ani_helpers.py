@@ -27,9 +27,9 @@ def warp_affine_and_color(ii, ax, im_ax, g_obj, ch, parent_obj=None):
 	if P.A_FIRING_BRIGHTNESS:
 		if g_obj.__class__.__name__ == 'Smoke':
 			if g_obj.hardcoded != True:  # for now?
-				fire_brightness(pic_c, ii, g_obj)
+				pic_c = fire_brightness(pic_c, ii, g_obj)
 		else:
-			fire_brightness(pic_c, ii, g_obj)
+			pic_c = fire_brightness(pic_c, ii, g_obj)
 
 	if P.A_SAIL_HEIGHTS_TROUGHS_TRANSFORM and g_obj.__class__.__name__ == 'Sail':
 		g_obj.apply_heights_troughs_transform(pic_c, ii)  # changes the pic copy
@@ -161,7 +161,7 @@ def fire_brightness(pic, ii, g_obj):
 	# BRIGHTNESS =
 	if type == 'constant':  # same shift applied to whole pic
 		# ex = 5.84
-		ex = 0.1 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.
+		ex = 2.7 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.
 		# if iii in firing_frames:
 		# 	ex = 0.84  # decrease in green and blue
 		# pic = _s.pic.copy()  # REQUIRED

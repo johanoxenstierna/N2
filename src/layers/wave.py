@@ -139,7 +139,7 @@ class Wave(AbstractLayer):
 		sigmoid to provide the amount of alpha given a certain distance to an expl.
 		"""
 		# alpha = gen_alpha(_gi, fun_plot='normal')
-		X = np.arange(0, 1000, 1)  # large: 960
+		X = np.arange(0, 1200, 1)  # large: 960
 		# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=18, y_shift=0) for x in X]))
 		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=40, y_shift=0) for x in X]))
 		return Y

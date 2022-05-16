@@ -24,6 +24,12 @@ has patience etc): show example long docstrings
     trust me, there are times when you will find yourself reading them.
 -nested functions bad: want to be able to collapse everything to see all functions. if too many functions = sign that module too large
 -the WRITE function at the top
+-Difference between parameters module and code module. In this project I uses JSON files to put my parameters in,
+this can be good to make the separation clear. Or it can be done directly in the corresponding object class. In
+this case for example this json file represents everything needed to build a certain ship class object.
+So one could have skipped the JSON and done this in the class object instead with some inheritance. There are some
+advantages in using python instead of JSON if one uses an IDE, but the project may also become a bit messy, so
+JSON for parameter storage is quite a valid approach.
 -How to keep up hobby project momentum:
 When it comes to the momentum in the project, Nowadays in my hobby projects,
 I always strife for a sense of moving forward at a really slow but steady pace.

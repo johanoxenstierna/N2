@@ -113,6 +113,7 @@ class Chronicler:
 		OBS Strictly 1 per smoka (following same indexing as pic names generated later)
 		frame_sss IS WITH REFERENCE TO THE SHIPS frame_ss.
 		Smokas not tied to expls frames, smokrs are
+		CURRENTLY THESE ARE ALL HARDCODED
 		"""
 
 		aa = 5

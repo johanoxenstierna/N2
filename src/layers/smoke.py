@@ -31,12 +31,14 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 450,
+			_s.NUM_FRAMES_SMOKE = 600
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 100#250  # 400 should do it
+			_s.NUM_FRAMES_SMOKE = 400  #250  # 500 should do it (just use generally few expls)
+		# else:  # REM
+		# 	_s.NUM_FRAMES_SMOKE = 500
 
 		if _s.NUM_FRAMES_SMOKE > P.FRAMES_TOT * 2/3:
-			print("WARNING WON'T BE ABLE TO SHOW SMOKE")
+			print("WARNING MIGHT NOT BE ABLE TO SHOW SMOKE")
 
 		_s.hardcoded = False
 		if _s.id in ship.gi['smokas_hardcoded']['ids']:  # this essentially acts as replacement for init_dyn_object
@@ -56,7 +58,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 			if _s.hardcoded == True:
 				_s.zorder = 3  # part of background
 			else:
-				_s.zorder = ship.gi['zorder'] + random.randint(-1, 6)
+				_s.zorder = ship.gi['zorder'] + random.randint(1, 6)  # PERHAPS SHOULD ALSO BE NEG
 
 		# TODO use gi for a
 
@@ -74,9 +76,9 @@ class Smoke(AbstractLayer, AbstractSSS):
 		scale_ship_at_start
 		"""
 		if _s.type == 'r':
-			max_scale = ssas
+			max_scale = _s.gi['scale_max']  # updated. old wont do cuz ships are scaled at start
 		elif _s.type == 'a':
-			max_scale = 5
+			max_scale = _s.gi['scale_ss'][1]
 
 		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot=_s.type, ld_ss=_s.gi['ld_ss'], max_scale=max_scale)
 

@@ -1,232 +1,30 @@
 {
     "ships": {
-        "1": {
-            "d": "DON T  DELETE L'Orient",
-            "id": "1",
-            "tl": [],
-            "firing_frames": [
-                13,
-                14,
-                14,
-                35,
-                37,
-                48,
-                59,
-                166,
-                167,
-                177,
-                195,
-                199,
-                205,
-                207,
-                244
-            ],
-            "firing_info": {
-                "nums": [
-                    5,
-                    5,
-                    5
-                ],
-                "means": [
-                    30,
-                    200,
-                    580
-                ],
-                "var": 20
-            },
-            "d0": "obs nums doesnt seem to be used currently",
-            "d1": "firing frames and smoka_init_frames produced by ch",
-            "smoka_init_frames": [
-                40,
-                150,
-                200,
-                300
-            ],
-            "smokas_hardcoded": {
-                "frames_start": [],
-                "frames_stop": [],
-                "ids": []
-            },
-            "alpha_and_bright": [
-                [
-                    10,
-                    1.0,
-                    1.0
-                ],
-                [
-                    25,
-                    1.0,
-                    1.0
-                ]
-            ],
-            "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
-            "move_vector": [],
-            "move": {
-                "d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
-                "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
-                "ld_ss": [
-                    [
-                        230,
-                        640
-                    ],
-                    [
-                        290,
-                        620
-                    ]
-                ],
-                "scale_ss": [
-                    1.2,
-                    0.8
-                ],
-                "d2": "y_mid removed. OBS weird case of missing piece of pic when scale_ss is [1.0, 0.1]. Also when scale starts at < 1 it seems weird",
-                "frame_ss": [
-                    2,
-                    700
-                ],
-                "roll_cycles": 2
-            },
-            "brightness_frame_value": [],
-            "zorder": 60,
-            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
-            "xtras": {
-                "1_s_0": {
-                    "offset": [
-                        40,
-                        80
-                    ],
-                    "frame_ss": [
-                        3,
-                        229
-                    ],
-                    "cycles": 25,
-                    "zorder": 58,
-                    "d_offset": 0.7,
-                    "col_diff": 0.11,
-                    "sh_cyc": 1,
-                    "sh_mm": [
-                        0.1,
-                        1.0
-                    ],
-                    "sh_dist": [
-                        0.98,
-                        0.02
-                    ],
-                    "num_cyc_ver": 1,
-                    "num_cyc_hor": 2,
-                    "weird_multiplier_ver": 70,
-                    "weird_multiplier_hor": 4,
-                    "sh_ver_incr": 0.003,
-                    "sh_hor_incr": 0.01,
-                    "alpha_diff": 0.3
-                },
-                "1_s_1": {
-                    "offset": [
-                        22,
-                        192
-                    ],
-                    "frame_ss": [
-                        3,
-                        229
-                    ],
-                    "cycles": 25,
-                    "zorder": 58,
-                    "d_offset": 0.7,
-                    "col_diff": 0.05,
-                    "sh_cyc": 3,
-                    "sh_mm": [
-                        0.5,
-                        1.8
-                    ],
-                    "sh_dist": [
-                        0.98,
-                        0.02
-                    ],
-                    "num_cyc_ver": 2,
-                    "num_cyc_hor": 5,
-                    "weird_multiplier_ver": 70,
-                    "weird_multiplier_hor": 30,
-                    "sh_ver_incr": 0.003,
-                    "sh_hor_incr": 0.11,
-                    "alpha_diff": 0.21,
-                    "d": ""
-                },
-                "1_smokrs": {
-                    "ld_offset_ss": [
-                        [
-                            90,
-                            -15
-                        ],
-                        [
-                            110,
-                            -7
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            10,
-                            0
-                        ],
-                        [
-                            15,
-                            5
-                        ]
-                    ],
-                    "scale_ss": "abstractSS",
-                    "left_right": "right"
-                },
-                "1_expls": {
-                    "ld_offset_ss": [
-                        [
-                            100,
-                            -20
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            15,
-                            10
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "tracer_l_r": "right",
-                    "scale_base": 0.7,
-                    "scale_ss": "abstractSS",
-                    "d": ""
-                }
-            }
-        },
-        "2": {
-            "d": "DON T  DELETE L'Orient",
-            "id": "2",
+        "3": {
+            "d": "",
+            "id": "3",
             "tl": [],
             "firing_frames": [
                 4,
-                17,
-                23,
+                10,
+                11,
+                11,
                 24,
-                25,
-                35,
-                35,
+                28,
+                29,
+                36,
+                41,
                 42,
-                43,
-                44,
-                45,
-                49,
-                52,
-                60,
-                170,
-                190,
-                214,
-                215,
-                219,
-                224
+                47,
+                47,
+                51,
+                176,
+                186,
+                196,
+                199,
+                216,
+                221,
+                251
             ],
             "firing_info": {
                 "nums": [
@@ -237,15 +35,15 @@
                 "means": [
                     30,
                     200,
-                    580
+                    880
                 ],
                 "var": 20
             },
             "d0": "obs nums doesnt seem to be used currently",
             "d1": "firing frames and smoka_init_frames produced by ch",
             "smoka_init_frames": [
-                40,
-                150,
+                10,
+                50,
                 200,
                 300
             ],
@@ -257,7 +55,7 @@
             "alpha_and_bright": [
                 [
                     4,
-                    0.8,
+                    0.6,
                     1.0
                 ],
                 [
@@ -273,12 +71,12 @@
                 "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
                 "ld_ss": [
                     [
-                        360,
-                        625
+                        500,
+                        605
                     ],
                     [
-                        400,
-                        615
+                        550,
+                        605
                     ]
                 ],
                 "scale_ss": [
@@ -288,93 +86,150 @@
                 "d2": "y_mid removed. OBS weird case of missing piece of pic when scale_ss is [1.0, 0.1]. Also when scale starts at < 1 it seems weird",
                 "frame_ss": [
                     2,
-                    700
+                    250
                 ],
-                "roll_cycles": 2
+                "black": {
+                    "cycles": 2,
+                    "fxy": [
+                        3,
+                        0.2
+                    ]
+                }
             },
             "brightness_frame_value": [],
             "zorder": 50,
             "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
             "xtras": {
-                "2_s_0": {
+                "3_smokrs": {
+                    "ld_offset_ss": [
+                        [
+                            55,
+                            -13
+                        ],
+                        [
+                            60,
+                            -13
+                        ]
+                    ],
+                    "ld_offset_rand_ss": [
+                        [
+                            30,
+                            3
+                        ],
+                        [
+                            3,
+                            3
+                        ]
+                    ],
+                    "scale_ss": "abstractSS",
+                    "scale_max": 0.8,
+                    "left_right": "right"
+                },
+                "3_expls": {
+                    "ld_offset_ss": [
+                        [
+                            46,
+                            -13
+                        ],
+                        [
+                            46,
+                            -13
+                        ]
+                    ],
+                    "ld_offset_rand_ss": [
+                        [
+                            30,
+                            5
+                        ],
+                        [
+                            null,
+                            null
+                        ]
+                    ],
+                    "scale_base": 0.2,
+                    "tracer_l_r": "left",
+                    "scale_ss": "abstractSS",
+                    "d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"
+                },
+                "3_spls": {
+                    "ld_offset_ss": [
+                        [
+                            80,
+                            -15
+                        ],
+                        [
+                            80,
+                            -15
+                        ]
+                    ],
+                    "ld_offset_rand_ss": [
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ]
+                    ],
+                    "scale_ss": "abstractSS"
+                },
+                "3_s_0": {
                     "offset": [
                         40,
-                        170
+                        50
                     ],
                     "frame_ss": [
                         3,
                         229
                     ],
                     "cycles": 25,
-                    "zorder": 48,
-                    "d_offset": 0.7,
-                    "col_diff": 0.11,
-                    "sh_cyc": 1,
+                    "zorder": 58,
+                    "d_offset": 0.5,
+                    "col_diff": 0.05,
+                    "sh_cyc": 3,
                     "sh_mm": [
-                        0.1,
-                        1.0
+                        0.5,
+                        1.8
                     ],
                     "sh_dist": [
                         0.98,
                         0.02
                     ],
-                    "num_cyc_ver": 1,
-                    "num_cyc_hor": 2,
+                    "num_cyc_ver": 2,
+                    "num_cyc_hor": 3,
                     "weird_multiplier_ver": 70,
-                    "weird_multiplier_hor": 4,
+                    "weird_multiplier_hor": 30,
                     "sh_ver_incr": 0.003,
-                    "sh_hor_incr": 0.01,
-                    "alpha_diff": 0.3
+                    "sh_hor_incr": 0.11,
+                    "alpha_diff": 0.81,
+                    "d": ""
                 },
-                "2_smokrs": {
+                "3_a_0": {
                     "ld_offset_ss": [
                         [
-                            85,
+                            90,
                             -10
                         ],
                         [
-                            90,
-                            -4
+                            -50,
+                            -25
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
                             10,
-                            0
+                            5
                         ],
                         [
-                            15,
-                            4
+                            5,
+                            5
                         ]
                     ],
-                    "scale_ss": "abstractSS",
-                    "left_right": "right"
-                },
-                "2_expls": {
-                    "ld_offset_ss": [
-                        [
-                            85,
-                            -16
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            15,
-                            4
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "tracer_l_r": "right",
-                    "scale_base": 0.6,
-                    "scale_ss": "abstractSS",
-                    "d": ""
+                    "scale_ss": [
+                        0,
+                        2
+                    ]
                 }
             }
         }
