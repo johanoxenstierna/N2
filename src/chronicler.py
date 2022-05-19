@@ -58,7 +58,7 @@ class Chronicler:
 
 		for ship_nid in P.SHIPS_TO_SHOW:  # number_id
 			try:
-				with open('./ship_info/' + P.MAP_SIZE + '/' + ship_nid + '.json', 'r') as f:
+				with open('./sh_info/' + P.MAP_SIZE + '/' + ship_nid + '.json', 'r') as f:
 					ship_info = json.load(f)
 			except:
 				raise Exception("Haven't done ship info for big yet")

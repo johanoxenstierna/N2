@@ -184,7 +184,7 @@ def animate(i):
                     if smokr.check_frame_max(i, smokr.NUM_FRAMES_SMOKE) == True:
                         prints += "  smokr beyond frame max"
                         continue
-                    smokr.drawn = 4  # switch to 1 later
+                    smokr.drawn = 4  # NEEDED TO SET STATIC_DARKENING FIRST FRAME
                     smokr.init_dyn_obj(i, smokr.NUM_FRAMES_SMOKE)
                     smokr.gen_dyn_extent_alpha()
                 else:
@@ -238,10 +238,15 @@ def animate(i):
                 else:
                     prints += "  no free smoka"
 
-            elif i in ship.gi['smokas_hardcoded']['frames_start']:
+            if i in ship.gi['smokas_hardcoded']['frames_start']:
                 index = ship.gi['smokas_hardcoded']['frames_start'].index(i)
                 smoka_id = ship.gi['smokas_hardcoded']['ids'][index]
                 smoka = ship.smokas[smoka_id]
+                frame_start = ship.gi['smokas_hardcoded']['frames_start'][index]  # this is needed since ani loop must search for start frame
+                frame_stop = ship.gi['smokas_hardcoded']['frames_stop'][index]
+                # smoka.NUM_FRAMES_SMOKE = frame_stop - frame_start
+                smoka.gi['frame_ss'] = [frame_start, frame_stop]  # PENDING DEL NEEDS TO BE SET IN animation loop
+                smoka.frame_ss = smoka.gi['frame_ss']
                 smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
                 # smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # SHOULD NOT BE NEEDED
                 smoka.gen_dyn_extent_alpha()

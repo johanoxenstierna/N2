@@ -81,7 +81,6 @@ def sin_exp_experiment(X):
 
 	# Y = (2 * np.sin(X) + 0.5 * np.sin(X) + 0.4 * np.log(X) / np.log(len(X))) - 0.1
 
-
 	return Y
 
 
@@ -117,7 +116,7 @@ if __name__ == '__main__':
 	# WAVE alpha ============
 	X = np.arange(0, 1000)
 	# Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])  # alpha
-	Y = ([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=20, y_shift=0) for x in X])  # expl alpha
+	Y = ([_sigmoid(x, grad_magn_inv=- len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
 
 	# ## WAVE expl (X is distance and Y is alpha) ==============
 	# X = np.arange(0, 1000, 1)  # large: 960

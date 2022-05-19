@@ -13,7 +13,8 @@ def gen_alpha(gi, fun_plot, y_range=None, plot=False):
 		alpha = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))
 	elif fun_plot == 'smokh':
 		# alpha = np.full(X.shape, fill_value=0.99)
-		alpha = np.linspace(0.5, 1.0, num=len(X))
+		# alpha = np.linspace(0.5, 1.0, num=len(X))
+		alpha = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))
 	elif fun_plot == 'spl':
 		alpha = _gamma(X, mean=max(len(X)//4, 2), y_range=[0.0, 1.0])
 

@@ -1,5 +1,5 @@
 t:
-136
+150
 
 log:
 42: wind transforms achieved.
@@ -7,6 +7,7 @@ log:
 84: expls tracers
 88: spls
 97: hardcoded smokas
+130: gimp starts taking over
 
 
 post scriptum ==========================================
@@ -17,7 +18,6 @@ post scriptum ==========================================
 -importance of fast debugging and how to set up an environment where test cycle is minimized (seconds per test)
     -importance of random seeds and where to set them.
     -describe blitting implementation.
--inheritance and its strengths/weaknesses
 -Good documentation is a tell-tale sign of being an experienced dev (it shows the dev likes to explain things,
 has patience etc): show example long docstrings
     -also don't delete old docstrings which describe issues which were fixed. Just collapse them away and store them,
@@ -30,13 +30,20 @@ this case for example this json file represents everything needed to build a cer
 So one could have skipped the JSON and done this in the class object instead with some inheritance. There are some
 advantages in using python instead of JSON if one uses an IDE, but the project may also become a bit messy, so
 JSON for parameter storage is quite a valid approach.
+-inheritance and its strengths/weaknesses: This is one of those "can always be improved things". Often in code courses
+you'll get dropped this big code that has a bunch of inheritence and the creators of the code will say how important
+the inheritance is to make everything work etc. But when you look closer at inheritance there are some BIG caveats. The
+stereotypical one is that code when written the first time does not fit well with inheritance because inheritance
+does not allow the same level of flexibility. But there's more to it. Whenever you write an abstract class from which
+other classes inherit, you essentially force the other classes into a certain mold, and the problem is that even late
+in a project one may wish to change the mold.
 -How to keep up hobby project momentum:
 When it comes to the momentum in the project, Nowadays in my hobby projects,
 I always strife for a sense of moving forward at a really slow but steady pace.
 I do this because there is no reason to stress, like, a hobby project is never going to have a deadline,
  and that adding code quickly incurs more Tech/maintanence debt:
  As a beginner one builds large project without much sense of where one is going, so what tends to happen then is that
- project reaches a critical point in terms of complexity where one can "get lost".
+ project reaches a critical point in terms of complexity where you "get lost".
  This can e.g. be seen when one runs into a bug: How long time on average does it take to fix the bug,
  and is there a workflow in place to fix the bug? How frustrated does one get when faced with an annoying bug?
  Something that comes more and more with experience is that one learns to avoid getting stuck in a negative experience.

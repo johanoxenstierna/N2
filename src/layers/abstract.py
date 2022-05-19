@@ -19,6 +19,9 @@ class AbstractLayer:
         _s.drawn = 0  # 0: not drawn, 1: start drawing, 2. continue drawing, 3. end drawing, 4: dynamic flag usage
         _s.clock = 0
         _s.ab_clock = 0  # alpha_brightness clock for static changes (i.e. non-expl)
+        _s.ab_cur = [1.0, 1.0]  # this is the product of ab's through time (needed for static darkening e.g. smokes)
+        # OBS THIS WONT WORK SINCE SMOKRS ARE SHARED BETWEEN SHIPS. SO IF SMOKR IS CHANGED IN ONE SHIP THEYRE SCREWED FOR ALL TIME
+        # SOLUTION: USE SMOKAS
         _s.frames_num = None  # number of frames to animate for
         _s.frame_ss = None
         # _s.frame_ss_start_offset = None

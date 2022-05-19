@@ -31,7 +31,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 600
+			_s.NUM_FRAMES_SMOKE = 100
 		elif type == 'r':
 			_s.NUM_FRAMES_SMOKE = 400  #250  # 500 should do it (just use generally few expls)
 		# else:  # REM
@@ -47,7 +47,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 			frame_start = ship.gi['smokas_hardcoded']['frames_start'][smokh_index]  # this is needed since ani loop must search for start frame
 			frame_stop = ship.gi['smokas_hardcoded']['frames_stop'][smokh_index]
 			_s.NUM_FRAMES_SMOKE = frame_stop - frame_start
-			_s.gi['frame_ss'] = [frame_start, frame_stop]
+			_s.gi['frame_ss'] = [frame_start, frame_stop]  # PENDING DEL NEEDS TO BE SET IN animation loop
 			_s.frame_ss = _s.gi['frame_ss']
 
 		_s.type = type

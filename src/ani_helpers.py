@@ -94,12 +94,8 @@ def static_alpha_darkening(pic, ii, g_obj):
 	Not applied for expls
 
 	"""
-	if g_obj.__class__.__name__ not in ['Sail', 'Smoke', 'Ship']:  # TEMP
+	if g_obj.__class__.__name__ not in ['Sail', 'Smoke', 'Ship']:  # TEMP included ones
 		return pic
-
-	if g_obj.__class__.__name__ == 'Smoke':
-		if g_obj.hardcoded == True:
-			return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
 
 	if g_obj.__class__.__name__ == 'Ship':
 		gi = g_obj.gi
@@ -116,7 +112,29 @@ def static_alpha_darkening(pic, ii, g_obj):
 		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1]
+		g_obj.ab_cur[0] *= ship_ab_at_clock[1]  # needed for smokes
+		g_obj.ab_cur[1] *= ship_ab_at_clock[2]  # needed for smokes
 
+	if g_obj.__class__.__name__ == 'Smoke':
+		if ii == 13:
+			adf = 5
+		if g_obj.hardcoded == True:
+			return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
+		if g_obj.drawn == 1:  # STATIC DARKN ONLY WHEN PIC IS FIRST DRAWN
+			pass  # TODO REPLACE WITH GLOBAL ALPHA DARKENING PARAMETER IN P
+
+			# REPLACED WITH ab_cur
+			# ship_ab_at_clock_prev = g_obj.ship.gi['alpha_and_bright'][0]  # this is needed since ship_ab_at_clock is incremented after the first ii hit.
+			# for i in range(1, len(g_obj.ship.gi['alpha_and_bright'])):  # finds previous alpha_and_bright
+			# 	if ii <= g_obj.ship.gi['alpha_and_bright'][i][0]:
+			# 		break
+			# 	else:
+			# 		ship_ab_at_clock_prev = g_obj.ship.gi['alpha_and_bright'][i]
+
+			# g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0]  # * ship_ab_at_clock[2]
+			# g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * g_obj.ship.ab_cur[1]
+			# g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * g_obj.ship.ab_cur[1]
+			# g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * g_obj.ship.ab_cur[0]
 
 	# HSV (perhaps not needed)
 	# img = ship_pic
