@@ -16,7 +16,8 @@ def gen_alpha(gi, fun_plot, y_range=None, plot=False):
 		# alpha = np.linspace(0.5, 1.0, num=len(X))
 		alpha = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))
 	elif fun_plot == 'spl':
-		alpha = _gamma(X, mean=max(len(X)//4, 2), y_range=[0.0, 1.0])
+		# alpha = _gamma(X, mean=max(len(X)//4, 2), y_range=[0.0, 1.0])
+		alpha = _gamma(X, mean=3, var=15, y_range=[0.0, 6.0])  # same as extent
 
 	return alpha
 
@@ -25,7 +26,7 @@ def gen_scale_lds(NUM_FRAMES, fun_plot, plot=False, ld_ss=None, max_scale=1.0):
 	scale = None
 	X = np.arange(1, NUM_FRAMES + 1)
 	if fun_plot == 'spl':
-		scale = _gamma(X, len(X) // 3, y_range=[0.0, max_scale])
+		scale = _gamma(X, mean=3, var=15, y_range=[0.0, max_scale])
 	elif fun_plot == 'spl_hard':  # when its on top of ship
 		scale = _gamma(X, len(X) // 5, y_range=[0.0, max_scale * 0.5])  # same as before just smaller
 	elif fun_plot in ['a', 'r']:  # smokes

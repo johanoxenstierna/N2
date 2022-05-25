@@ -20,8 +20,8 @@ def _normal(X, mean, var, y_range):
 	return Y
 
 
-def _gamma(X, mean, y_range):
-	Y = gamma.pdf(X, mean)
+def _gamma(X, mean, var, y_range):
+	Y = gamma.pdf(X, mean, 0, var)
 	Y = min_max_normalization(Y, y_range=y_range)
 	return Y
 
@@ -30,6 +30,7 @@ def _log(X, y_range):
 	Y = np.log(X)
 	Y = min_max_normalization(Y, y_range=y_range)
 	return Y
+
 
 def _log_and_linear(X, y_range):  # hardcoded for now since only used for smoka
 	Y = 0.99 * np.log(X) + 0.01 * X
@@ -113,10 +114,10 @@ if __name__ == '__main__':
 	fires per moving average unit. 
 	'''
 
-	# WAVE alpha ============
-	X = np.arange(0, 1000)
-	# Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])  # alpha
-	Y = ([_sigmoid(x, grad_magn_inv=- len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
+	# # WAVE alpha ============
+	# X = np.arange(0, 1000)
+	# # Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])  # alpha
+	# Y = ([_sigmoid(x, grad_magn_inv=- len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
 
 	# ## WAVE expl (X is distance and Y is alpha) ==============
 	# X = np.arange(0, 1000, 1)  # large: 960
@@ -128,9 +129,11 @@ if __name__ == '__main__':
 	# a = 1.99
 	# x = np.linspace(gamma.ppf(0.01, a),
 	#                 gamma.ppf(0.99, a), 50)
-	# X = np.arange(0, 50)
-	# Y = _gamma(X, 2, y_range=[0, 1])
-	# Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	X = np.arange(0, 150)
+	# Y = chi2.pdf(X / 2, 150 // 12) * 2 + \
+	# 					  chi2.pdf(X / 14, 150 // 28) * 4  # obs starts at fire frame
+	Y = _gamma(X, 3, 14, y_range=[0, 1])
+	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 
 	#EXPL on ship
 	# fig = plt.figure(figsize=(10, 6))

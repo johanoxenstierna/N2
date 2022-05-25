@@ -120,7 +120,7 @@ def gen_triangles(extent_t, extent, gi, pic):
     padding returned, NOT shape after warpAffine obviously since this is not known at this stage
     tri_base not the same as tris (u f* idiot) A REFERENCE TO ORIG SCALE NEEDED.
     Mask is not part of warp!
-    TODO: check whether this works for
+    TODO: check whether this works for SPLLLLL
     """
 
     # 1 BUILD TRIANGLES in extent_t domain ==============================

@@ -32,7 +32,7 @@
     "2_smokrs": {"ld_offset_ss": [[85, -10], [95, -4]],"ld_offset_rand_ss": [[10, 0], [15, 4]],
       "scale_ss": "abstractSS", "scale_max": 1, "left_right": "right"},
     "2_expls": {"ld_offset_ss": [[85, -10], [null, null]], "ld_offset_rand_ss": [[12, 3], [null, null]],
-      "tracer_l_r": "right", "scale_base": 0.6,
+      "tracer_l_r": "right", "scale_base": 0.5,
       "scale_ss": "abstractSS" ,"d": ""},
     "2_a_0": {"ld_offset_ss": [[120, -10], [-50, -25]],"ld_offset_rand_ss": [[10, 5], [5, 5]],
       "scale_ss": [0, 2]}

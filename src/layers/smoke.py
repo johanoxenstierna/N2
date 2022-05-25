@@ -31,9 +31,9 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 100
+			_s.NUM_FRAMES_SMOKE = 600
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 400  #250  # 500 should do it (just use generally few expls)
+			_s.NUM_FRAMES_SMOKE = 100  #250  # 500 should do it (just use generally few expls)
 		# else:  # REM
 		# 	_s.NUM_FRAMES_SMOKE = 500
 
@@ -91,11 +91,9 @@ class Smoke(AbstractLayer, AbstractSSS):
 			else:
 				_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic)
 				fun_plot = 'smoka'
-
-
 		else:
 			_s.extent, _s.extent_t, lds_vec, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
-			fun_plot = 'smoka'
+			fun_plot = 'smoka'  # smokr but fun plot is same
 
 		# _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'])
 		_s.finish_smoke_info()

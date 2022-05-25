@@ -24,6 +24,8 @@ has patience etc): show example long docstrings
     trust me, there are times when you will find yourself reading them.
 -nested functions bad: want to be able to collapse everything to see all functions. if too many functions = sign that module too large
 -the WRITE function at the top
+-what to print in the animation loop: index and number of im_ax objects being drawn and also information about objects
+ that are not being drawn.
 -Difference between parameters module and code module. In this project I uses JSON files to put my parameters in,
 this can be good to make the separation clear. Or it can be done directly in the corresponding object class. In
 this case for example this json file represents everything needed to build a certain ship class object.

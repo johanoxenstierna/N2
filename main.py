@@ -151,6 +151,9 @@ def animate(i):
             if i in ship.gi['firing_frames']:  # add rand
                 spl = ship.find_free_obj(type='spl')
                 if spl != None:
+                    if spl.check_frame_max(i, spl.NUM_FRAMES_SPL) == True:
+                        prints += "  cant add smoka"
+                        continue
                     spl.drawn = 1  # this variable is needed to avoid the frame_ss check
 
                     spl.init_dyn_obj(i, spl.NUM_FRAMES_SPL)
@@ -174,7 +177,9 @@ def animate(i):
                         continue
 
                     im_ax[spl.index_im_ax].set_extent(spl.extent[spl.clock])
-                    im_ax[spl.index_im_ax].set_alpha(1.0)  # replace with invisibility after 1st frame OR the tracer event
+                    # warp_affine_and_color(i, ax, im_ax, spl, ch)  # doesn't work for objects that grow then shrink
+                    im_ax[spl.index_im_ax].set_alpha(spl.alpha[spl.clock])  # replace with invisibility after 1st frame OR the tracer event
+                    # im_ax[spl.index_im_ax].set_alpha(1)  # replace with invisibility after 1st frame OR the tracer event
                     # im_ax[spl.index_im_ax].set_zorder(999)  # SHOULD NOT BE NEEDED SINCE ITS DONE IN ANI_UPDATE_STEP
 
         if P.A_SMOKRS:

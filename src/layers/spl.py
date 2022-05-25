@@ -18,7 +18,7 @@ class Spl(AbstractLayer, AbstractSSS):
 		_s.gi = deepcopy(ship.gi['xtras'][ship.id + "_spls"])  # OBS CERTAIN THINGS HERE MUST BE THERE FOR ALL
 
 		AbstractSSS.__init__(_s, ship, id, pic)
-		_s.NUM_FRAMES_SPL = 50
+		_s.NUM_FRAMES_SPL = 150
 		_s.pic = pic
 		_s.zorder = None  # defaults to waves zorder + 1  (i.e. 2 + 1 = 3)
 
@@ -30,17 +30,20 @@ class Spl(AbstractLayer, AbstractSSS):
 		_s.gi['max_ri'] = np.max(_s.extent[:, 1])
 
 	def gen_scale_vector(_s, frames_num, ssas):
+		"""TODO: fix so that gen_triangles work for objects that grow then shrink"""
 		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot='spl', ld_ss=_s.gi['ld_ss'])
+		# _s.gi['scale_vector'] = np.linspace(0, 2, num=frames_num)  # this works...
+		aa = 5
 
 	def gen_dyn_extent_alpha(_s):
 		"""Needs to be here cuz finish_spl_info is TODO: for warp_affine this is needed"""
 		_s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(_s.gi, _s.pic, _s.gi['scale_vector'], _s.gi['lds_vec'])
 
-		# BELOW WORKS (April 13).
+		#TODO:No it doesn't WORK. gen_triangles seems to fail for objects that grow then shrink
 		# _s.finish_spl_info()
 		# _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
 		# 	gen_triangles(_s.extent_t, _s.extent, _s.gi, _s.pic)
-		# _s.alpha = gen_alpha(_s.gi, fun_plot='spl')
+		_s.alpha = gen_alpha(_s.gi, fun_plot='spl')
 		aa = 5
 
 	def comp_zorder(_s, ships, ii):
