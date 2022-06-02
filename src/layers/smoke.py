@@ -31,9 +31,9 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 600
+			_s.NUM_FRAMES_SMOKE = 900  # more needed
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 100  #250  # 500 should do it (just use generally few expls)
+			_s.NUM_FRAMES_SMOKE = 500  #250  # 500 should do it (just use generally few expls)
 		# else:  # REM
 		# 	_s.NUM_FRAMES_SMOKE = 500
 

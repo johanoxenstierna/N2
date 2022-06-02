@@ -16,8 +16,8 @@ from src.trig_functions import *
 from sklearn.preprocessing import StandardScaler
 
 THRESHOLD_SHIP_EXPL = 0.99
-ONLY_DO_FOLDER = 'ships'
-ONLY_DO_FILE = '5_a_0.png'  # with ".png"
+ONLY_DO_FOLDER = 'waves'
+ONLY_DO_FILE = ''  # with ".png"
 EXCEPTIONS = ['4_a_0']
 SMOKHS = ['4_a_0']
 

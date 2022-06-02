@@ -5,30 +5,24 @@
             "id": "0",
             "tl": [],
             "firing_frames": [
-                13,
-                14,
-                14,
-                35,
-                37,
-                48,
-                58,
+                8,
+                8,
+                25,
+                43,
+                57,
                 71,
-                71,
-                78,
-                95,
-                100,
-                106,
-                108,
-                344
+                104,
+                112,
+                598
             ],
             "firing_info": {
                 "nums": [
                     5,
-                    5,
-                    5
+                    3,
+                    1
                 ],
                 "means": [
-                    30,
+                    20,
                     100,
                     580
                 ],
@@ -49,7 +43,7 @@
             "alpha_and_bright": [
                 [
                     10,
-                    0.8,
+                    1.0,
                     1.0
                 ],
                 [
@@ -66,7 +60,7 @@
                 "ld_ss": [
                     [
                         200,
-                        640
+                        635
                     ],
                     [
                         250,
@@ -85,26 +79,26 @@
                 "black": {
                     "cycles": 2,
                     "fxy": [
-                        0,
+                        5,
                         0.2
                     ]
                 }
             },
             "brightness_frame_value": [],
-            "zorder": 70,
+            "zorder": 700,
             "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is lt! ALSO SAIL. d_offset is move_black offset",
             "xtras": {
                 "0_s_0": {
                     "offset": [
-                        40,
-                        270
+                        26,
+                        214
                     ],
                     "frame_ss": [
                         3,
                         229
                     ],
                     "cycles": 25,
-                    "zorder": 72,
+                    "zorder": 702,
                     "d_offset": 0.7,
                     "col_diff": 0.11,
                     "sh_cyc": 1,
@@ -127,8 +121,8 @@
                 },
                 "0_s_1": {
                     "offset": [
-                        20,
-                        150
+                        2,
+                        115
                     ],
                     "frame_ss": [
                         3,
@@ -159,7 +153,7 @@
                 "0_s_2": {
                     "offset": [
                         -10,
-                        300
+                        237
                     ],
                     "frame_ss": [
                         3,
@@ -241,22 +235,22 @@
                 "0_spls": {
                     "ld_offset_ss": [
                         [
-                            360,
-                            -15
+                            650,
+                            -10
                         ],
                         [
-                            360,
-                            -15
+                            650,
+                            -10
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
-                            20,
-                            0
+                            100,
+                            30
                         ],
                         [
-                            0,
-                            0
+                            2,
+                            2
                         ]
                     ],
                     "scale_ss": "abstractSS"
@@ -268,7 +262,7 @@
                             -25
                         ],
                         [
-                            -50,
+                            -100,
                             -25
                         ]
                     ],

@@ -87,11 +87,11 @@ def sin_exp_experiment(X):
 
 if __name__ == '__main__':
 
-	fig, ax = plt.subplots(figsize=(10, 6))
+	# fig, ax = plt.subplots(figsize=(10, 6))
 
 	# SMOKE ============
-	# X = np.arange(0, 1000, 1)  # large: 960
-	# # Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0) for x in X]))  # smoka alpha
+	# X = np.arange(0, 720, 1)  # large: 960
+	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-6, y_magn=1., y_shift=0.4) for x in X]))  # smoka alpha
 	# X = X + 1
 	# # Y = _log(X) #  SMOKR
 	# Y = _log_and_linear(X) #  SMOKA
@@ -129,25 +129,25 @@ if __name__ == '__main__':
 	# a = 1.99
 	# x = np.linspace(gamma.ppf(0.01, a),
 	#                 gamma.ppf(0.99, a), 50)
-	X = np.arange(0, 150)
-	# Y = chi2.pdf(X / 2, 150 // 12) * 2 + \
-	# 					  chi2.pdf(X / 14, 150 // 28) * 4  # obs starts at fire frame
-	Y = _gamma(X, 3, 14, y_range=[0, 1])
-	Y = min_max_normalization(Y, y_range=[0.0, 1.0])
+	# X = np.arange(0, 150)
+	# # Y = chi2.pdf(X / 2, 150 // 12) * 2 + \
+	# # 					  chi2.pdf(X / 14, 150 // 28) * 4  # obs starts at fire frame
+	# Y = _gamma(X, 2, 14, y_range=[0, 1])
+	# Y = min_max_normalization(Y, y_range=[0.0, 1.0])
 
-	#EXPL on ship
+	# #EXPL on ship DOESNT DO ANYTHING
 	# fig = plt.figure(figsize=(10, 6))
 	# ax = fig.add_subplot(1, 1, 1, projection='3d')
 	# X0, X1 = np.meshgrid(np.arange(0, 50, 1), np.arange(0, 50, 1))
 	# X = np.dstack((X0, X1))
 	# Y = multivariate_normal.pdf(X, mean=(20, 20), cov=[[15, 0], [0, 15]])  # only for rand?
 	# Y = min_max_normalization(Y, y_range=[0, 1])
-	# breakpoint()
+	# # breakpoint()
 
 	# Y = np.random.multivariate_normal((20, 20), [[1, 0], [0, 1]], size=(40, 40))
 	# Y = chi2.pdf(X / 2, 4)
 
-	ax.plot(X, Y, '-')
+	# ax.plot(X, Y, '-')
 	# plt.xlim([-5, NUM])
 	# plt.ylim([-2.5, 2.5])
 

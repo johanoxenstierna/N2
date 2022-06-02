@@ -103,6 +103,7 @@ class AbstractSSS:
         frame_num = _s.gi['frame_ss'][1] - _s.gi['frame_ss'][0]  # same as in gen_extent
         assert(_s.gi['frame_ss'][1] < P.FRAMES_STOP)
         ssas = _s.ship.scale_vector[_s.ship.clock]  # scale_ship_at_start
+
         _s.gi['ld_ss'] = _s.get_ld_ss(ssas)
         if _s.gi['scale_ss'] == "abstractSS":
             _s.gen_scale_vector(frame_num, ssas)  # includes gen_ss (if there is ss its already in info)
@@ -123,7 +124,10 @@ class AbstractSSS:
                  [extent_ship_at_init[0], extent_ship_at_init[2]]]
 
         # ADD OFFSET
-        ld_ss[0][0] += _s.gi['ld_offset_ss'][0][0] * ssas  # this is ld!
+        try:
+            ld_ss[0][0] += _s.gi['ld_offset_ss'][0][0] * ssas  # this is ld!
+        except:
+            adf = 5
         ld_ss[0][1] += _s.gi['ld_offset_ss'][0][1] * ssas
         ld_ss[1][0] += _s.gi['ld_offset_ss'][1][0] * ssas
         ld_ss[1][1] += _s.gi['ld_offset_ss'][1][1] * ssas  # if offset is same at beginning and end == will not move

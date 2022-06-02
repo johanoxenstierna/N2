@@ -30,7 +30,9 @@ class Spl(AbstractLayer, AbstractSSS):
 		_s.gi['max_ri'] = np.max(_s.extent[:, 1])
 
 	def gen_scale_vector(_s, frames_num, ssas):
-		"""TODO: fix so that gen_triangles work for objects that grow then shrink"""
+		"""TODO: fix so that gen_triangles work for objects that grow then shrink
+		OBS for spl the lds_vec is here only a placeholder! Prob bcs there are two cases (in water and on top
+		of ship)"""
 		_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(frames_num, fun_plot='spl', ld_ss=_s.gi['ld_ss'])
 		# _s.gi['scale_vector'] = np.linspace(0, 2, num=frames_num)  # this works...
 		aa = 5
@@ -48,23 +50,46 @@ class Spl(AbstractLayer, AbstractSSS):
 
 	def comp_zorder(_s, ships, ii):
 		"""
-		Check if any ship is in the way (OBS only at the first frame). If yes, take ships z-order and + 1.
-		If not, take water z-order + 1 (default)
-		For each ship the bounding box is computed as lt and dr and then checking against thos
+		Check if any ship is in the way (OBS only at the first frame) of randomly generated spl coord.
+		For each ship the bounding box is computed as lt and dr and then checking against thos.
+		IT OVERWRITES scale_lds IF NECESSARY
 		"""
 
 		left_max = max(_s.gi['lds_vec'][:, 0])  # max(_s.extent[:, 0])
 		down_max = max(_s.gi['lds_vec'][:, 1])  # since its at water level
-		ld = [left_max, down_max]
+		top_max = down_max - _s.pic.shape[0]
+		ld = [left_max, down_max]  # top_max == down_min
+		lt = [left_max, top_max]  # top_max == down_min
+		flag_on_top_of_obj = False
+		FORBIDDEN_REGIONS = [[728, 812, 615, 560]]  # left right down up
+		for reg in FORBIDDEN_REGIONS:
+			if ld[0] >= reg[0] and ld[0] <= reg[1] and \
+				ld[1] <= reg[2] and ld[1] >= reg[3]:
+				flag_on_top_of_obj = True
+
+		if _s.ship.id == '5':
+			adsf = 5
+
+		_s.zorder = 3  # default
+
 		for ship_id, ship in ships.items():
-			s_ext = ship.extent[ii, :]
-			if ld[0] >= s_ext[0] and ld[0] <= s_ext[1] and \
-				ld[1] <= s_ext[2] and ld[1] >= s_ext[3]:  # between l and r and between d and t (u)
+			if len(ship.extent) >= ii:
+				s_ext = ship.extent[ii, :]
+			else:
+				return
+
+			if (ld[0] >= s_ext[0] and ld[0] <= s_ext[1] and \
+				ld[1] <= s_ext[2] and ld[1] >= s_ext[3]) or \
+					flag_on_top_of_obj == True:  # ON TOP OF SHIP between l and r and between d and t (u)
 				_s.zorder = ship.zorder + 1
 				_s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(_s.NUM_FRAMES_SPL, fun_plot='spl_hard', ld_ss=_s.gi['ld_ss'])
 				return
-
-		_s.zorder = 3  # DEFAULT
+			elif lt[0] >= s_ext[0] and lt[0] <= s_ext[1] and \
+				lt[1] <= s_ext[2] and lt[1] >= s_ext[3]:  # PARTLY ON TOP OF SHIP
+				_s.zorder = ship.zorder + 1
+				# _s.gi['scale_vector'], _s.gi['lds_vec'] = gen_scale_lds(_s.NUM_FRAMES_SPL, fun_plot='spl_hard',
+				#                                                         ld_ss=_s.gi['ld_ss'])
+				return  # MUST RETURN CUZ OTHERWISE THE ZORDER GONNA BE MESSED UP NEXT ITER
 
 
 

@@ -32,14 +32,13 @@ Chronicler() # just outputs the json below
 with open('./src/chronicle.json', 'r') as f:
     ch = json.load(f)
 
-
 WRITE = 0  #60  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
 FPS = 20
 
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=FPS, metadata=dict(artist='Me'), bitrate=3600)
 
-fig, ax = plt.subplots(figsize=(12, 8))
+fig, ax = plt.subplots(figsize=(16, 10))
 
 # im_ax = {}
 im_ax = []
@@ -152,7 +151,7 @@ def animate(i):
                 spl = ship.find_free_obj(type='spl')
                 if spl != None:
                     if spl.check_frame_max(i, spl.NUM_FRAMES_SPL) == True:
-                        prints += "  cant add smoka"
+                        prints += "  cant add spl"
                         continue
                     spl.drawn = 1  # this variable is needed to avoid the frame_ss check
 

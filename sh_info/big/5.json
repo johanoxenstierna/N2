@@ -3,7 +3,7 @@
   "id": "5",
   "tl": [],
   "firing_frames": [],
-  "firing_info": {"nums": [3, 5, 5], "means": [30, 100, 180], "var": 20},
+  "firing_info": {"nums": [5, 5, 2], "means": [10, 100, 180], "var": 20},
   "d0": "",
   "d1": "firing frames and smoka_init_frames produced by ch",
   "smoka_init_frames": [30, 200],
@@ -23,13 +23,13 @@
   "zorder": 600,
   "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
   "xtras": {
-    "5_a_0": {"ld_offset_ss": [[65, -20], [-80, -20]],"ld_offset_rand_ss": [[20, 5], [5, 5]], "scale_ss": [0, 1.0]},
+    "5_a_0": {"ld_offset_ss": [[25, -10], [-80, -20]],"ld_offset_rand_ss": [[20, 5], [5, 5]], "scale_ss": [0, 1.0]},
     "5_smokrs": {"ld_offset_ss": [[22, -20], [-60, -5]],"ld_offset_rand_ss": [[3, 5], [3, 3]],
       "scale_ss": "abstractSS", "scale_max": 1.0, "left_right": "left"},
     "5_expls": {"ld_offset_ss": [[22, -20], [22, -20]], "ld_offset_rand_ss": [[3, 5], [null, null]],
       "scale_base": 0.4, "tracer_l_r": "left",
       "scale_ss": "abstractSS" ,"d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"},
-    "5_spls": {"ld_offset_ss": [[80, -15], [80, -15]], "ld_offset_rand_ss": [[0, 0], [0, 0]],
+    "5_spls": {"ld_offset_ss": [[-300, 5], [-300, 5]], "ld_offset_rand_ss": [[100, 5], [5, 5]],
       "scale_ss": "abstractSS"}
   }
 }

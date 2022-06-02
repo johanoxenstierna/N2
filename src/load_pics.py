@@ -99,7 +99,7 @@ def load_pics(ch):
     for file_name in file_names:
         pic = imread(PATH + file_name)
         for ship_id, ship in pics['ships'].items():
-            for i in range(P.NUM_EXPLS):
+            for i in range(P.NUM_SPLS):
                 ship['spls'][file_name[:-4] + '_' + str(i)] = pic
 
     # COPIES OF THE SAME SMOKR ARE ADDED TO EACH SHIP

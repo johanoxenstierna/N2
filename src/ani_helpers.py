@@ -179,7 +179,9 @@ def fire_brightness(pic, ii, g_obj):
 	# BRIGHTNESS =
 	if type == 'constant':  # same shift applied to whole pic
 		# ex = 5.84
-		ex = 2.7 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.
+		ex = 0.3 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.  2.7 makes it totally white
+		if g_obj.__class__.__name__ == 'Smoke':
+			ex = 1.3
 		# if iii in firing_frames:
 		# 	ex = 0.84  # decrease in green and blue
 		# pic = _s.pic.copy()  # REQUIRED
@@ -203,8 +205,8 @@ def fire_brightness(pic, ii, g_obj):
 		left_top[1] = pic.shape[0] + ld[1]
 
 		# Y = multivariate_normal.pdf(X, mean=(72, 213), cov=[[50, 0], [0, 50]])
-		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[350, 0], [0, 650]])
-		Y = min_max_normalization(Y, y_range=[0, 0.3])  # this is amount added to current
+		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[pic.shape[1], 0], [0, pic.shape[0]]])  # 350. 650
+		Y = min_max_normalization(Y, y_range=[0, 0.2])  # this is amount added to current
 
 		# aa = pic[:, :, 0] * Y
 		pic[:, :, 0] += Y  # more y=more red, less=more green

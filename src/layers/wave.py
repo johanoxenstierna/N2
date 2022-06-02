@@ -18,9 +18,9 @@ class Wave(AbstractLayer):
 		_s.id = id
 		_s.pic = pic
 
-		_s.NUM_FRAMES_AVG = 120  # 40
+		_s.NUM_FRAMES_AVG = 120  # 40. OBS THIS IS ALSO USED TO SET THE FIRST FRAME, HENCE EXTRA TOT IS NEEDED
 		_s.NUM_FRAMES_RAND_MAX = 30  # 30  # this is rand PER REPEAT
-		_s.NUM_REPEATS_OF_SAME_WAVE = 1  # this times AVG * RAND must be less than frames
+		_s.NUM_REPEATS_OF_SAME_WAVE = 4  # this times AVG * RAND must be less than frames
 		# num_frames_avg * num_repeats_of_same_wave should give
 		_s.DEST_RAND_MIN_MAX = [[-80, -0], [-20, 0]]  # first is X, second is Y
 
@@ -123,7 +123,7 @@ class Wave(AbstractLayer):
 			extent_agg += [[0, 1, 1, 0]]  # better too long than too short since clock only risks going out of bounds otherwise
 			extent_agg += list(extent)
 
-			alpha = gen_alpha(_gi, fun_plot='normal', y_range=[0, 0.1])  # 0.,05
+			alpha = gen_alpha(_gi, fun_plot='normal', y_range=[0, 0.13])  # 0.,05
 			alpha_agg += [0.0]
 			alpha_agg += list(alpha)
 			aa = 5
@@ -135,6 +135,7 @@ class Wave(AbstractLayer):
 
 	def gen_alpha_wave_expl(_s):
 		"""
+		OBS has nothing to do with normal alpha above
 		Since alpha is sufficient to make wave brighter when expl happens, there needs to be a
 		sigmoid to provide the amount of alpha given a certain distance to an expl.
 		"""
