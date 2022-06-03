@@ -56,7 +56,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 			_s.zorder = ship.gi['zorder'] + random.randint(-1, 6)  # TODO some smokrs should be behind ship
 		elif _s.type == 'a':
 			if _s.hardcoded == True:
-				_s.zorder = 3  # part of background
+				_s.zorder = _s.gi['zorder']
 			else:
 				_s.zorder = ship.gi['zorder'] + random.randint(1, 6)  # PERHAPS SHOULD ALSO BE NEG
 

@@ -20,6 +20,7 @@ class Chronicler:
 		_s.possible_bc_locs, _s.zorders = _s.get_possible_bc_locs(P.MAP_SIZE)
 		_s.init_chronicle()
 		_s.run()
+		_s.final_tests()
 		_s.export()
 
 	def get_possible_bc_locs(_s, map_size):
@@ -82,7 +83,10 @@ class Chronicler:
 
 		for i in range(len(ship['firing_info']['nums'])):
 			num = ship['firing_info']['nums'][i]
-			mean = ship['firing_info']['means'][i]
+			try:
+				mean = ship['firing_info']['means'][i]
+			except:
+				raise Exception("different number of numns and mean in firing_info for ship: " + str(ship['id']))
 			var = ship['firing_info']['var']
 
 			Y = _normal(X, mean=mean, var=var, y_range=[0, 1])
@@ -107,6 +111,11 @@ class Chronicler:
 		frames.sort()
 		ship['firing_frames'] = list(map(int, frames))
 
+		if frames[-1] >= ship['move']['frame_ss'][1]:
+			raise Exception("firing frame outside frame_ss max ship: " + str(ship['id']))
+
+		assert(frames[-1] < ship['move']['frame_ss'][1])  # firing frame outside max frame (not sure why this causes bug but whatever)
+
 	def smoka_init_frames(_s, ship):
 		"""
 		ship IS the gi at this point (just the JSON)
@@ -117,7 +126,6 @@ class Chronicler:
 		"""
 
 		aa = 5
-
 
 	def check_arrays_not_empty(_s):
 
@@ -152,6 +160,13 @@ class Chronicler:
 			bc['left_right'] = 'l'  # not sure about this (think the right one is fixed in animate
 			_s.ch['bc'].append(bc)
 			frame += 1
+
+	def final_tests(_s):
+
+		if '3' in _s.ch['ships']:
+			if _s.ch['ships']['3']['move']['frame_ss'][1] * 1.1 < P.FRAMES_STOP:
+				raise Exception("Ship 3 must go whole way otherwise smokhs wont work")
+
 
 	def export(_s):
 

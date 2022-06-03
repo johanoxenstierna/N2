@@ -92,7 +92,10 @@ class Sail(AbstractLayer):
 				mov_x_mid = 0  # MAJOR BUG DISCOVERED HERE. SAIL WAS MOVING FASTER THAN SHIP
 			lt = [ship.extent[i, 0], ship.extent[i, 3]]  # start with ship lt
 			lt[0] += _s.gi['offset'][0] * ship.scale_vector[i]  # offset wrt ship scale at frame LT
-			lt[0] += mov_x_mid * ship.scale_vector[i] * _s.gi['d_offset']  # offset wrt mov black
+
+			if _s.id not in ['3_s_0', '2_s_0']:  # TODO: THIS HACKS THE 3_s_0 sail
+				lt[0] += mov_x_mid * ship.scale_vector[i] * _s.gi['d_offset']  # offset wrt mov black
+
 			lt[1] += _s.gi['offset'][1] * ship.scale_vector[i]
 
 			# DEPR DONT SEE WHY MOV_Y_TOP IS NEEDED

@@ -118,7 +118,7 @@ def static_alpha_darkening(pic, ii, g_obj):
 	if g_obj.__class__.__name__ == 'Smoke':
 		if ii == 13:
 			adf = 5
-		if g_obj.hardcoded == True:
+		if g_obj.hardcoded == True:  # OBS SMOKRS HAVE BE CHANGED GLOBALLY (NOT POSSIBLE OTHERWISE)
 			return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
 		if g_obj.drawn == 1:  # STATIC DARKN ONLY WHEN PIC IS FIRST DRAWN
 			pass  # TODO REPLACE WITH GLOBAL ALPHA DARKENING PARAMETER IN P

@@ -7,6 +7,9 @@ gi: general info. OBS is unique to each layer
 spl kept separate from expl cuz spl lasts much longer
 
 im_ax li: 2.9  35 min/vid
+
+BUG CHECK:
+1. Firing frames cannot exceed the ship visible frames (duh)
 """
 
 # geometric image transformations.
