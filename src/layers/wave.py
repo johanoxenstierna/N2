@@ -20,7 +20,7 @@ class Wave(AbstractLayer):
 
 		_s.NUM_FRAMES_AVG = 120  # 40. OBS THIS IS ALSO USED TO SET THE FIRST FRAME, HENCE EXTRA TOT IS NEEDED
 		_s.NUM_FRAMES_RAND_MAX = 30  # 30  # this is rand PER REPEAT
-		_s.NUM_REPEATS_OF_SAME_WAVE = 30  # this times AVG * RAND must be less than frames
+		_s.NUM_REPEATS_OF_SAME_WAVE = 30  # 30 - stops at around 3:30. this times AVG * RAND must be less than frames
 		# num_frames_avg * num_repeats_of_same_wave should give
 		_s.DEST_RAND_MIN_MAX = [[-80, -0], [-20, 0]]  # first is X, second is Y
 

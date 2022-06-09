@@ -17,15 +17,22 @@ class Ship(AbstractLayer):
         _s.gi = ship_info
         _s.pic = pic  # NOT SCALED
         _s.fill_info()
-        _s.frame_ss = ship_info['move']['frame_ss']
-        _s.frames_tot = _s.gi['move']['frame_ss'][1] - _s.gi['move']['frame_ss'][0]
+        _s.frame_ss = [0, P.FRAMES_STOP - 100]
+        _s.gi['move']['frame_ss'] = _s.frame_ss  # NEW
+        _s.frames_tot = _s.frame_ss[1] - _s.frame_ss[0]
         zigzag = ()
         if P.PR_ZIGZAG:
             zigzag = gen_zig_zag(_s.frames_tot, cycles=2, max_delta_width=0.06)
         _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, zigzag=zigzag)  # left_down_log
         _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
             gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)
+
         assert(len(_s.extent) == len(_s.tris))
+
+        # check tris
+        assert(_s.extent_t[0, 0] < 0.0001)
+        assert(_s.extent_t[0, 1] - _s.tri_base[2, 0] < 0.0001)
+
         # if ship_info['id'] == '7':
         #     _s.pic = gen_colors(pic)  # TEMP (not gonna be used by ship).
         #     _s.z_shear = _s.gen_col_transforms()
@@ -40,6 +47,7 @@ class Ship(AbstractLayer):
         _s.spls = {}
 
         _s.zorder = _s.gi['zorder']
+        _s.smoka_latest_drawn_id = "99_99_99_99"
 
     def fill_info(_s):
         """
@@ -71,9 +79,9 @@ class Ship(AbstractLayer):
         F_x = _s.gi['move']['black']['fxy'][0]
         F_y = _s.gi['move']['black']['fxy'][1]
 
-        if P.MAP_SIZE == 'small':
-            F_x = _s.gi['move']['black']['fxy'][0]
-            F_y = _s.gi['move']['black']['fxy'][1]
+        # if P.MAP_SIZE == 'small':
+        #     F_x = _s.gi['move']['black']['fxy'][0]
+        #     F_y = _s.gi['move']['black']['fxy'][1]
 
         cycles_currently = _s.frames_tot / (2 * np.pi)
         d = cycles_currently / CYCLES
@@ -98,11 +106,25 @@ class Ship(AbstractLayer):
         elif type == 'spl':
             _di = _s.spls
         li_ids = list(_di.keys())
+
         random.shuffle(li_ids)  # TODO: REPLACE WITH INDEX FOR SMOKA
+        # flag_found = False # only used by smoka
         for key in li_ids:
             obj = _di[key]
             if obj.drawn == 0:  # object is not drawn
+                if type == 'smoka':
+                    id_split_smoka = obj.id.split('_')
+                    id_split_ship_latest_smoka = _s.smoka_latest_drawn_id.split('_')
+                    if id_split_smoka[2] == id_split_ship_latest_smoka[2]:
+                        continue
                 return obj
+
+        # SPECIAL SMOKA CASE. MAY BECOME DEPRECATED IF ALL SHIPS GET SEVERAL SMOKAS
+        if type == 'smoka':  # if return above has not happened it means that none has been found (e.g. if only 1 type available)
+            for key in li_ids:
+                obj = _di[key]
+                if obj.drawn == 0:  # object is not drawn
+                    return obj
 
         return None  # no object found
 

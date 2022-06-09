@@ -25,6 +25,7 @@ def gen_extent(gi, pic, scale_vector=(), lds_vec=(), zigzag=()):
     if linear motion not desired then provide above arguments.
     extent_t is the same thing but shifted to origin at lt (since tri's have origin there).
     extent_t == UNSHIFTED FRAME
+    height_m: modified with scale
     OBS this only has capability to grow objects to the right, so left smokrs need modification to look good.
     """
 

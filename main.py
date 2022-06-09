@@ -18,8 +18,8 @@ BUG CHECK:
 
 import numpy as np
 import random
-random.seed(7)  # ONLY HERE
-np.random.seed(7)  # ONLY HERE
+random.seed(6)  # ONLY HERE
+np.random.seed(6)  # ONLY HERE
 import time
 import json
 import matplotlib.pyplot as plt
@@ -41,7 +41,7 @@ FPS = 20
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=FPS, metadata=dict(artist='Me'), bitrate=3600)
 
-fig, ax = plt.subplots(figsize=(16, 10))
+fig, ax = plt.subplots(figsize=(14, 8))
 
 # im_ax = {}
 im_ax = []
@@ -81,8 +81,6 @@ def animate(i):
 
     # if i % 10 == 0:
     prints = "i: " + str(i) + "  len_im_ax: " + str(len(im_ax))
-
-    # aa = find_all_ax_at_coord()
 
     for ship_id, ship in ships.items():
 
@@ -189,7 +187,7 @@ def animate(i):
                 smokr = ship.find_free_obj(type='smokr')
                 if smokr != None:
                     if smokr.check_frame_max(i, smokr.NUM_FRAMES_SMOKE) == True:
-                        prints += "  smokr beyond frame max"
+                        prints += "  smokr exceeds max"
                         continue
                     smokr.drawn = 4  # NEEDED TO SET STATIC_DARKENING FIRST FRAME
                     smokr.init_dyn_obj(i, smokr.NUM_FRAMES_SMOKE)
@@ -228,18 +226,24 @@ def animate(i):
                     continue
 
                 warp_affine_and_color(i, ax, im_ax, sail, ch, parent_obj=ship)  # parent obj required for sail
+                # im_ax[sail.index_im_ax].set_extent(sail.extent[sail.clock])
                 im_ax[sail.index_im_ax].set_zorder(sail.zorder)  # TEMP?
 
         if P.A_SMOKAS:
 
+            if i == 28:
+                adf = 5
+
             if i in ship.gi['smoka_init_frames']:
+
                 smoka = ship.find_free_obj(type='smoka')
 
                 if smoka != None and smoka.id not in ship.gi['smokas_hardcoded']['ids']:
                     if smoka.check_frame_max(i, smoka.NUM_FRAMES_SMOKE) == True:
-                        prints += "  cant add smoka"
+                        prints += "  smoka exceeds max"
                         continue
                     smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
+                    ship.smoka_latest_drawn_id = smoka.id
                     smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS
                     smoka.gen_dyn_extent_alpha()
                 else:

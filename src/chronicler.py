@@ -111,10 +111,8 @@ class Chronicler:
 		frames.sort()
 		ship['firing_frames'] = list(map(int, frames))
 
-		if frames[-1] >= ship['move']['frame_ss'][1]:
+		if frames[-1] >= P.FRAMES_STOP:
 			raise Exception("firing frame outside frame_ss max ship: " + str(ship['id']))
-
-		assert(frames[-1] < ship['move']['frame_ss'][1])  # firing frame outside max frame (not sure why this causes bug but whatever)
 
 	def smoka_init_frames(_s, ship):
 		"""
@@ -166,6 +164,8 @@ class Chronicler:
 		if '3' in _s.ch['ships']:
 			if _s.ch['ships']['3']['move']['frame_ss'][1] * 1.1 < P.FRAMES_STOP:
 				raise Exception("Ship 3 must go whole way otherwise smokhs wont work")
+
+		# TODO: check that smokhs lists are equal length for each ship
 
 
 	def export(_s):

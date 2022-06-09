@@ -20,7 +20,10 @@ def warp_affine_and_color(ii, ax, im_ax, g_obj, ch, parent_obj=None):
 	im_ax.pop(g_obj.index_im_ax)  # BOTH NECESSARY
 
 	t0 = g_obj.tri_base
-	t1 = g_obj.tris[g_obj.clock]
+	try:
+		t1 = g_obj.tris[g_obj.clock]
+	except:
+		raise Exception("g_obj clock problem  id: " + str(g_obj.id))
 	pic_c = g_obj.pic.copy()  # pic with base scale always used.
 	if P.A_STATIC_ALPHA_DARKENING:  # and parent_obj != None:
 		static_alpha_darkening(pic_c, ii, g_obj)  # OBS ALSO overwrites the static image AND changes pic copy

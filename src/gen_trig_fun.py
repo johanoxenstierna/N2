@@ -27,10 +27,10 @@ def gen_scale_lds(NUM_FRAMES, fun_plot, plot=False, ld_ss=None, max_scale=1.0):
 	scale = None
 	X = np.arange(1, NUM_FRAMES + 1)
 	if fun_plot == 'spl':
-		max_scale = np.random.uniform(0.5, 1.0)
+		max_scale = np.random.uniform(0.6, 1.0)
 		scale = _gamma(X, mean=3, var=15, y_range=[0.0, max_scale])
 	elif fun_plot == 'spl_hard':  # when its on top of ship
-		max_scale = np.random.uniform(0.1, 0.3)
+		max_scale = np.random.uniform(0.2, 0.5)
 		scale = _gamma(X, mean=2, var=15, y_range=[0.0, max_scale])  # same as before just smaller
 	elif fun_plot in ['a', 'r']:  # smokes
 		if fun_plot == 'a':  # smoka
