@@ -9,6 +9,7 @@ log:
 97: hardcoded smokas
 130: gimp starts taking over
 146: first whole runs
+162: removed 80% of sail hill code
 
 post 34 todo:
 -fix fxy: set to 20 cycles and 15 where necessary

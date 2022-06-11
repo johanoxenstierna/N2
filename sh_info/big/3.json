@@ -29,7 +29,7 @@
     "3_expls": {"ld_offset_ss": [[46, -13], [46, -13]], "ld_offset_rand_ss": [[30, 5], [null, null]],
       "scale_base": 0.2, "tracer_l_r": "left",
       "scale_ss": "abstractSS" ,"d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"},
-    "3_spls": {"ld_offset_ss": [[80, 15], [80, 15]], "ld_offset_rand_ss": [[20, 5], [5, 5]],
+    "3_spls": {"ld_offset_ss": [[180, 15], [180, 15]], "ld_offset_rand_ss": [[20, 5], [5, 5]],
       "scale_ss": "abstractSS"},
     "3_s_0": {"offset": [30, 70], "cycles": 25, "zorder": 198, "d_offset": 0.5, "col_diff": 0.05,
       "sh_cyc": 3, "sh_mm": [0, 1.5], "sh_dist": [0.98, 0.02],
@@ -42,7 +42,7 @@
       "scale_ss": [0, 2]},
     "3_a_1": {"scale_ss": [0.4, 1.6], "ld_ss": [[600, 590], [450, 590]], "zorder": 4},
     "3_a_2": {"scale_ss": [0.4, 1.4], "ld_ss": [[700, 600], [425, 570]], "zorder": 5},
-    "3_a_3": {"scale_ss": [0.4, 1.4], "ld_ss": [[900, 600], [400, 515]], "zorder": 10},
+    "3_a_3": {"scale_ss": [0.4, 1.4], "ld_ss": [[750, 600], [300, 515]], "zorder": 10},
     "3_a_4": {"scale_ss": [0.4, 1.3], "ld_ss": [[600, 600], [200, 470]], "zorder": 8},
     "3_a_5": {"scale_ss": [0.5, 1.7], "ld_ss": [[730, 580], [200, 380]], "zorder": 210},
     "d": "baseline zorder is 3 for smokhs"

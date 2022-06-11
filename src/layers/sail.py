@@ -194,6 +194,8 @@ class Sail(AbstractLayer):
 
 	def gen_heights_troughs_transform(_s):
 		"""
+		NEW FIX: EVERYTHING HORIZ REMOVED (NOT NEEDED)
+		ALSO, ALL THE SINNING IS DONE WHEN ANIMATING (SINCE SHIFT NEEDED INSIDE SIN)
 		WILL BECOME ABSTRACT FOR ALL LAYERS THAT NEED TRIGONOMETRIC COLOR TRANSFORMS
 		cycling and shifting shear
 		For cycling noise is required since it's too obvious otherwise: CURRENTLY NOT VERY GOOD, TODO: FIX
@@ -214,7 +216,7 @@ class Sail(AbstractLayer):
 		# shear_cycles = 5  # 16 HOW MANY TIMES IT GOES BACK/FORTH
 		# shear_min = 0.2  # 0.1 these guys seem to affect the speed and direction of the shear
 		# shear_max = 0.9  # 0.5
-		shear_range = (_s.gi['sh_mm'][1] - _s.gi['sh_mm'][0]) / 2  # div by 2 since it's applied to both pos and neg numbers
+		# shear_range = (_s.gi['sh_mm'][1] - _s.gi['sh_mm'][0]) / 2  # div by 2 since it's applied to both pos and neg numbers
 		# shear_distribution = [0.98, 0.02]  # shifting and cycling
 		#
 		# # THESE DICTATE HOW MANY THROUGHT/TOPS THERE WILL BE
@@ -226,61 +228,84 @@ class Sail(AbstractLayer):
 		# increase_in_shear_hor = 0.03
 
 		# SHIFTING  # lines going in one direction
-		z_shear_shifting = np.linspace(_s.gi['sh_mm'][0], _s.gi['sh_mm'][1], _s.ship.frames_tot)
+		# z_shear_shifting = np.linspace(_s.gi['sh_mm'][0], _s.gi['sh_mm'][1], _s.ship.frames_tot)
 
 		# CYCLING  # lines going back and forth
-		z_shear_cycling_x = np.linspace(0, _s.gi['sh_cyc'] * 2 * np.pi, _s.ship.frames_tot)
-		z_shear_cycling_rand_x = np.zeros((_s.ship.frames_tot))
+		# z_shear_cycling_x = np.linspace(0, _s.gi['sh_cyc'] * 2 * np.pi, _s.ship.frames_tot)
+		# z_shear_cycling_rand_x = np.zeros((_s.ship.frames_tot))
 
-		cur_pos = z_shear_cycling_x[0]
-		for i in range(_s.ship.frames_tot):  # OBS range of values odn\t matter here since sin will be taken
-			z_shear_cycling_rand_x[i] = cur_pos
-
-			# Linear component and random component (otherwise the random component blows up)
-			cur_pos = 0.9 * z_shear_cycling_x[i] + 0.1 * (cur_pos + random.random() * random.choice([-1, 1]))
+		# cur_pos = z_shear_cycling_x[0]
+		# for i in range(_s.ship.frames_tot):  # OBS range of values odn\t matter here since sin will be taken
+		# 	z_shear_cycling_rand_x[i] = cur_pos
+		#
+		# 	# Linear component and random component (otherwise the random component blows up)
+		# 	cur_pos = 0.9 * z_shear_cycling_x[i] + 0.1 * (cur_pos + random.random() * random.choice([-1, 1]))
 
 		# aa = np.sin(z_shear_cycling_rand_x * 6)/6
-		z_shear_cycling = (0.9 * np.sin(z_shear_cycling_x) + 0.1 * np.sin(
-			z_shear_cycling_rand_x * 2)) * shear_range + shear_range + _s.gi['sh_mm'][0]
+		# z_shear_cycling = (0.9 * np.sin(z_shear_cycling_x) + 0.1 * np.sin(
+		# 	z_shear_cycling_rand_x * 2)) * shear_range + shear_range + _s.gi['sh_mm'][0]
 
-		assert (max(z_shear_shifting) <= _s.gi['sh_mm'][1])
-		assert (min(z_shear_shifting) >= _s.gi['sh_mm'][0])
-		assert (max(z_shear_cycling) <= _s.gi['sh_mm'][1])
-		assert (min(z_shear_cycling) >= _s.gi['sh_mm'][0])
+		# assert (max(z_shear_shifting) <= _s.gi['sh_mm'][1])
+		# assert (min(z_shear_shifting) >= _s.gi['sh_mm'][0])
+		# assert (max(z_shear_cycling) <= _s.gi['sh_mm'][1])
+		# assert (min(z_shear_cycling) >= _s.gi['sh_mm'][0])
 
-		z_shear = z_shear_shifting * _s.gi['sh_dist'][0] + z_shear_cycling * _s.gi['sh_dist'][1]
-		z_shear *= 25  # THIS.
+		# z_shear = z_shear_shifting * _s.gi['sh_dist'][0] + z_shear_cycling * _s.gi['sh_dist'][1]
+		# z_shear *= 10  # THIS IS HOW MUCH SAIL IS SHIFTED PER FRAME
+
+		# SUPER IMPORTANT: THIS GIVES THE SHEAR SPEED (3 for 300, 12 for 600
+		z_shear = np.linspace(0, P.FRAMES_TOT // 40, num= _s.ship.frames_tot)  # OBS sinned later TUNE stop value for number of frames
 
 		# THESE GIVE HOW MUCH THE SHEAR SHOULD CHANGE THROUGH TIME (CYCLES
-		t_x_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		t_x_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))  # will be sinned
 		t_x_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
 
-		# VERTICAL SHAPE (TRANS APPLIED TO ROWS)
-		start_val = 0  # THE ONLY THING THAT ARANGE CONTRIBUTES HERE IS REMOVAL OF SQUARY SHAPE IN ANIMATION
-		stop_val = _s.gi['num_cyc_ver']
-		step_size = 1.0001 * _s.gi['num_cyc_ver'] / t_x_ver.shape[1]  # never changes. Mult makes sure it's always fittable within t_x_ver
+		# # PEND DEL VERTICAL SHAPE (TRANS APPLIED TO ROWS)
+		# start_val = 0  # THE ONLY THING THAT ARANGE CONTRIBUTES HERE IS REMOVAL OF SQUARY SHAPE IN ANIMATION
+		# stop_val = _s.gi['num_cyc_ver']
+		# # step_size = 1.0001 * _s.gi['num_cyc_ver'] / t_x_ver.shape[1]  # distance between hills?
+		# for i in range(_s.pic.shape[0]):
+		# 	# ver_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[1])  # QUALITY LOSS HERE
+		# 	ver_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
+		# 	# t_x_ver[i, :len(ver_x_base)] = _s.gi['weird_multiplier_ver'] * (np.sin(ver_x_base) * 0.5 + (1 - 0.5))
+		# 	t_x_ver[i, :] =np.sin(ver_x_base) * 0.5 + (1 - 0.5)
+		#
+		# 	_s.gi['num_cyc_ver'] += _s.gi['sh_ver_incr']  # too much=slows down movement
+		# 	start_val += _s.gi['sh_ver_incr']
+		# 	stop_val += _s.gi['sh_ver_incr'] / 2
+		# 	# step_size += 0.001 * step_size
+
+		ver_x_base = np.linspace(0, np.pi * 5, num=_s.pic.shape[1])  # /pi = number of hills
+		multiplier = 1  # how much shorter the hills become the further down on the sail
 		for i in range(_s.pic.shape[0]):
-			# ver_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[1])  # QUALITY LOSS HERE
-			ver_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
-			t_x_ver[i, :len(ver_x_base)] = _s.gi['weird_multiplier_ver'] * (np.sin(ver_x_base) * 0.5 + (1 - 0.5))
+			# t_x_ver[i, :] = np.sin(ver_x_base) * _s.gi['col_diff'] + (1 - _s.gi['col_diff'])
+			t_x_ver[i, :] = ver_x_base * multiplier
+			multiplier *= 1.01
 
-			_s.gi['num_cyc_ver'] += _s.gi['sh_ver_incr']  # too much=slows down movement
-			start_val += _s.gi['sh_ver_incr']
-			stop_val += _s.gi['sh_ver_incr'] / 2
-			step_size = step_size + step_size * 0.002
+		# # PEND DEL HORIZ SHAPE (TRANS APPLIED TO COLS)
+		# start_val = 0
+		# stop_val = _s.gi['num_cyc_hor']
+		# step_size = 1.000001 * _s.gi['num_cyc_hor'] / t_x_hor.shape[0]  # never changes. Mult makes sure it's always fittable within t_x_ver
+		# for i in range(_s.pic.shape[1]):
+		# 	# hor_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[0])
+		# 	hor_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
+		# 	t_x_hor[:len(hor_x_base), i] = _s.gi['weird_multiplier_hor'] * np.sin(hor_x_base) * 0.5 + (1 - 0.5)
+		# 	_s.gi['num_cyc_hor'] += _s.gi['sh_hor_incr']  # too much=slows down movement
+		# 	start_val += _s.gi['sh_hor_incr']
+		# 	stop_val += _s.gi['sh_hor_incr'] / 2
+		# 	step_size += 0.001 * step_size
 
-		# HORIZ SHAPE (TRANS APPLIED TO COLS)
-		start_val = 0
-		stop_val = _s.gi['num_cyc_hor']
-		step_size = 1.0001 * _s.gi['num_cyc_hor'] / t_x_hor.shape[0]  # never changes. Mult makes sure it's always fittable within t_x_ver
-		for i in range(_s.pic.shape[1]):
-			# hor_x_base = np.linspace(0, int(_s.gi['num_cyc_ver']), num=_s.pic.shape[0])
-			hor_x_base = np.arange(start=start_val, stop=stop_val, step=step_size)
-			t_x_hor[:len(hor_x_base), i] = _s.gi['weird_multiplier_hor'] * np.sin(hor_x_base) * 0.5 + (1 - 0.5)
-			_s.gi['num_cyc_hor'] += _s.gi['sh_hor_incr']  # too much=slows down movement
-			start_val += _s.gi['sh_hor_incr']
-			stop_val += _s.gi['sh_hor_incr'] / 2
-			step_size = step_size + step_size * 0.01
+		# # TEMP (to debug viewer)
+		y_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		aa = np.sin(t_x_ver + z_shear[0]) * _s.gi['col_diff'] + (1 - _s.gi['col_diff'])
+		aa *= _s.gi['col_diff'] + (1 - _s.gi['col_diff'])
+
+		# hor_x_base = np.linspace(0, 20, num=_s.pic.shape[0])  # /pi = number of hills
+		# multiplier = 1  # how much shorter the hills become the further down on the sail
+		# for i in range(_s.pic.shape[1]):
+		# 	# t_x_ver[i, :] = np.sin(ver_x_base) * _s.gi['col_diff'] + (1 - _s.gi['col_diff'])
+		# 	t_x_hor[:, i] = hor_x_base * multiplier
+		# 	multiplier *= 1.01
 
 		return z_shear, t_x_ver, t_x_hor
 
@@ -297,18 +322,25 @@ class Sail(AbstractLayer):
 		
 		# APPLY SIN TO T_X_ MATS[i] AND Z_SHEAR VECTORS (CAN'T BE PRECOMPUTED BECAUSE CLOCK NEEDED HERE)
 		y_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
-		y_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
-		for i in range(_s.pic.shape[0]):
-			# col diff first squeezes the curve down to desired range, then shifts it up to positive
-			y_ver[i, :] = (np.sin(_s.t_x_ver[i, :] * _s.z_shear[_s.clock])) * _s.gi['col_diff'] + \
-			              (1 - _s.gi['col_diff'])  # / 4 means y range is -.25 to .25
+		# y_hor = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))
+		# y_hor = np.ones((_s.pic.shape[0], _s.pic.shape[1]))
+		# for i in range(_s.pic.shape[0]):  # per row
+		# 	# col diff first squeezes the curve down to desired range, then shifts it up to positive
+		# 	# y_ver[i, :] = (np.sin(_s.t_x_ver[i, :]) + _s.z_shear[_s.clock]) * _s.gi['col_diff'] + \
+		# 	#               (1 - _s.gi['col_diff'])  # / 4 means y range is -.25 to .25
+		# 	y_ver[i, :] = np.sin(_s.t_x_ver[i, :]) * _s.gi['col_diff'] + (1 - _s.gi['col_diff'])  # / 4 means y range is -.25 to .25
 
-		for i in range(_s.pic.shape[1]):
-			y_hor[:, i] = (np.sin(_s.t_x_hor[:, i] * _s.z_shear[_s.clock])) * _s.gi['col_diff'] + \
-			              (1 - _s.gi['col_diff'])
+		y_ver = np.sin(_s.t_x_ver + _s.z_shear[_s.clock]) * _s.gi['col_diff'] + (1 - _s.gi['col_diff'])
+		# y_ver /= np.max(y_ver)
 
-		y_col = y_ver * y_hor
-		y_alpha = (y_ver * 0.5 + y_hor * 0.5) / 2
+		# for i in range(_s.pic.shape[1]):
+		# 	y_hor[:, i] = (np.sin(_s.t_x_hor[:, i] * _s.z_shear[_s.clock])) * _s.gi['col_diff'] + \
+		# 	              (1 - _s.gi['col_diff'])
+
+		# y_col = y_ver * y_hor
+		# y_alpha = (y_ver * 0.5 + y_hor * 0.5) / 2
+		y_alpha = y_ver
+		y_col = y_ver
 
 		# NORMALIZATION FOR ALPHA CHANGE
 		mn, mx = np.min(y_alpha), np.max(y_alpha)
