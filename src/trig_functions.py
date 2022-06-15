@@ -114,15 +114,18 @@ if __name__ == '__main__':
 	fires per moving average unit. 
 	'''
 
-	# # WAVE alpha ============
-	# X = np.arange(0, 1000)
+	# # WAVE alpha NOT EXPL!============
+	X = np.arange(0, 1200)
 	# # Y = _normal(X, mean=len(X) // 2, var=len(X) // 4, y_range=[0, 0.15])  # alpha
-	# Y = ([_sigmoid(x, grad_magn_inv=- len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
+	Y = ([_sigmoid(x, grad_magn_inv=-len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
+	Y = np.asarray([_sigmoid(x, grad_magn_inv=-len(X) / 10, x_shift=-2, y_magn=40, y_shift=0) for x in X])  # expl alpha
+	Y = np.asarray([_sigmoid(x, grad_magn_inv=-len(X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X])  # expl alpha
+	np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=40, y_shift=0) for x in X]))
 
 	# ## WAVE expl (X is distance and Y is alpha) ==============
 	# X = np.arange(0, 1000, 1)  # large: 960
-	# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=10.2, y_shift=0) for x in X]))
-
+	Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=6.2, y_shift=0) for x in X]))
+	aa = 5
 	# # SPL extent =============
 	# X = np.arange(0, 50)
 	# # Y = _normal(X, mean=len(X) // 3, var=len(X) // 4, y_range=[0, 0.999])

@@ -2,7 +2,7 @@
 MAP_SIZE = 'small'  # 488, 185
 MAP_SIZE = 'big'  # 1280 720  # also check ship info (copy-paste)
 FRAMES_START = 0
-FRAMES_STOP = 7200  # frames info: 1200/min 12000 for 10 min.   Takes ~30 min to gen 1000 frames  7200
+FRAMES_STOP = 7300  # frames info: 1200/min 12000 for 10 min.   Takes ~30 min to gen 1000 frames  7200
 if MAP_SIZE == 'small':
     FRAMES_START = 0
     FRAMES_STOP = 1500
@@ -40,8 +40,8 @@ WS_STEPS = 40  # 2s  wave front of ship
 EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
 SHIPS_TO_SHOW = ['0', '1', '2', '3', '4', '5', '6', '7']#, '6', '7']#, '1'] #, '2', '3']
-# SHIPS_TO_SHOW = ['0', '1', '2'] #, '3', '4']
-# SHIPS_TO_SHOW = ['1']
+# SHIPS_TO_SHOW = ['0', '1', '2', '3', '4'] #, '3', '4']
+# SHIPS_TO_SHOW = ['0']
 SMOKRS_LEFT = ['3']  # this is checked TOGETHER with smokr info in ship_info
 SMOKRS_RIGHT = ['2']
 

@@ -23,7 +23,7 @@
   "zorder": 700,
   "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
   "xtras": {
-    "7_a_0": {"ld_offset_ss": [[35, -20], [-140, -20]],"ld_offset_rand_ss": [[20, 5], [5, 5]],
+    "7_a_0": {"ld_offset_ss": [[40, -20], [-130, -20]],"ld_offset_rand_ss": [[20, 5], [5, 5]],
       "scale_ss": [0, 1.5],
       "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
       "d1": "each smoka here is manually defined. OBS rand values are positive here! (turned neg later)",

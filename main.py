@@ -35,13 +35,14 @@ Chronicler() # just outputs the json below
 with open('./src/chronicle.json', 'r') as f:
     ch = json.load(f)
 
-WRITE = 0  #60  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
+WRITE = 0  #FIX: smoka frames, waves  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
 FPS = 20
 
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=FPS, metadata=dict(artist='Me'), bitrate=3600)
 
 fig, ax = plt.subplots(figsize=(16, 10))
+# fig, ax = plt.subplots()
 
 # im_ax = {}
 im_ax = []

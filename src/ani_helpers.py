@@ -97,7 +97,7 @@ def static_alpha_darkening(pic, ii, g_obj):
 	Not applied for expls
 
 	"""
-	if g_obj.__class__.__name__ not in ['Sail', 'Smoke', 'Ship']:  # TEMP included ones
+	if g_obj.__class__.__name__ not in ['Sail', 'Smoke', 'Ship']:  #  INCLUDED ones. WAVE DONE ELSEWHERE
 		return pic
 
 	if g_obj.__class__.__name__ == 'Ship':
@@ -107,7 +107,7 @@ def static_alpha_darkening(pic, ii, g_obj):
 		gi = g_obj.ship.gi
 		ab_clock = g_obj.ship.ab_clock
 
-	ship_ab_at_clock = gi['alpha_and_bright'][ab_clock]
+	ship_ab_at_clock = gi['alpha_and_bright'][ab_clock]  # this is incremented for ship at bottom of animation loop
 	if ii == ship_ab_at_clock[0]:
 
 		# brightness TODO: will need lots of tuning (add more elements to info list)
@@ -118,13 +118,13 @@ def static_alpha_darkening(pic, ii, g_obj):
 		g_obj.ab_cur[0] *= ship_ab_at_clock[1]  # needed for smokes
 		g_obj.ab_cur[1] *= ship_ab_at_clock[2]  # needed for smokes
 
-	if g_obj.__class__.__name__ == 'Smoke':
-		if ii == 13:
-			adf = 5
-		if g_obj.hardcoded == True:  # OBS SMOKRS HAVE BE CHANGED GLOBALLY (NOT POSSIBLE OTHERWISE)
-			return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
-		if g_obj.drawn == 1:  # STATIC DARKN ONLY WHEN PIC IS FIRST DRAWN
-			pass  # TODO REPLACE WITH GLOBAL ALPHA DARKENING PARAMETER IN P
+	# if g_obj.__class__.__name__ == 'Smoke':
+	# 	if ii == 13:
+	# 		adf = 5
+	# 	if g_obj.hardcoded == True:  # OBS SMOKRS HAVE BE CHANGED GLOBALLY (NOT POSSIBLE OTHERWISE)
+	# 		return pic  # no static darkenign for hardcoded smokas (the ones that are not launched randomly
+	# 	if g_obj.drawn == 1:  # STATIC DARKN ONLY WHEN PIC IS FIRST DRAWN
+	# 		pass  # TODO REPLACE WITH GLOBAL ALPHA DARKENING PARAMETER IN P
 
 			# REPLACED WITH ab_cur
 			# ship_ab_at_clock_prev = g_obj.ship.gi['alpha_and_bright'][0]  # this is needed since ship_ab_at_clock is incremented after the first ii hit.
@@ -158,7 +158,7 @@ def static_alpha_darkening(pic, ii, g_obj):
 	# for row, col, ch in idx1:
 	# 	img[row, col, ch] = 1.0
 
-	return pic
+	# return pic
 
 
 def fire_brightness(pic, ii, g_obj):
@@ -182,9 +182,17 @@ def fire_brightness(pic, ii, g_obj):
 	# BRIGHTNESS =
 	if type == 'constant':  # same shift applied to whole pic
 		# ex = 5.84
-		ex = 0.3 * np.random.rand() + 1  # TODO: Perhaps make this more fancy.  2.7 makes it totally white
+
+		c = 0.5
 		if g_obj.__class__.__name__ == 'Smoke':
-			ex = 1.3
+			c = 1  # 44 ex was 1.5
+		elif g_obj.__class__.__name__ == 'Sail':
+			c = 0.4  # 44 ex was 1.3
+		elif g_obj.__class__.__name__ == 'Wave':
+			c = 0.7  # 44 ex was 1.5
+
+		ex = c * np.random.rand() + 1  # TODO: Perhaps make this more fancy.  2.7 makes it totally white
+
 		# if iii in firing_frames:
 		# 	ex = 0.84  # decrease in green and blue
 		# pic = _s.pic.copy()  # REQUIRED
@@ -208,8 +216,8 @@ def fire_brightness(pic, ii, g_obj):
 		left_top[1] = pic.shape[0] + ld[1]
 
 		# Y = multivariate_normal.pdf(X, mean=(72, 213), cov=[[50, 0], [0, 50]])
-		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[pic.shape[1], 0], [0, pic.shape[0]]])  # 350. 650
-		Y = min_max_normalization(Y, y_range=[0, 0.2])  # this is amount added to current
+		Y = multivariate_normal.pdf(X, mean=left_top, cov=[[pic.shape[1] * 1.2, 0], [0, pic.shape[0] * 1.2]])  # 350. 650
+		Y = min_max_normalization(Y, y_range=[0, 0.4])  # this is amount added to current
 
 		# aa = pic[:, :, 0] * Y
 		pic[:, :, 0] += Y  # more y=more red, less=more green

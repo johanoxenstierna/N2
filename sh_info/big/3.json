@@ -3,11 +3,13 @@
   "id": "3",
   "tl": [],
   "firing_frames": [],
-  "firing_info": {"nums": [3, 3, 3, 3], "means": [30, 200, 2800, 3200], "var": 50},
+  "firing_info": {"nums": [3, 3], "means": [2800, 3200], "var": 50},
   "d0": "obs nums doesnt seem to be used currently",
-  "smoka_init_frames": [10, 2800, 3200],
+  "smoka_init_frames": [2800, 3200],
   "d1": "OBS OBS OBS: same smoka CANNOT be inited after prev. WILL CRASH (since id is the same)",
-  "smokas_hardcoded": {"frames_start": [5, 6, 7, 8, 9], "frames_stop": [5000, 5000, 5000, 5000, 3000], "ids": ["3_a_1", "3_a_2", "3_a_3", "3_a_4", "3_a_5"]},
+  "smokas_hardcoded": {"frames_start": [5, 6, 7, 8, 9, 10, 11],
+    "frames_stop": [5000, 5000, 5000, 5000, 3000, 4000, 4000],
+    "ids": ["3_a_1", "3_a_2", "3_a_3", "3_a_4", "3_a_5", "3_a_6", "3_a_7"]},
   "alpha_and_bright": [[4, 0.93, 1.0], [25, 1.0, 1.0]],
   "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
   "move_vector": [],
@@ -45,6 +47,8 @@
     "3_a_3": {"scale_ss": [0.4, 1.4], "ld_ss": [[750, 600], [300, 515]], "zorder": 10},
     "3_a_4": {"scale_ss": [0.4, 1.3], "ld_ss": [[600, 600], [200, 470]], "zorder": 8},
     "3_a_5": {"scale_ss": [0.5, 1.7], "ld_ss": [[730, 580], [200, 380]], "zorder": 210},
+    "3_a_6": {"scale_ss": [0.8, 1.2], "ld_ss": [[250, 500], [0, 435]], "zorder": 4},
+    "3_a_7": {"scale_ss": [1.0, 1.5], "ld_ss": [[300, 480], [0, 280]], "zorder": 5},
     "d": "baseline zorder is 3 for smokhs"
   }
 }

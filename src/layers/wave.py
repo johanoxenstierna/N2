@@ -141,6 +141,7 @@ class Wave(AbstractLayer):
 		"""
 		# alpha = gen_alpha(_gi, fun_plot='normal')
 		X = np.arange(0, 1200, 1)  # large: 960
-		# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=18, y_shift=0) for x in X]))
-		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 10, x_shift=-2, y_magn=40, y_shift=0) for x in X]))
+		# BUG HERE ALPHA LOWER THAN IN NORMAL CASE
+		# Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len( X) / 12, x_shift=-4, y_magn=22, y_shift=0) for x in X]))  # useless just same as normal wave alpha
+		Y = np.asarray(([_sigmoid(x, grad_magn_inv=- len(X) / 10, x_shift=-2, y_magn=6.2, y_shift=0) for x in X]))
 		return Y

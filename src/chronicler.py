@@ -161,6 +161,12 @@ class Chronicler:
 
 	def final_tests(_s):
 
+		for ship_id, ship in _s.ch['ships'].items():
+			f_nums = ship['firing_info']['nums']
+			f_means = ship['firing_info']['means']
+			if len(f_nums) != len(f_means):
+				raise Exception("nums and means must be same length id: " + ship_id)
+
 		if '3' in _s.ch['ships']:
 			if _s.ch['ships']['3']['move']['frame_ss'][1] * 1.1 < P.FRAMES_STOP:
 				raise Exception("Ship 3 must go whole way otherwise smokhs wont work")

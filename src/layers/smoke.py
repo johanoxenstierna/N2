@@ -23,7 +23,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		elif type == 'r':
 			_s.gi = deepcopy(ship.gi['xtras'][ship.id + '_smokrs'])
 
-		_s.pic = pic
+		_s.pic = pic.copy()  # NEW WHY NOT DONE BEFORE??? SIGH
 		if id_split[1] in P.SMOKRS_RIGHT and _s.gi['left_right'] == 'left':  # is right but is supposed to be left
 			_s.pic = np.flip(pic, axis=1)
 		elif id_split[1] in P.SMOKRS_LEFT and _s.gi['left_right'] == 'right':  # is left but is supposed to be right
@@ -31,11 +31,11 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 1500  # more needed
-			if id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3']:
+			_s.NUM_FRAMES_SMOKE = 1500  # 1500 more needed
+			if id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3']:  # fire ones
 				_s.NUM_FRAMES_SMOKE = 100  # more needed
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 500  #250  # 500 should do it (just use generally few expls)
+			_s.NUM_FRAMES_SMOKE = 500  #500 is fine
 		# else:  # REM
 		# 	_s.NUM_FRAMES_SMOKE = 500
 

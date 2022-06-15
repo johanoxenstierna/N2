@@ -30,7 +30,7 @@
     "6_expls": {"ld_offset_ss": [[26, -13], [26, -10]], "ld_offset_rand_ss": [[30, 5], [null, null]],
       "scale_base": 0.3, "tracer_l_r": "left",
       "scale_ss": "abstractSS" ,"d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"},
-    "6_spls": {"ld_offset_ss": [[-200, 15], [-200, 15]], "ld_offset_rand_ss": [[100, 5], [5, 5]],
+    "6_spls": {"ld_offset_ss": [[-200, 5], [-200, 5]], "ld_offset_rand_ss": [[100, 5], [5, 5]],
       "scale_ss": "abstractSS"}
   }
 }
