@@ -23,6 +23,7 @@ class GenLayers:
 
     def gen_backgr(self, ax, im_ax):
         im_ax.append(ax.imshow(self.pics['backgr'], zorder=1, alpha=1))
+        im_ax.append(ax.imshow(self.pics['frame'], zorder=99999))
         if P.MAP_SIZE == 'small':
             ax.axis([0, 571, 0, 500])
         else:

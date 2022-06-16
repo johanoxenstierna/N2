@@ -185,9 +185,12 @@ def fire_brightness(pic, ii, g_obj):
 
 		c = 0.5
 		if g_obj.__class__.__name__ == 'Smoke':
-			c = 1  # 44 ex was 1.5
+			if g_obj.type == 'r':
+				c = 1
+			elif g_obj.type == 'a':
+				c = 0.5
 		elif g_obj.__class__.__name__ == 'Sail':
-			c = 0.4  # 44 ex was 1.3
+			c = 0.4  # 47 ex was 0.4
 		elif g_obj.__class__.__name__ == 'Wave':
 			c = 0.7  # 44 ex was 1.5
 

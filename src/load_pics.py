@@ -20,6 +20,7 @@ def load_pics(ch):
         pics['backgr'] = imread('./images/raw/backgr_small0.png')  # 482, 187
     else:
         pics['backgr'] = imread('./images/raw/backgr.png')  # 482, 187
+        pics['frame'] = imread('./images/processed/frame.png')  # 482, 187
         # pics['frame'] = imread('./images/raw/frame_pic.png')
 
 

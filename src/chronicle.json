@@ -5,29 +5,31 @@
             "id": "0",
             "tl": [],
             "firing_frames": [
-                13,
-                31,
-                96,
-                97,
-                131,
-                134,
-                147,
-                303,
-                332,
-                574,
-                614,
-                900,
-                943,
-                1021,
-                1128,
-                1130,
-                1202,
-                1308
+                11,
+                27,
+                84,
+                85,
+                113,
+                115,
+                124,
+                207,
+                244,
+                413,
+                538,
+                612,
+                886,
+                1006,
+                1105,
+                1107,
+                1112,
+                1181,
+                1196,
+                1306
             ],
             "firing_info": {
                 "nums": [
-                    2,
-                    2,
+                    3,
+                    3,
                     4,
                     2,
                     1,
@@ -129,7 +131,7 @@
                 },
                 "0_s_1": {
                     "offset": [
-                        -8,
+                        -5,
                         115
                     ],
                     "zorder": 703,
@@ -287,13 +289,13 @@
             "firing_frames": [
                 28,
                 66,
+                973,
+                1040,
                 1178,
                 1237,
                 1241,
                 1249,
                 1936,
-                1960,
-                1991,
                 2033
             ],
             "firing_info": {
@@ -552,7 +554,6 @@
                 15,
                 35,
                 35,
-                41,
                 50,
                 51,
                 58,
@@ -562,11 +563,11 @@
                 484,
                 497,
                 499,
-                499,
                 500,
                 528,
                 1070,
                 1115,
+                1122,
                 1281,
                 1294,
                 1297,
@@ -576,6 +577,7 @@
                 1305,
                 1310,
                 1312,
+                1978,
                 2008,
                 2031,
                 2037
@@ -625,12 +627,12 @@
                 ],
                 [
                     820,
-                    1.0,
+                    0.9,
                     0.96
                 ],
                 [
                     1020,
-                    1.0,
+                    0.8,
                     0.96
                 ]
             ],
@@ -786,9 +788,9 @@
             "tl": [],
             "firing_frames": [
                 2782,
-                3163,
+                2883,
+                3164,
                 3223,
-                3225,
                 3237,
                 3284
             ],
@@ -814,19 +816,23 @@
                     5,
                     6,
                     7,
-                    8,
+                    2000,
                     9,
                     10,
-                    11
+                    11,
+                    1500,
+                    1500
                 ],
                 "frames_stop": [
                     5000,
                     5000,
                     5000,
-                    5000,
+                    7200,
                     3000,
                     4000,
-                    4000
+                    4000,
+                    6500,
+                    6500
                 ],
                 "ids": [
                     "3_a_1",
@@ -835,18 +841,20 @@
                     "3_a_4",
                     "3_a_5",
                     "3_a_6",
-                    "3_a_7"
+                    "3_a_7",
+                    "3_a_8",
+                    "3_a_9"
                 ]
             },
             "alpha_and_bright": [
                 [
                     4,
-                    0.93,
+                    0.95,
                     1.0
                 ],
                 [
-                    25,
-                    1.0,
+                    2500,
+                    0.95,
                     1.0
                 ]
             ],
@@ -891,16 +899,16 @@
                     "ld_offset_ss": [
                         [
                             55,
-                            -13
+                            -9
                         ],
                         [
                             60,
-                            -13
+                            -9
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
-                            30,
+                            20,
                             3
                         ],
                         [
@@ -916,16 +924,16 @@
                     "ld_offset_ss": [
                         [
                             46,
-                            -13
+                            -11
                         ],
                         [
                             46,
-                            -13
+                            -11
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
-                            30,
+                            10,
                             5
                         ],
                         [
@@ -992,7 +1000,7 @@
                     "ld_offset_ss": [
                         [
                             90,
-                            -10
+                            -5
                         ],
                         [
                             -50,
@@ -1002,11 +1010,11 @@
                     "ld_offset_rand_ss": [
                         [
                             10,
-                            5
+                            3
                         ],
                         [
                             5,
-                            5
+                            3
                         ]
                     ],
                     "scale_ss": [
@@ -1017,15 +1025,15 @@
                 "3_a_1": {
                     "scale_ss": [
                         0.4,
-                        1.6
+                        1.4
                     ],
                     "ld_ss": [
                         [
-                            600,
+                            580,
                             590
                         ],
                         [
-                            450,
+                            400,
                             590
                         ]
                     ],
@@ -1067,16 +1075,16 @@
                 },
                 "3_a_4": {
                     "scale_ss": [
-                        0.4,
+                        0.1,
                         1.3
                     ],
                     "ld_ss": [
                         [
-                            600,
+                            700,
                             600
                         ],
                         [
-                            200,
+                            300,
                             470
                         ]
                     ],
@@ -1085,7 +1093,7 @@
                 "3_a_5": {
                     "scale_ss": [
                         0.5,
-                        1.7
+                        1.3
                     ],
                     "ld_ss": [
                         [
@@ -1118,20 +1126,54 @@
                 },
                 "3_a_7": {
                     "scale_ss": [
-                        1.0,
+                        0.8,
                         1.5
                     ],
                     "ld_ss": [
                         [
                             300,
-                            480
+                            450
                         ],
                         [
                             0,
+                            400
+                        ]
+                    ],
+                    "zorder": 5
+                },
+                "3_a_8": {
+                    "scale_ss": [
+                        0.1,
+                        1.1
+                    ],
+                    "ld_ss": [
+                        [
+                            677,
+                            480
+                        ],
+                        [
+                            577,
                             280
                         ]
                     ],
                     "zorder": 5
+                },
+                "3_a_9": {
+                    "scale_ss": [
+                        0.1,
+                        1.1
+                    ],
+                    "ld_ss": [
+                        [
+                            733,
+                            600
+                        ],
+                        [
+                            280,
+                            420
+                        ]
+                    ],
+                    "zorder": 220
                 },
                 "d": "baseline zorder is 3 for smokhs"
             }
@@ -1141,32 +1183,23 @@
             "id": "4",
             "tl": [],
             "firing_frames": [
-                27,
-                52,
-                55,
-                69,
-                683,
-                684,
-                698,
-                729,
-                783,
-                2153,
-                2173,
-                2196,
-                2221
+                3364,
+                3382,
+                3391,
+                3426,
+                3790,
+                3793,
+                3799,
+                3812
             ],
             "firing_info": {
                 "nums": [
-                    2,
-                    2,
-                    5,
+                    4,
                     4
                 ],
                 "means": [
-                    30,
-                    70,
-                    700,
-                    2200
+                    3400,
+                    3800
                 ],
                 "var": 30
             },
@@ -1200,32 +1233,56 @@
                 80,
                 90,
                 100,
-                110,
-                120,
-                130,
-                140,
-                150,
-                160,
-                170,
-                180,
-                190,
-                200,
-                210,
-                220,
-                230,
-                240,
-                250,
-                260,
-                270,
-                280,
-                290,
-                300,
-                1000,
-                1010,
-                1020,
-                1030,
-                1040,
-                1050
+                3510,
+                3520,
+                3530,
+                3540,
+                3550,
+                3560,
+                3570,
+                3580,
+                3590,
+                3500,
+                3610,
+                3620,
+                3630,
+                3640,
+                3650,
+                3660,
+                3670,
+                3680,
+                3690,
+                3700,
+                3701,
+                3710,
+                3720,
+                3730,
+                3740,
+                3750,
+                3760,
+                3770,
+                3780,
+                3790,
+                3801,
+                3810,
+                3820,
+                3830,
+                3840,
+                3850,
+                3860,
+                3870,
+                3880,
+                3890,
+                3900,
+                3910,
+                3920,
+                3930,
+                3940,
+                3950,
+                3960,
+                3970,
+                3980,
+                3990
             ],
             "d1": "OBS OBS OBS: same smoka CANNOT be inited after prev. WILL CRASH (since id is the same) FIX: just use smokas and use their copies",
             "smokas_hardcoded": {
@@ -1394,21 +1451,21 @@
                     "ld_offset_ss": [
                         [
                             30,
-                            -8
+                            -6
                         ],
                         [
                             -10,
-                            -8
+                            -6
                         ]
                     ],
                     "ld_offset_rand_ss": [
                         [
                             10,
-                            3
+                            2
                         ],
                         [
                             3,
-                            3
+                            2
                         ]
                     ],
                     "scale_ss": "abstractSS",
@@ -1460,620 +1517,6 @@
                         [
                             5,
                             5
-                        ]
-                    ],
-                    "scale_ss": "abstractSS"
-                }
-            }
-        },
-        "5": {
-            "d": "DON T  DELETE L'Orient",
-            "id": "5",
-            "tl": [],
-            "firing_frames": [
-                477,
-                500,
-                514,
-                832,
-                1766,
-                1823
-            ],
-            "firing_info": {
-                "nums": [
-                    2,
-                    2,
-                    2
-                ],
-                "means": [
-                    500,
-                    800,
-                    1800
-                ],
-                "var": 20
-            },
-            "d0": "",
-            "d1": "firing frames and smoka_init_frames produced by ch",
-            "smoka_init_frames": [
-                10,
-                300,
-                800,
-                1800,
-                3600
-            ],
-            "smokas_hardcoded": {
-                "frames_start": [],
-                "frames_stop": [],
-                "ids": []
-            },
-            "alpha_and_bright": [
-                [
-                    10,
-                    1.0,
-                    1.0
-                ],
-                [
-                    25,
-                    1.0,
-                    1.0
-                ]
-            ],
-            "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
-            "move_vector": [],
-            "move": {
-                "d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
-                "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
-                "ld_ss": [
-                    [
-                        708,
-                        622
-                    ],
-                    [
-                        700,
-                        622
-                    ]
-                ],
-                "scale_ss": [
-                    1.0,
-                    1.0
-                ],
-                "d2": "y_mid removed. OBS weird case of missing piece of pic when scale_ss is [1.0, 0.1]. Also when scale starts at < 1 it seems weird",
-                "frame_ss": [
-                    3,
-                    7200
-                ],
-                "black": {
-                    "cycles": 20,
-                    "fxy": [
-                        12,
-                        0.4
-                    ]
-                }
-            },
-            "brightness_frame_value": [],
-            "zorder": 600,
-            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
-            "xtras": {
-                "5_a_0": {
-                    "ld_offset_ss": [
-                        [
-                            25,
-                            -13
-                        ],
-                        [
-                            -80,
-                            -20
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            20,
-                            3
-                        ],
-                        [
-                            10,
-                            3
-                        ]
-                    ],
-                    "scale_ss": [
-                        0,
-                        1.3
-                    ]
-                },
-                "5_smokrs": {
-                    "ld_offset_ss": [
-                        [
-                            22,
-                            -20
-                        ],
-                        [
-                            -50,
-                            -5
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            3,
-                            5
-                        ],
-                        [
-                            3,
-                            3
-                        ]
-                    ],
-                    "scale_ss": "abstractSS",
-                    "scale_max": 1.0,
-                    "left_right": "left"
-                },
-                "5_expls": {
-                    "ld_offset_ss": [
-                        [
-                            22,
-                            -20
-                        ],
-                        [
-                            22,
-                            -20
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            3,
-                            5
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "scale_base": 0.4,
-                    "tracer_l_r": "left",
-                    "scale_ss": "abstractSS",
-                    "d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"
-                },
-                "5_spls": {
-                    "ld_offset_ss": [
-                        [
-                            -400,
-                            0
-                        ],
-                        [
-                            -400,
-                            0
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            100,
-                            5
-                        ],
-                        [
-                            5,
-                            5
-                        ]
-                    ],
-                    "scale_ss": "abstractSS"
-                }
-            }
-        },
-        "6": {
-            "d": "DON T  DELETE L'Orient",
-            "id": "6",
-            "tl": [],
-            "firing_frames": [
-                15,
-                30,
-                1044,
-                1078,
-                1102,
-                1133,
-                1141,
-                1758,
-                1764,
-                1779,
-                1789,
-                1812
-            ],
-            "firing_info": {
-                "nums": [
-                    2,
-                    5,
-                    5
-                ],
-                "means": [
-                    5,
-                    1100,
-                    1800
-                ],
-                "var": 30
-            },
-            "d0": "",
-            "d1": "firing frames and smoka_init_frames produced by ch",
-            "smoka_init_frames": [
-                5,
-                50,
-                250,
-                500,
-                1100,
-                1800
-            ],
-            "smokas_hardcoded": {
-                "frames_start": [],
-                "frames_stop": [],
-                "ids": []
-            },
-            "alpha_and_bright": [
-                [
-                    10,
-                    1.0,
-                    1.0
-                ],
-                [
-                    25,
-                    1.0,
-                    1.0
-                ]
-            ],
-            "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
-            "move_vector": [],
-            "move": {
-                "d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
-                "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
-                "ld_ss": [
-                    [
-                        625,
-                        611
-                    ],
-                    [
-                        655,
-                        611
-                    ]
-                ],
-                "scale_ss": [
-                    1.0,
-                    1.0
-                ],
-                "d2": "y_mid removed. OBS weird case of missing piece of pic when scale_ss is [1.0, 0.1]. Also when scale starts at < 1 it seems weird",
-                "frame_ss": [
-                    3,
-                    7200
-                ],
-                "black": {
-                    "cycles": 15,
-                    "fxy": [
-                        6,
-                        0.5
-                    ]
-                }
-            },
-            "brightness_frame_value": [],
-            "zorder": 500,
-            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
-            "xtras": {
-                "6_a_0": {
-                    "ld_offset_ss": [
-                        [
-                            40,
-                            -10
-                        ],
-                        [
-                            -50,
-                            -35
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            10,
-                            5
-                        ],
-                        [
-                            5,
-                            5
-                        ]
-                    ],
-                    "scale_ss": [
-                        0,
-                        1
-                    ]
-                },
-                "6_smokrs": {
-                    "ld_offset_ss": [
-                        [
-                            30,
-                            -20
-                        ],
-                        [
-                            -30,
-                            -5
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            10,
-                            5
-                        ],
-                        [
-                            3,
-                            3
-                        ]
-                    ],
-                    "scale_ss": "abstractSS",
-                    "scale_max": 1.0,
-                    "left_right": "left"
-                },
-                "6_expls": {
-                    "ld_offset_ss": [
-                        [
-                            26,
-                            -13
-                        ],
-                        [
-                            26,
-                            -10
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            30,
-                            5
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "scale_base": 0.3,
-                    "tracer_l_r": "left",
-                    "scale_ss": "abstractSS",
-                    "d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"
-                },
-                "6_spls": {
-                    "ld_offset_ss": [
-                        [
-                            -200,
-                            5
-                        ],
-                        [
-                            -200,
-                            5
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            100,
-                            5
-                        ],
-                        [
-                            5,
-                            5
-                        ]
-                    ],
-                    "scale_ss": "abstractSS"
-                }
-            }
-        },
-        "7": {
-            "d": "Aquillon",
-            "id": "7",
-            "tl": [],
-            "firing_frames": [
-                990,
-                1003,
-                1022
-            ],
-            "firing_info": {
-                "nums": [
-                    3
-                ],
-                "means": [
-                    1000
-                ],
-                "var": 20
-            },
-            "d0": [
-                5,
-                6,
-                7,
-                8,
-                14,
-                20,
-                31,
-                32,
-                33,
-                40,
-                41,
-                42,
-                43,
-                44,
-                45,
-                50,
-                60
-            ],
-            "d1": "firing frames and smoka_init_frames produced by ch",
-            "smoka_init_frames": [
-                5,
-                1000,
-                1200
-            ],
-            "smokas_hardcoded": {
-                "frames_start": [
-                    7,
-                    35
-                ],
-                "frames_stop": [
-                    30,
-                    100
-                ],
-                "ids": [
-                    "7_a_1",
-                    "7_a_1"
-                ],
-                "d": "OBS new hardcoded must start after previous ended"
-            },
-            "alpha_and_bright": [
-                [
-                    10,
-                    1.0,
-                    1.0
-                ],
-                [
-                    25,
-                    1.0,
-                    1.0
-                ]
-            ],
-            "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
-            "move_vector": [],
-            "move": {
-                "d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",
-                "d1": "OBS ld_start/end corrsponds MANUALLY with scale_ss TODO assertions for frame_ss ",
-                "ld_ss": [
-                    [
-                        792,
-                        632
-                    ],
-                    [
-                        785,
-                        632
-                    ]
-                ],
-                "scale_ss": [
-                    1.0,
-                    1.0
-                ],
-                "d2": "y_mid removed. OBS weird case of missing piece of pic when scale_ss is [1.0, 0.1]. Also when scale starts at < 1 it seems weird",
-                "frame_ss": [
-                    3,
-                    7200
-                ],
-                "black": {
-                    "cycles": 20,
-                    "fxy": [
-                        8,
-                        0.2
-                    ]
-                }
-            },
-            "brightness_frame_value": [],
-            "zorder": 700,
-            "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
-            "xtras": {
-                "7_a_0": {
-                    "ld_offset_ss": [
-                        [
-                            40,
-                            -20
-                        ],
-                        [
-                            -130,
-                            -20
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            20,
-                            5
-                        ],
-                        [
-                            5,
-                            5
-                        ]
-                    ],
-                    "scale_ss": [
-                        0,
-                        1.5
-                    ],
-                    "d0": "Think about whether col transforms needed or if multiple smokes is enough.",
-                    "d1": "each smoka here is manually defined. OBS rand values are positive here! (turned neg later)",
-                    "d2": "TODO: ld_offset is wrt ORIGINAL PIC SIZE, hence needs adjustment before ani wrt ship scale vec"
-                },
-                "7_a_1": {
-                    "scale_ss": [
-                        0.1,
-                        1.0
-                    ],
-                    "ld_ss": [
-                        [
-                            825,
-                            577
-                        ],
-                        [
-                            700,
-                            560
-                        ]
-                    ],
-                    "zorder": 698,
-                    "d": "fire. ALWAYS PART OF BACKGROUND"
-                },
-                "7_smokrs": {
-                    "ld_offset_ss": [
-                        [
-                            22,
-                            -20
-                        ],
-                        [
-                            -60,
-                            -5
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            3,
-                            5
-                        ],
-                        [
-                            3,
-                            3
-                        ]
-                    ],
-                    "scale_ss": "abstractSS",
-                    "scale_max": 1.3,
-                    "left_right": "left"
-                },
-                "7_expls": {
-                    "ld_offset_ss": [
-                        [
-                            40,
-                            -20
-                        ],
-                        [
-                            40,
-                            -20
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            30,
-                            5
-                        ],
-                        [
-                            null,
-                            null
-                        ]
-                    ],
-                    "scale_base": 0.5,
-                    "tracer_l_r": "left",
-                    "scale_ss": "abstractSS",
-                    "d": "info for all expls. All ships get all expls. null null means same growth pattern for each pic"
-                },
-                "7_spls": {
-                    "ld_offset_ss": [
-                        [
-                            -400,
-                            0
-                        ],
-                        [
-                            -400,
-                            0
-                        ]
-                    ],
-                    "ld_offset_rand_ss": [
-                        [
-                            100,
-                            5
-                        ],
-                        [
-                            5,
-                            0
                         ]
                     ],
                     "scale_ss": "abstractSS"

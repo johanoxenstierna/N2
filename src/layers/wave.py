@@ -22,7 +22,7 @@ class Wave(AbstractLayer):
 		_s.NUM_FRAMES_RAND_MAX = 30  # 30  # this is rand PER REPEAT
 		_s.NUM_REPEATS_OF_SAME_WAVE = 30  # 30 - stops at around 3:30. this times AVG * RAND must be less than frames
 		# num_frames_avg * num_repeats_of_same_wave should give
-		_s.DEST_RAND_MIN_MAX = [[-80, -0], [-20, 0]]  # first is X, second is Y
+		_s.DEST_RAND_MIN_MAX = [[-60, -0], [-20, 0]]  # 77: -60 first is X, second is Y
 
 		_s.frame_sss = _s.gen_frame_sss()
 		ld_sss = _s.gen_ld_sss()
@@ -123,7 +123,7 @@ class Wave(AbstractLayer):
 			extent_agg += [[0, 1, 1, 0]]  # better too long than too short since clock only risks going out of bounds otherwise
 			extent_agg += list(extent)
 
-			alpha = gen_alpha(_gi, fun_plot='normal', y_range=[0, 0.13])  # 0.,05
+			alpha = gen_alpha(_gi, fun_plot='normal', y_range=[0, 0.1])  # 47: 1.3
 			alpha_agg += [0.0]
 			alpha_agg += list(alpha)
 			aa = 5
