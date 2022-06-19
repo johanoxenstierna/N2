@@ -62,7 +62,7 @@ class Chronicler:
 				with open('./sh_info/' + P.MAP_SIZE + '/' + ship_nid + '.json', 'r') as f:
 					ship_info = json.load(f)
 			except:
-				raise Exception("Haven't done ship info for big yet")
+				raise Exception("Haven't done ship info for big yet: " + str(ship_nid))
 
 			_s.ch['ships'][ship_nid] = ship_info  # needed for chronicler AI
 			kk = 8
@@ -161,11 +161,30 @@ class Chronicler:
 
 	def final_tests(_s):
 
+		try:
+			sh_3 = _s.ch['ships']['3']
+
+			for frame_start in sh_3['smokas_hardcoded']['frames_start']:
+				if sh_3['smokas_hardcoded']['frames_start'].count(frame_start) > 1:
+					raise Exception("can't be same start frame AAAREHHF")
+		except:
+			print("cant test ship 3")
+
+
 		for ship_id, ship in _s.ch['ships'].items():
 			f_nums = ship['firing_info']['nums']
 			f_means = ship['firing_info']['means']
 			if len(f_nums) != len(f_means):
 				raise Exception("nums and means must be same length id: " + ship_id)
+
+			smokas_h_frames_start = ship['smokas_hardcoded']['frames_start']
+			smokas_h_frames_stop = ship['smokas_hardcoded']['frames_stop']
+			smokas_h_ids = ship['smokas_hardcoded']['ids']
+			if len(smokas_h_frames_start) != len(smokas_h_frames_stop):
+				raise Exception("smokas_h_frames_start) != len(smokas_h_frames_stop: " + ship_id)
+
+			if len(smokas_h_frames_stop) != len(smokas_h_ids):
+				raise Exception("smokas_h_frames_stop) != len(smokas_h_ids): " + ship_id)
 
 		if '3' in _s.ch['ships']:
 			if _s.ch['ships']['3']['move']['frame_ss'][1] * 1.1 < P.FRAMES_STOP:

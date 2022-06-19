@@ -35,7 +35,7 @@ Chronicler() # just outputs the json below
 with open('./src/chronicle.json', 'r') as f:
     ch = json.load(f)
 
-WRITE = 48  #FIX: smoka frames, waves  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
+WRITE = 0  #FIX: smoka frames, waves  # change IMMEDIATELY back to zero (it immediately kills old file when re-run)
 FPS = 20
 
 Writer = animation.writers['ffmpeg']
@@ -68,7 +68,7 @@ if P.A_SPLS:  # all expls put in for each ship (convenient and memory cheap)
 
 # if P.A_WAVES:
 waves = g.gen_waves(ax, im_ax)  # can't use if P.A_WAVES bcs empty list is needed always (to decrement index thingy)
-
+# TODO: cross verify loaded objs vs loaded pics
 aa = 2
 
 def init():

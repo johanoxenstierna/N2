@@ -188,7 +188,8 @@ def fire_brightness(pic, ii, g_obj):
 			if g_obj.type == 'r':
 				c = 1
 			elif g_obj.type == 'a':
-				c = 0.5
+				c = 0.3  # 48: 0.5  doesnt work for larger smokas
+				# IF
 		elif g_obj.__class__.__name__ == 'Sail':
 			c = 0.4  # 47 ex was 0.4
 		elif g_obj.__class__.__name__ == 'Wave':

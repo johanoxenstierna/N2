@@ -1,5 +1,5 @@
 t:
-150
+180
 
 log:
 42: wind transforms achieved.
@@ -10,6 +10,8 @@ log:
 130: gimp starts taking over
 146: first whole runs
 162: removed 80% of sail hill code
+170: finalizaation
+
 
 post 34 todo:
 -fix fxy: set to 20 cycles and 15 where necessary

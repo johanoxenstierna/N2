@@ -32,7 +32,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
 			_s.NUM_FRAMES_SMOKE = 1500  # 1500 more needed
-			if id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3']:  # fire ones
+			if id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '7_a_1']:  # fire ones
 				_s.NUM_FRAMES_SMOKE = 100  # more needed
 		elif type == 'r':
 			_s.NUM_FRAMES_SMOKE = 500  #500 is fine
@@ -59,7 +59,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		elif _s.type == 'a':
 			if _s.hardcoded == True:
 				_s.zorder = _s.gi['zorder']
-			elif id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3']:
+			elif id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '6_a_2']:
 				_s.zorder = ship.gi['zorder'] + random.randint(-6, 1)
 			else:
 				_s.zorder = ship.gi['zorder'] + random.randint(-1, 3)  # PERHAPS SHOULD ALSO BE NEG
