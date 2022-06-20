@@ -155,9 +155,11 @@ class AbstractSSS:
     def check_frame_max(_s, ii, NUM_FRAMES):  # defined in specific functions
 
         exceeds_frame_max = False
+        how_many = 0
         if ii + NUM_FRAMES >= P.FRAMES_STOP - 20:
             exceeds_frame_max = True
-        return exceeds_frame_max
+            how_many = P.FRAMES_STOP - ii - 20
+        return exceeds_frame_max, how_many
 
 
 

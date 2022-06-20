@@ -16,10 +16,10 @@ class Smoke(AbstractLayer, AbstractSSS):
 		_s.id = id
 
 		id_split = _s.id.split('_')  # the last index (number of same pictures) needs removing for gi
-		id_gi = id_split[0] + '_' + id_split[1] + '_' + id_split[2]
+		_s.id_gi = id_split[0] + '_' + id_split[1] + '_' + id_split[2]
 
 		if type == 'a':
-			_s.gi = deepcopy(ship.gi['xtras'][id_gi])  # OBS CERTAIN THINGS HERE MUST BE THERE FOR ALL
+			_s.gi = deepcopy(ship.gi['xtras'][_s.id_gi])  # OBS CERTAIN THINGS HERE MUST BE THERE FOR ALL
 		elif type == 'r':
 			_s.gi = deepcopy(ship.gi['xtras'][ship.id + '_smokrs'])
 
@@ -31,11 +31,11 @@ class Smoke(AbstractLayer, AbstractSSS):
 
 		AbstractSSS.__init__(_s, ship, id, pic)
 		if type == 'a':
-			_s.NUM_FRAMES_SMOKE = 1500  # 1500 more needed
-			if id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '7_a_1']:  # fire ones
+			_s.NUM_FRAMES_SMOKE = 2000  # 1500 more needed
+			if _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '7_a_1']:  # fire ones
 				_s.NUM_FRAMES_SMOKE = 100  # more needed
 		elif type == 'r':
-			_s.NUM_FRAMES_SMOKE = 500  #500 is fine
+			_s.NUM_FRAMES_SMOKE = 600  #500 is fine
 		# else:  # REM
 		# 	_s.NUM_FRAMES_SMOKE = 500
 
@@ -59,7 +59,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		elif _s.type == 'a':
 			if _s.hardcoded == True:
 				_s.zorder = _s.gi['zorder']
-			elif id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '6_a_2']:
+			elif _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '6_a_2']:
 				_s.zorder = ship.gi['zorder'] + random.randint(-6, 1)
 			else:
 				_s.zorder = ship.gi['zorder'] + random.randint(-1, 3)  # PERHAPS SHOULD ALSO BE NEG

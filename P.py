@@ -11,11 +11,11 @@ FRAMES_TOT = FRAMES_STOP - FRAMES_START
 
 # A (what to animate) ========
 A_AFFINE_TRANSFORM = 1  # compulsary probably at least for ships
-A_SAILS = 1
-A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 1
+A_SAILS = 0
+A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 0
 A_SMOKAS = 1
 A_SMOKRS = 1
-A_WAVES = 1
+A_WAVES = 0
 A_EXPLS = 1
 A_FIRING_BRIGHTNESS = 1  # does not requires EXPLS (for now!)
 A_SPLS = 1
@@ -47,3 +47,15 @@ SMOKRS_RIGHT = ['2']
 
 # EXPLOSION_WIDTH = 8
 # EXPLOSION_HEIGHT = 3
+
+
+'''
+Min to time: 
+.5: 600
+1: 1200  .5: 1800
+2: 2400  .5: 3000
+3: 3600  .5: 4200
+4: 4800  .5: 5400
+5: 6000
+6: 7200 
+'''

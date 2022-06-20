@@ -115,9 +115,15 @@ def static_alpha_darkening(pic, ii, g_obj):
 		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
 		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1]
+
+		# g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * g_obj.ab_cur[1]  # failed attempt at fixing it
+		# g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * g_obj.ab_cur[1]
+		# g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * g_obj.ab_cur[0]
+
 		g_obj.ab_cur[0] *= ship_ab_at_clock[1]  # needed for smokes
 		g_obj.ab_cur[1] *= ship_ab_at_clock[2]  # needed for smokes
 
+		aa = 6
 	# if g_obj.__class__.__name__ == 'Smoke':
 	# 	if ii == 13:
 	# 		adf = 5
@@ -187,9 +193,10 @@ def fire_brightness(pic, ii, g_obj):
 		if g_obj.__class__.__name__ == 'Smoke':
 			if g_obj.type == 'r':
 				c = 1
-			elif g_obj.type == 'a':
-				c = 0.3  # 48: 0.5  doesnt work for larger smokas
-				# IF
+			elif g_obj.type == 'a':  # SMOKHS do not come here
+				c = 0.3  # 50: 0.3  doesnt work for larger smokas
+				if g_obj.id_gi in ['0_a_2', '2_a_3', '1_a_2', '5_a_1', '6_a_1', '6_a_2', '6_a_3', '7_a_2']:  # 51: new
+					c = 0.05
 		elif g_obj.__class__.__name__ == 'Sail':
 			c = 0.4  # 47 ex was 0.4
 		elif g_obj.__class__.__name__ == 'Wave':

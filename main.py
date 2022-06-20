@@ -41,7 +41,7 @@ FPS = 20
 Writer = animation.writers['ffmpeg']
 writer = Writer(fps=FPS, metadata=dict(artist='Me'), bitrate=3600)
 
-fig, ax = plt.subplots(figsize=(12, 8))
+fig, ax = plt.subplots(figsize=(10, 6))
 # fig, ax = plt.subplots()
 
 # im_ax = {}
@@ -126,7 +126,6 @@ def animate(i):
 
         # SHIP WARP
 
-
         '''
         Conjecture: It won't be enough to just plot the expl, it also needs to affect brightness/contr of other 
         ax object (especially when the special red explosions start (fire)).
@@ -152,9 +151,11 @@ def animate(i):
             if i in ship.gi['firing_frames']:  # add rand
                 spl = ship.find_free_obj(type='spl')
                 if spl != None:
-                    if spl.check_frame_max(i, spl.NUM_FRAMES_SPL) == True:
+                    exceeds_frame_max, how_many = spl.check_frame_max(i, spl.NUM_FRAMES_SPL)
+                    if exceeds_frame_max == True:
                         prints += "  cant add spl"
-                        continue
+                        spl.NUM_FRAMES_SPL = how_many
+                        # continue
                     spl.drawn = 1  # this variable is needed to avoid the frame_ss check
 
                     spl.init_dyn_obj(i, spl.NUM_FRAMES_SPL)
@@ -187,9 +188,11 @@ def animate(i):
             if i in ship.gi['firing_frames']:  # add rand
                 smokr = ship.find_free_obj(type='smokr')
                 if smokr != None:
-                    if smokr.check_frame_max(i, smokr.NUM_FRAMES_SMOKE) == True:
+                    exceeds_frame_max, how_many = smokr.check_frame_max(i, smokr.NUM_FRAMES_SMOKE)
+                    if exceeds_frame_max == True:
                         prints += "  smokr exceeds max"
-                        continue
+                        smokr.NUM_FRAMES_SMOKE = how_many
+                        # continue
                     smokr.drawn = 4  # NEEDED TO SET STATIC_DARKENING FIRST FRAME
                     smokr.init_dyn_obj(i, smokr.NUM_FRAMES_SMOKE)
                     smokr.gen_dyn_extent_alpha()
@@ -240,9 +243,11 @@ def animate(i):
                 smoka = ship.find_free_obj(type='smoka')
 
                 if smoka != None and smoka.id not in ship.gi['smokas_hardcoded']['ids']:
-                    if smoka.check_frame_max(i, smoka.NUM_FRAMES_SMOKE) == True:
+                    exceeds_frame_max, how_many = smoka.check_frame_max(i, smoka.NUM_FRAMES_SMOKE)
+                    if exceeds_frame_max == True:
                         prints += "  smoka exceeds max"
-                        continue
+                        smoka.NUM_FRAMES_SMOKE = how_many
+                        # continue
                     smoka.drawn = 1  # this variable can serve multiple purposes (see below, and in set_clock)
                     ship.smoka_latest_drawn_id = smoka.id
                     smoka.init_dyn_obj(i, smoka.NUM_FRAMES_SMOKE)  # uses AbstractSSS
