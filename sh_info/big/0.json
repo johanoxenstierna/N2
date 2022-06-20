@@ -13,7 +13,7 @@
     "var": 40},
   "d0": "obs nums doesnt seem to be used currently",
   "d1": "firing frames and smoka_init_frames produced by ch",
-  "smoka_init_frames": [10, 20, 25, 30, 35, 40, 55, 300, 450, 800,
+  "smoka_init_frames": [
     1000, 1050, 1100, 1151, 1201, 1251, 1301,
     2300, 2351, 2401, 2451, 2501, 2551,
     3001, 3051, 3101, 3150, 3200, 3250,

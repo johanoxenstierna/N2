@@ -22,7 +22,7 @@ class Ship(AbstractLayer):
         _s.frames_tot = _s.frame_ss[1] - _s.frame_ss[0]
         zigzag = ()
         if P.PR_ZIGZAG:
-            zigzag = gen_zig_zag(_s.frames_tot, cycles=20, max_delta_width=0.07)  # 50: 10, 0.06
+            zigzag = gen_zig_zag(_s.frames_tot, cycles=15, max_delta_width=0.1)  # 50: 10, 0.06
         _s.extent, _s.extent_t, lds_log, _s.scale_vector = gen_extent(ship_info['move'], pic, zigzag=zigzag)  # left_down_log
         _s.tri_base, _s.tris, _s.tri_ext, _s.mask_ri, _s.mask_do = \
             gen_triangles(_s.extent_t, _s.extent, ship_info['move'], pic)

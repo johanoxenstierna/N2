@@ -26,8 +26,8 @@ PR_ZIGZAG = 1
 
 GLOBAL_ALPHA_DARKENING = [[]]  # TODO: THIS USED BY SMOKRS ETC.
 NUM_WAVES = 5  # NUM per pic!!!
-NUM_SMOKAS = 4  # CHECK THAT THESE ARE INITED SEQUENTIALLY (to avoid same smoka repeating)
-NUM_SMOKRS = 4
+NUM_SMOKAS = 6  # CHECK THAT THESE ARE INITED SEQUENTIALLY (to avoid same smoka repeating)
+NUM_SMOKRS = 5
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
 NUM_SPLS = 3  # capability for >1 there but might not be needed
 

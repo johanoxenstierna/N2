@@ -33,7 +33,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		if type == 'a':
 			_s.NUM_FRAMES_SMOKE = 2000  # 1500 more needed
 			if _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '7_a_1']:  # fire ones
-				_s.NUM_FRAMES_SMOKE = 100  # more needed
+				_s.NUM_FRAMES_SMOKE = 120  # more needed
 		elif type == 'r':
 			_s.NUM_FRAMES_SMOKE = 600  #500 is fine
 		# else:  # REM
