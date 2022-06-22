@@ -21,7 +21,7 @@
     5006, 5050, 5100, 5406, 4450, 5700, 5750,
     6000, 6050, 6100, 6150, 6200, 6400, 6450],
   "smokas_hardcoded": {"frames_start": [], "frames_stop": [], "ids": []},
-  "alpha_and_bright": [[500, 1.0, 0.97], [600, 1.0, 0.97], [700, 0.99, 0.97]],
+  "alpha_and_bright": [[500, 1.0, 0.97], [600, 1.0, 0.97], [700, 0.99, 0.97], [2500, 1.0, 0.97], [3600, 1.0, 0.97], [4700, 1.0, 0.97]],
   "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
   "move_vector": [],
   "move": {"d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",

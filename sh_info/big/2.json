@@ -44,7 +44,7 @@
       "scale_ss": "abstractSS" ,"d": ""},
     "2_spls": {"ld_offset_ss": [[400, -5], [400, -5]], "ld_offset_rand_ss": [[200, 10], [null, null]],
       "scale_ss": "abstractSS"},
-    "2_a_0": {"ld_offset_ss": [[120, -18], [-50, -40]],"ld_offset_rand_ss": [[10, 5], [5, 5]],
+    "2_a_0": {"ld_offset_ss": [[110, -18], [-50, -40]],"ld_offset_rand_ss": [[10, 5], [5, 5]],
       "scale_ss": [0, 2.4]},
     "2_a_1": {"ld_offset_ss": [[60, -100], [-150, -140]],"ld_offset_rand_ss": [[10, 5], [5, 5]],
       "scale_ss": [0, 0.8]},

@@ -23,7 +23,7 @@ class Smoke(AbstractLayer, AbstractSSS):
 		elif type == 'r':
 			_s.gi = deepcopy(ship.gi['xtras'][ship.id + '_smokrs'])
 
-		_s.pic = pic.copy()  # NEW WHY NOT DONE BEFORE??? SIGH
+		_s.pic = deepcopy(pic)  # NEW WHY NOT DONE BEFORE??? SIGH
 		if id_split[1] in P.SMOKRS_RIGHT and _s.gi['left_right'] == 'left':  # is right but is supposed to be left
 			_s.pic = np.flip(pic, axis=1)
 		elif id_split[1] in P.SMOKRS_LEFT and _s.gi['left_right'] == 'right':  # is left but is supposed to be right
@@ -61,6 +61,8 @@ class Smoke(AbstractLayer, AbstractSSS):
 				_s.zorder = _s.gi['zorder']
 			elif _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '6_a_2']:
 				_s.zorder = ship.gi['zorder'] + random.randint(-6, 1)
+			elif _s.id_gi in ['6_a_2', '7_a_2']:  # smokh level
+				_s.zorder = random.randint(4, 10)
 			else:
 				_s.zorder = ship.gi['zorder'] + random.randint(-1, 3)  # PERHAPS SHOULD ALSO BE NEG
 

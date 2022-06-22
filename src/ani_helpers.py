@@ -108,13 +108,20 @@ def static_alpha_darkening(pic, ii, g_obj):
 		ab_clock = g_obj.ship.ab_clock
 
 	ship_ab_at_clock = gi['alpha_and_bright'][ab_clock]  # this is incremented for ship at bottom of animation loop
-	if ii == ship_ab_at_clock[0]:
+	if ii == ship_ab_at_clock[0]:  # hence this is checked every frame but only runs once for each obj
 
-		# brightness TODO: will need lots of tuning (add more elements to info list)
-		g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] #* ship_ab_at_clock[2]
-		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2]
-		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2]
-		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1]
+		c = 1
+		if g_obj.__class__.__name__ == 'Smoke':  # needed since smokas are updated too rarely otherwise
+			if g_obj.type == 'a':
+				c = 0.9
+
+			if random.random() < 0.5:  # also add darkening effect (red layer decreased)
+				c = 0.7
+				g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] * ship_ab_at_clock[2] * c
+
+		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2] * c
+		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2] * c
+		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1] * c
 
 		# g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * g_obj.ab_cur[1]  # failed attempt at fixing it
 		# g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * g_obj.ab_cur[1]
@@ -122,8 +129,26 @@ def static_alpha_darkening(pic, ii, g_obj):
 
 		g_obj.ab_cur[0] *= ship_ab_at_clock[1]  # needed for smokes
 		g_obj.ab_cur[1] *= ship_ab_at_clock[2]  # needed for smokes
+		# THESE PROBABLY NEED TO BE SET FOR ALL OF THEM, NOT JUST THE ONES THAT ARE CURRENTLY DRAWN (KEPT FOR NOW DUE TO OKISH RANDOM EFFECT).
+		# THIS IS ALSO REASON WHY SMOKAS NEED EXTRA
 
 		aa = 6
+
+
+def hardcoded_adjustments(g_obj, ii):
+
+	"""assumed to be a ship for now"""
+
+	if g_obj.id == "0" and ii > 4000:
+		g_obj.gi['xtras']['0_a_0']['scale_ss'][1] = 1.2
+		g_obj.gi['xtras']['0_a_1']['scale_ss'][1] = 1
+		g_obj.gi['xtras']['0_a_2']['scale_ss'][1] = 1.2
+
+	aa = 5
+
+
+
+
 	# if g_obj.__class__.__name__ == 'Smoke':
 	# 	if ii == 13:
 	# 		adf = 5

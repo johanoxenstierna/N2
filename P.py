@@ -41,7 +41,7 @@ EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
 SHIPS_TO_SHOW = ['0', '1', '2', '3', '4', '5', '6', '7']#, '6', '7']#, '1'] #, '2', '3']
 # SHIPS_TO_SHOW = ['3', '4'] #, '3', '4']
-# SHIPS_TO_SHOW = ['3']
+SHIPS_TO_SHOW = ['6']
 SMOKRS_LEFT = ['3']  # this is checked TOGETHER with smokr info in ship_info
 SMOKRS_RIGHT = ['2']
 

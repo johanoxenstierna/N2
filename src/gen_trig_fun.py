@@ -28,6 +28,8 @@ def gen_scale_lds(NUM_FRAMES, fun_plot, plot=False, ld_ss=None, max_scale=1.0):
 	X = np.arange(1, NUM_FRAMES + 1)
 	if fun_plot == 'spl':
 		max_scale = np.random.uniform(0.6, 1.0)
+		if ld_ss[0][1] < 610:
+			max_scale = np.random.uniform(0.1, 0.4)
 		scale = _gamma(X, mean=3, var=15, y_range=[0.0, max_scale])
 	elif fun_plot == 'spl_hard':  # when its on top of ship
 		max_scale = np.random.uniform(0.2, 0.5)

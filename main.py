@@ -208,6 +208,7 @@ def animate(i):
                     elif drawBool == 2:
                         decrement_all_index_im_ax(index_removed, ships, waves)
                         continue
+
                     # im_ax[smokr.index_im_ax].set_extent(smokr.extent[smokr.clock])
                     warp_affine_and_color(i, ax, im_ax, smokr, ch)  # parent obj required for sail
 
@@ -287,6 +288,8 @@ def animate(i):
 
         if i == ship.gi['alpha_and_bright'][ship.ab_clock][0] and ship.ab_clock < len(ship.gi['alpha_and_bright']) - 1:
             ship.ab_clock += 1
+
+        hardcoded_adjustments(ship, i)
 
     if P.A_WAVES:  # no queue needed here since they
         '''
