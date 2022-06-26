@@ -254,7 +254,7 @@ class Sail(AbstractLayer):
 		# z_shear *= 10  # THIS IS HOW MUCH SAIL IS SHIFTED PER FRAME
 
 		# SUPER IMPORTANT: THIS GIVES THE SHEAR SPEED (3 for 300, 12 for 600
-		z_shear = np.linspace(0, P.FRAMES_TOT // 28, num= _s.ship.frames_tot)  # 50: 30, 47: 35 48: 32. OBS sinned later TUNE stop value for number of frames
+		z_shear = np.linspace(0, P.FRAMES_TOT // 25, num=_s.ship.frames_tot)  # 53: 28. OBS sinned later TUNE stop value for number of frames
 
 		# THESE GIVE HOW MUCH THE SHEAR SHOULD CHANGE THROUGH TIME (CYCLES
 		t_x_ver = np.zeros((_s.pic.shape[0], _s.pic.shape[1]))  # will be sinned

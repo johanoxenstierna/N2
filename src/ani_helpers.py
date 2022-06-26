@@ -111,17 +111,19 @@ def static_alpha_darkening(pic, ii, g_obj):
 	if ii == ship_ab_at_clock[0]:  # hence this is checked every frame but only runs once for each obj
 
 		c = 1
-		if g_obj.__class__.__name__ == 'Smoke':  # needed since smokas are updated too rarely otherwise
+		if g_obj.__class__.__name__ == 'Smoke':  # needed since smokas are updated too rarely otherwise\
 			if g_obj.type == 'a':
-				c = 0.95
+				c = 0.98  # visible switch if less than 0.98
 
 			if random.random() < 0.3:  # also add darkening effect (red layer decreased)
-				c = 0.95
+				c = 0.98
 				g_obj.pic[:, :, 0] = g_obj.pic[:, :, 0] * ship_ab_at_clock[2] * c
 
 		g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * ship_ab_at_clock[2] * c
 		g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * ship_ab_at_clock[2] * c
-		g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1] * c
+
+		if g_obj.__class__.__name__ != 'Smoke':  # alpha only for ships
+			g_obj.pic[:, :, 3] = g_obj.pic[:, :, 3] * ship_ab_at_clock[1] * c
 
 		# g_obj.pic[:, :, 1] = g_obj.pic[:, :, 1] * g_obj.ab_cur[1]  # failed attempt at fixing it
 		# g_obj.pic[:, :, 2] = g_obj.pic[:, :, 2] * g_obj.ab_cur[1]

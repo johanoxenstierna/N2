@@ -25,8 +25,8 @@ PR_MOVE_BLACK = 1  # what to pre-compute (doesn't affect rendering time that muc
 PR_ZIGZAG = 1
 
 GLOBAL_ALPHA_DARKENING = [[]]  # TODO: THIS USED BY SMOKRS ETC.
-NUM_WAVES = 7  # NUM per pic!!!
-NUM_SMOKAS = 6  # CHECK THAT THESE ARE INITED SEQUENTIALLY (to avoid same smoka repeating)
+NUM_WAVES = 8  # NUM per pic!!!
+NUM_SMOKAS = 7  # CHECK THAT THESE ARE INITED SEQUENTIALLY (to avoid same smoka repeating)
 NUM_SMOKRS = 5
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
 NUM_SPLS = 3  # capability for >1 there but might not be needed
@@ -40,8 +40,8 @@ WS_STEPS = 40  # 2s  wave front of ship
 EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
 SHIPS_TO_SHOW = ['0', '1', '2', '3', '4', '5', '6', '7']#, '6', '7']#, '1'] #, '2', '3']
-# SHIPS_TO_SHOW = ['3', '4'] #, '3', '4']
-# SHIPS_TO_SHOW = ['6']
+# SHIPS_TO_SHOW = ['0', '2', '3', '4'] #, '3', '4']
+# SHIPS_TO_SHOW = ['0']
 SMOKRS_LEFT = ['3']  # this is checked TOGETHER with smokr info in ship_info
 SMOKRS_RIGHT = ['2']
 
