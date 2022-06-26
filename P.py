@@ -11,11 +11,11 @@ FRAMES_TOT = FRAMES_STOP - FRAMES_START
 
 # A (what to animate) ========
 A_AFFINE_TRANSFORM = 1  # compulsary probably at least for ships
-A_SAILS = 0
-A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 0
+A_SAILS = 1
+A_SAIL_HEIGHTS_TROUGHS_TRANSFORM = 1
 A_SMOKAS = 1
 A_SMOKRS = 1
-A_WAVES = 0
+A_WAVES = 1
 A_EXPLS = 1
 A_FIRING_BRIGHTNESS = 1  # does not requires EXPLS (for now!)
 A_SPLS = 1
@@ -25,7 +25,7 @@ PR_MOVE_BLACK = 1  # what to pre-compute (doesn't affect rendering time that muc
 PR_ZIGZAG = 1
 
 GLOBAL_ALPHA_DARKENING = [[]]  # TODO: THIS USED BY SMOKRS ETC.
-NUM_WAVES = 5  # NUM per pic!!!
+NUM_WAVES = 7  # NUM per pic!!!
 NUM_SMOKAS = 6  # CHECK THAT THESE ARE INITED SEQUENTIALLY (to avoid same smoka repeating)
 NUM_SMOKRS = 5
 NUM_EXPLS = 1  # capability for >1 there but might not be needed
@@ -41,7 +41,7 @@ EXPL_CYCLES = 8  # how often broadsides happen (HAS TO BE MOVED INTO SHIP INFO)
 
 SHIPS_TO_SHOW = ['0', '1', '2', '3', '4', '5', '6', '7']#, '6', '7']#, '1'] #, '2', '3']
 # SHIPS_TO_SHOW = ['3', '4'] #, '3', '4']
-SHIPS_TO_SHOW = ['6']
+# SHIPS_TO_SHOW = ['6']
 SMOKRS_LEFT = ['3']  # this is checked TOGETHER with smokr info in ship_info
 SMOKRS_RIGHT = ['2']
 

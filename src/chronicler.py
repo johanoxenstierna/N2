@@ -161,14 +161,14 @@ class Chronicler:
 
 	def final_tests(_s):
 
-		try:
-			sh_3 = _s.ch['ships']['3']
+		# try:
+		sh_3 = _s.ch['ships']['3']
 
-			for frame_start in sh_3['smokas_hardcoded']['frames_start']:
-				if sh_3['smokas_hardcoded']['frames_start'].count(frame_start) > 1:
-					raise Exception("can't be same start frame AAAREHHF")
-		except:
-			print("cant test ship 3")
+		for frame_start in sh_3['smokas_hardcoded']['frames_start']:
+			if sh_3['smokas_hardcoded']['frames_start'].count(frame_start) > 1:
+				raise Exception("can't be same start frame AAAREHHF")
+		# except:
+		# 	print("cant test ship 3")
 
 
 		for ship_id, ship in _s.ch['ships'].items():

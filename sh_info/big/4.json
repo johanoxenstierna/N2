@@ -19,7 +19,7 @@
   ],
   "d1": "OBS OBS OBS: same smoka CANNOT be inited after prev. WILL CRASH (since id is the same) FIX: just use smokas and use their copies",
   "smokas_hardcoded": {"frames_start": [], "frames_stop": [], "ids": []},
-  "alpha_and_bright": [[440, 1.0, 0.97], [540, 1.0, 0.97], [640, 1.0, 0.97], [740, 1.0, 0.97], [1840, 0.95, 0.97], [3540, 0.95, 0.97], [4300, 0.95, 0.96]],
+  "alpha_and_bright": [[440, 1.0, 0.97], [540, 1.0, 0.97], [640, 1.0, 0.97], [740, 1.0, 0.97], [1840, 0.95, 0.97], [3540, 0.95, 0.97], [4300, 0.9, 0.96]],
   "d2": "ab is on format [[frame, alpha, bright]]. Then use ab_clock. things should get darker and redder",
   "move_vector": [],
   "move": {"d0": "ld: left down, scale_start: relative to orig pic, y_mid: 1.0 means all the scaling is above ld. frame_ss denotes start/stop",

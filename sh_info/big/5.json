@@ -31,7 +31,7 @@
   "zorder": 600,
   "d_xtras": "descr for sails found in sail.py gen_col_transforms() smoka_offset is dl! d_offset is move_black offset",
   "xtras": {
-    "5_a_0": {"ld_offset_ss": [[25, -18], [-110, -23]],"ld_offset_rand_ss": [[15, 3], [10, 3]], "scale_ss": [0, 1.6]},
+    "5_a_0": {"ld_offset_ss": [[15, -18], [-110, -23]],"ld_offset_rand_ss": [[15, 3], [10, 3]], "scale_ss": [0, 1.6]},
     "5_a_1": {"ld_offset_ss": [[-150, -50], [-400, -250]],"ld_offset_rand_ss": [[20, 5], [10, 5]], "scale_ss": [0, 1.6]},
     "5_smokrs": {"ld_offset_ss": [[22, -25], [-50, -15]],"ld_offset_rand_ss": [[3, 5], [3, 3]],
       "scale_ss": "abstractSS", "scale_max": 1.0, "left_right": "left"},

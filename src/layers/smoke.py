@@ -55,11 +55,11 @@ class Smoke(AbstractLayer, AbstractSSS):
 		_s.type = type
 		_s.zorder = None
 		if _s.type == 'r':
-			_s.zorder = ship.gi['zorder'] + random.randint(-1, 6)  # TODO some smokrs should be behind ship
+			_s.zorder = ship.gi['zorder'] + random.randint(-1, 8)  # TODO some smokrs should be behind ship
 		elif _s.type == 'a':
 			if _s.hardcoded == True:
 				_s.zorder = _s.gi['zorder']
-			elif _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3', '6_a_2']:
+			elif _s.id_gi in ['4_a_0', '4_a_1', '4_a_2', '4_a_3']:
 				_s.zorder = ship.gi['zorder'] + random.randint(-6, 1)
 			elif _s.id_gi in ['6_a_2', '7_a_2']:  # smokh level
 				_s.zorder = random.randint(4, 10)
