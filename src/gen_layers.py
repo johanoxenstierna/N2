@@ -30,7 +30,7 @@ class GenLayers:
             ax.axis([0, 1280, 0, 720])
         ax.invert_yaxis()
         # ax.grid()
-        # ax.axis('off')  # TURN ON FOR FINAL
+        ax.axis('off')  # TURN ON FOR FINAL
 
     def gen_ships(self, ax, im_ax):
 
